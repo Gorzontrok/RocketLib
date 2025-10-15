@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\LocalBroforcePath.props" Condition="Exists('..\LocalBroforcePath.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2590E579-ACFD-41BA-8FD2-1448DD2D9E9D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RocketLib</RootNamespace>
+    <AssemblyName>RocketLib</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\RocketLibUMM\_Mod\RocketLib.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="BitCode.AssetManagement, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\BitCode.AssetManagement.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\_lib\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityModManager, Version=0.25.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(LibPath)\UnityModManager.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collections\Heroes.cs" />
+    <Compile Include="CustomTriggers\LevelEditorGUIExtensions.cs" />
+    <Compile Include="Extensions\GrenadeExtensions.cs" />
+    <Compile Include="Extensions\ProjectileExtensions.cs" />
+    <Compile Include="Extensions\UnitExtensions.cs" />
+    <Compile Include="JsonConverters\ColorJsonConverter.cs" />
+    <Compile Include="Loggers\Loggers.cs" />
+    <Compile Include="RocketMain.cs" />
+    <Compile Include="Utils\DrawDebug.cs" />
+    <Compile Include="Utils\ObjectComparer.cs" />
+    <Compile Include="Utils\RocketLibUtils.cs" />
+    <Compile Include="Utils\UnitTypes.cs" />
+    <Compile Include="Utils\ResourcesController.cs" />
+    <None Include="Collections\Doodads.cs" />
+    <Compile Include="Collections\Levels.cs" />
+    <Compile Include="Collections\Nums.cs" />
+    <Compile Include="Collections\Pickups.cs" />
+    <Compile Include="Collections\PockettedSpecial.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\BroforceObjectExtensions.cs" />
+    <Compile Include="Extensions\ComponentExtensions.cs" />
+    <Compile Include="Extensions\DictionarySerializationExtensions.cs" />
+    <Compile Include="Extensions\EnumeratorExtensions.cs" />
+    <Compile Include="Extensions\GameObjectExtensions.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\NetworkedUnitExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\PlayerHUDExtensions.cs" />
+    <Compile Include="Extensions\SpriteSMExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TestVanDammeAnimExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Utils\GamePassword.cs" />
+    <Compile Include="JsonConverters\RectConverter.cs" />
+    <Compile Include="JsonConverters\Vector2Converter.cs" />
+    <Compile Include="JsonConverters\Vector3Converter.cs" />
+    <Compile Include="Utils\KeyBinding.cs" />
+    <Compile Include="Utils\KeyBindingForPlayers.cs" />
+    <Compile Include="RGUI.cs" />
+    <Compile Include="Extensions\HarmonyExtensions.cs" />
+    <Compile Include="Loggers\ScreenLogger.cs" />
+    <Compile Include="Menus\Vanilla\BaseCustomMenu.cs" />
+    <Compile Include="Menus\Core\MenuRegistry.cs" />
+    <Compile Include="Menus\Core\MenuRegistration.cs" />
+    <Compile Include="Menus\Core\MenuPatches.cs" />
+    <Compile Include="Menus\Vanilla\SimpleSubmenu.cs" />
+    <Compile Include="Menus\Vanilla\MenuItemBuilder.cs" />
+    <Compile Include="Menus\Vanilla\ModOptionsMenu.cs" />
+    <Compile Include="Menus\Tests\BasicFlexMenuExample.cs" />
+    <Compile Include="Menus\Tests\VanillaSubmenuExample.cs" />
+    <Compile Include="Menus\Tests\ModOptionsExample.cs" />
+    <Compile Include="Menus\Tests\GridLayoutExample.cs" />
+    <Compile Include="Menus\Tests\PaginatedGridExample.cs" />
+    <Compile Include="Menus\Tests\TransitionTestMenu.cs" />
+    <Compile Include="Menus\Utilities\GridMenuHighlight.cs" />
+    <Compile Include="Menus\Utilities\HighlightFactory.cs" />
+    <Compile Include="Menus\Utilities\FontManager.cs" />
+    <Compile Include="Menus\Core\FlexMenu.cs" />
+    <Compile Include="Menus\Core\NavigationManager.cs" />
+    <Compile Include="Menus\Layout\LayoutContainer.cs" />
+    <Compile Include="Menus\Layout\SizeMode.cs" />
+    <Compile Include="Menus\Layout\HorizontalAlignment.cs" />
+    <Compile Include="Menus\Layout\VerticalAlignment.cs" />
+    <Compile Include="Menus\Layout\VerticalLayoutContainer.cs" />
+    <Compile Include="Menus\Layout\GridLayoutContainer.cs" />
+    <Compile Include="Menus\Layout\AbsoluteLayoutContainer.cs" />
+    <Compile Include="Menus\Layout\HorizontalLayoutContainer.cs" />
+    <Compile Include="Menus\Layout\PaginatedGridContainer.cs" />
+    <Compile Include="Menus\Elements\LayoutElement.cs" />
+    <Compile Include="Menus\Elements\ImageElement.cs" />
+    <Compile Include="Menus\Elements\TextElement.cs" />
+    <Compile Include="Menus\Elements\ActionButton.cs" />
+    <Compile Include="Menus\Elements\ShapeElement.cs" />
+    <Compile Include="Menus\Elements\SpacerElement.cs" />
+    <Compile Include="Menus\Elements\BroCard.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\CreateTexture.cs" />
+    <Compile Include="Utils\SettingsRecovery.cs" />
+    <Compile Include="CustomTriggers\CustomTrigger.cs" />
+    <Compile Include="CustomTriggers\CustomTriggerAction.cs" />
+    <Compile Include="CustomTriggers\CustomTriggerActionInfo.cs" />
+    <Compile Include="CustomTriggers\CustomTriggerManager.cs" />
+    <Compile Include="CustomTriggers\CustomTriggerPatches.cs" />
+    <Compile Include="CustomTriggers\CustomTriggerStateManager.cs" />
+    <Compile Include="CustomTriggers\LevelStartTriggerActionInfo.cs" />
+    <Compile Include="CustomTriggers\LevelStartTriggerAction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="UMM\Main.cs" />
+    <Compile Include="UMM\Mod.cs" />
+    <Compile Include="UMM\ModSave.cs" />
+    <Compile Include="UMM\ModUI.cs" />
+    <Compile Include="UMM\DoNotDestroyUMMPatches.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="_Mod\Changelog - RocketLib.txt" />
+    <Content Include="_Mod\Changelog.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="_Mod\Info.json" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY /Y /R "$(TargetPath)" "$(ProjectDir)\_Mod\$(ProjectName).dll*"
+XCOPY /Y /I "$(ProjectDir)\_Mod\*.*" "$(BroforcePath)\Mods\RocketLib\"
+XCOPY /Y /I "$(ProjectDir)\_Mod\Resources\*.*" "$(BroforcePath)\Mods\RocketLib\Resources\"
+del "$(BroforcePath)\Mods\RocketLib\*.cache" 2&gt; nul || set errorlevel=0
+if "$(LaunchBroforceOnBuild)" == "true" (
+start steam://rungameid/274190)</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>if "$(CloseBroforceOnBuild)" == "true" (
+    taskkill /f /t /im Broforce_beta.exe 2&gt;nul || exit /b 0
+)
+XCOPY /Y /I "$(ProjectDir)\_Mod\*.*" "$(BroforcePath)\Mods\RocketLib\"</PreBuildEvent>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+</Project>

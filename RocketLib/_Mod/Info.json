@@ -1,0 +1,9 @@
+{
+  "Id": "RocketLib",
+  "DisplayName": "RocketLib - UMM",
+  "Author": "Gorzontrok",
+  "Version": "2.4.0",
+  "AssemblyName": "RocketLib.dll",
+  "EntryMethod": "RocketLib.UMM.Main.Load",
+  "Repository": "https://raw.githubusercontent.com/Gorzontrok/RocketLib/main/Repository.json"
+}
