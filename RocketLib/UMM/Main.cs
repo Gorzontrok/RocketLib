@@ -7,7 +7,7 @@ using UnityModManagerNet;
 
 namespace RocketLib.UMM
 {
-    public class Main
+    internal static class Main
     {
         public static bool Enabled;
         public static Harmony harmony;

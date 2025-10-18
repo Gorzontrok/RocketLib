@@ -7,7 +7,7 @@ using UnityModManagerNet;
 
 namespace RocketLib.UMM
 {
-    public static class ModUI
+    internal static class ModUI
     {
         public const int KEYBIND_WINDOW_ID = -1;
         private static Settings settings

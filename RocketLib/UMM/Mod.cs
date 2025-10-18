@@ -1,6 +1,6 @@
 ﻿namespace RocketLib.UMM
 {
-    public static class Mod
+    internal static class Mod
     {
         public static Settings Setting
         {
