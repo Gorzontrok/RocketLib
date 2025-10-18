@@ -1,7 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <BroforcePath>C:\Program Files (x86)\Steam\steamapps\common\Broforce\</BroforcePath>
-    <CloseBroforceOnBuild>true</CloseBroforceOnBuild>
-    <LaunchBroforceOnBuild>false</LaunchBroforceOnBuild>
-  </PropertyGroup>
-</Project>
