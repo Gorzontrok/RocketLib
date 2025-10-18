@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using HarmonyLib;
 
 namespace RocketLib
@@ -8,11 +9,19 @@ namespace RocketLib
     /// </summary>
     public class GamePassword
     {
+        public const string THE_LONG_ONE = "IThinkPuttingMyTesticalsInSomeoneElseFaceWithoutTheirConsentIsOkay";
+        public const string ALASKAN_PIPELINE = "alaskanpipeline";
+        public const string SEAGULL = "seagull";
+        public const string MR_ANDERBRO = "mranderbro";
+        public const string ABRAHAM_LINCOLN = "abrahamlincoln";
+        public const string SMOKING_GUN = "smokinggun";
+        public const string I_LOVE_AMERICA = "iloveamerica";
+
         public static GamePassword[] Passwords
         {
-            get { return _passwords; }
+            get { return _passwords.ToArray(); }
         }
-        private static readonly GamePassword[] _passwords = new GamePassword[0];
+        private static List<GamePassword> _passwords = new List<GamePassword>();
 
         public readonly string password = string.Empty;
         public readonly Action action;
@@ -40,7 +49,8 @@ namespace RocketLib
 
         private static void AddPassword(GamePassword password)
         {
-            _passwords.Append(password);
+            _passwords.Add(password);
+            RocketMain.Logger.Debug("added password");
         }
     }
 
