@@ -5,6 +5,7 @@ using UnityModManagerNet;
 using RocketLib.Loggers;
 using RocketLib.Menus.Core;
 using RocketLib.Menus.Tests;
+using RocketLib.UMM;
 
 namespace RocketLib
 {
@@ -16,6 +17,11 @@ namespace RocketLib
         /// Is RocketLib loaded
         /// </summary>
         public static bool Loaded { get; private set; } = false;
+
+        /// <summary>
+        /// RocketLib settings
+        /// </summary>
+        public static Settings settings => Main.settings;
 
         internal static ILogger Logger;
 

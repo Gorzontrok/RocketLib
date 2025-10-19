@@ -47,7 +47,7 @@ namespace RocketLib.Loggers
         private static ScreenLogger instance;
         //public static int fontSize = 13;
 
-        internal static bool Load()
+        public static bool Load()
         {
             if (IsLoaded) 
                 return true;
