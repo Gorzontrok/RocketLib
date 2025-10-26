@@ -1,9 +1,0 @@
-<!-- Copy this file and rename it to LocalBroforcePath.props to be able to build the solution -->
-<Project>
-  <PropertyGroup>
-    <BroforcePath>C:\Program Files (x86)\Steam\steamapps\common\Broforce\</BroforcePath>
-    <LibPath>..\..\Mods-Broforce\lib</LibPath>
-    <CloseBroforceOnBuild>true</CloseBroforceOnBuild>
-    <LaunchBroforceOnBuild>true</LaunchBroforceOnBuild>
-  </PropertyGroup>
-</Project>

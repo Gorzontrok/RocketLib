@@ -402,4 +402,4 @@ FodyWeavers.xsd
 
 
 LocalBroforcePath.props
-RocketLib/_Mod/RocketLib.dll
+RocketLib/**/RocketLib.dll

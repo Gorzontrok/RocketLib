@@ -4,86 +4,6 @@
         <name>RocketLib</name>
     </assembly>
     <members>
-        <member name="T:RocketLib.BroforceMod">
-            <summary>
-            Class
-            </summary>
-        </member>
-        <member name="P:RocketLib.BroforceMod.ID">
-            <summary>
-            The ID of the mod.
-            </summary>
-        </member>
-        <member name="F:RocketLib.BroforceMod.__mod">
-            <summary>
-            The Unity mod of the class.
-            </summary>
-        </member>
-        <member name="F:RocketLib.BroforceMod.__ID">
-            <summary>
-            The ID of the mod.
-            </summary>
-        </member>
-        <member name="P:RocketLib.BroforceMod.Loaded">
-            <summary>
-            Is the mod is successful load.
-            </summary>
-        </member>
-        <member name="P:RocketLib.BroforceMod.logger">
-            <summary>
-            Here you access Logger method.
-            </summary>
-        </member>
-        <member name="F:RocketLib.BroforceMod.OnExitGame">
-            <summary>
-            Call when exiting game.
-            </summary>
-        </member>
-        <member name="F:RocketLib.BroforceMod.OnLevelFinished">
-            <summary>
-            Call when a level is finished.
-            </summary>
-        </member>
-        <member name="F:RocketLib.BroforceMod.OnAfterLoadMods">
-            <summary>
-            Call when all mod are loaded.
-            </summary>
-        </member>
-        <member name="M:RocketLib.BroforceMod.#ctor">
-            <summary>
-            Create the mod.
-            </summary>
-        </member>
-        <member name="M:RocketLib.BroforceMod.#ctor(UnityModManagerNet.UnityModManager.ModEntry)">
-            <summary>
-            Create the mod.
-            </summary>
-            <param name="mod"></param>
-        </member>
-        <member name="M:RocketLib.BroforceMod.Load(UnityModManagerNet.UnityModManager.ModEntry)">
-            <summary>
-            Function to call for loading the mod.
-            </summary>
-            <param name="mod">UnityModManager mod</param>
-        </member>
-        <member name="M:RocketLib.BroforceMod.OnUpdate">
-            <summary>
-            The Update function. Call it in Main.OnUpdate.
-            </summary>
-        </member>
-        <member name="M:RocketLib.BroforceMod.Log(System.Object,RLogType,System.Boolean)">
-            <summary>
-            Faster method to write log.
-            </summary>
-            <param name="Message"></param>
-            <param name="LogType"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="T:RocketLib.BroforceModController">
-             <summary>
-            
-             </summary>
-        </member>
         <member name="P:RocketLib.Collections.Heroes.Playables">
             <summary>
             All playable heroes. (read only)
@@ -130,6 +50,59 @@
             Prints the values that have been changed in this object from the default values for the Projectile class.
             </summary>
             <param name="projectile">Object to compare to the default projectile.</param>
+        </member>
+        <member name="T:RocketLib.Loggers.ScreenLogger">
+            <summary>
+            On screen logger.
+            </summary>
+        </member>
+        <member name="P:RocketLib.Loggers.ScreenLogger.Instance">
+            <summary>
+            Instance of ScreenLogger
+            </summary>
+        </member>
+        <member name="P:RocketLib.Loggers.ScreenLogger.IsLoaded">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:RocketLib.Loggers.ScreenLogger.FullLogList">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:RocketLib.Loggers.ScreenLogger.Clear">
+            <summary>
+            Clear the log on screen.
+            </summary>
+        </member>
+        <member name="M:RocketLib.Loggers.ScreenLogger.Log(System.Object,RLogType)">
+            <summary>
+            Add log to the screen.
+            </summary>
+            <param name="str">Log Message</param>
+            <param name="type">RLogType</param>
+        </member>
+        <member name="M:RocketLib.Loggers.ScreenLogger.Log(System.Object,System.String)">
+            <summary>
+            Add log to the screen. (BroforceMod edition)
+            </summary>
+            <param name="str">Log Message</param>
+            <param name="prefix">Prefix of the log</param>
+        </member>
+        <member name="M:RocketLib.Loggers.ScreenLogger.WhichColor(System.String)">
+            <summary>
+            </summary>
+            <param name="LogMsg"></param>
+            <returns></returns>
+        </member>
+        <member name="P:RocketLib.RocketMain.Loaded">
+            <summary>
+            Is RocketLib loaded
+            </summary>
+        </member>
+        <member name="P:RocketLib.RocketMain.settings">
+            <summary>
+            RocketLib settings
+            </summary>
         </member>
         <member name="M:RocketLib.Utils.DrawDebug.DrawLine(System.String,UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Color,System.Single)">
             <summary>
@@ -704,6 +677,11 @@
             <typeparam name="T">The component type.</typeparam>
             <param name="self"></param>
         </member>
+        <member name="M:RocketLib.GameObjectExtensions.SetParentAndResetScale(UnityEngine.Transform,UnityEngine.Transform,System.Nullable{UnityEngine.Vector3})">
+            <summary>
+            Sets the parent and resets localScale to Vector3.one to prevent inheriting parent's scale.
+            </summary>
+        </member>
         <member name="M:RocketLib.StringExtensions.Dye(System.String,UnityEngine.Color)">
             <summary>
             Surround string with xml "color" tag
@@ -912,293 +890,6 @@
             <param name="Space"></param>
             <param name="TabWidth"></param>
             <returns></returns>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.ID">
-            <summary>
-            The ID of the mod.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.Loaded">
-            <summary>
-            Is the mod is successful load.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.HasStartLog">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.TimeNow">
-            <summary>
-            the current time.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.UseDebugLog">
-            <summary>
-            Show debug log.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.UseLocalLog">
-            <summary>
-            Write log locally.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.LogFilePath">
-            <summary>
-            Path of the file with the mod log.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.Prefix">
-            <summary>
-            Normal prefix.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.PrefixException">
-            <summary>
-            Exception prefix.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.PrefixInformation">
-            <summary>
-            Information prefix.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.PrefixWarning">
-            <summary>
-            Warning prefix.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.PrefixError">
-            <summary>
-            Error Prefix.
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.Logger.PrefixDebug">
-            <summary>
-            Debug prefix.
-            </summary>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.#ctor(UnityModManagerNet.UnityModManager.ModEntry)">
-             <summary>
-            
-             </summary>
-             <param name="mod"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.OnUpdate">
-            <summary>
-            The Update function. Call it in Main.OnUpdate.
-            </summary>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.StartLog">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.Log(System.Collections.Generic.IEnumerable{System.Object},RLogType,System.Boolean)">
-            <summary>
-            Write Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="LogType"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.Log(System.Exception,System.Boolean)">
-            <summary>
-            Write Exception Log.
-            </summary>
-            <param name="exception"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.Log(System.String,System.Exception,System.Boolean)">
-            <summary>
-            Write Exception Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="exception"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.Log(System.Object,RLogType,System.Boolean)">
-            <summary>
-            Write log.
-            </summary>
-            <param name="Message"></param>
-            <param name="LogType"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ExceptionLog(System.Exception,System.Boolean)">
-            <summary>
-            Write Exception Log.
-            </summary>
-            <param name="exception"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ExceptionLog(System.String,System.Exception,System.Boolean)">
-            <summary>
-            Write Exception Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="exception"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ExceptionLog(System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
-            <summary>
-            Write Exception Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ExceptionLog(System.Object,System.Boolean)">
-            <summary>
-            Write Exception Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.WarningLog(System.Object,System.Boolean)">
-            <summary>
-            Write Warning Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.WarningLog(System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
-            <summary>
-            Write Warning Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.InformationLog(System.Object,System.Boolean)">
-            <summary>
-            Write information Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.InformationLog(System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
-            <summary>
-            Write information Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ErrorLog(System.Object,System.Boolean)">
-            <summary>
-            Write Error Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ErrorLog(System.Collections.Generic.IEnumerable{System.Object},System.Boolean)">
-            <summary>
-            Write Error Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ErrorLog(System.Exception,System.Boolean)">
-            <summary>
-            Write Error Log.
-            </summary>
-            <param name="exception"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ErrorLog(System.String,System.Exception,System.Boolean)">
-            <summary>
-            Write Error Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="exception"></param>
-            <param name="Debug"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.DebugLog(System.Object,RLogType)">
-            <summary>
-            Write log only in debug mode.
-            </summary>
-            <param name="Message"></param>
-            <param name="LogType"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.DebugLog(System.Collections.Generic.IEnumerable{System.Object},RLogType)">
-            <summary>
-            Write log only in debug mode.
-            </summary>
-            <param name="Message"></param>
-            <param name="LogType"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.DebugLog(System.Exception,RLogType)">
-            <summary>
-            Write Exception Debug Log.
-            </summary>
-            <param name="exception"></param>
-            <param name="LogType"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.DebugLog(System.String,System.Exception,RLogType)">
-            <summary>
-            Write Exception Debug Log.
-            </summary>
-            <param name="Message"></param>
-            <param name="exception"></param>
-            <param name="LogType"></param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.WriteLogLocally(System.String,System.String)">
-            <summary>
-            Write log in the current mod folder.
-            </summary>
-            <param name="Message">Message to write in the log.</param>
-            <param name="prefix">The prefix</param>
-        </member>
-        <member name="M:RocketLib.Loggers.Logger.ClearFileLog">
-            <summary>
-            Delete all lines in the log file.
-            </summary>
-        </member>
-        <member name="T:RocketLib.Loggers.ScreenLogger">
-            <summary>
-            On screen logger.
-            </summary>
-        </member>
-        <member name="P:RocketLib.Loggers.ScreenLogger.Instance">
-            <summary>
-            Instance of ScreenLogger
-            </summary>
-        </member>
-        <member name="P:RocketLib.Loggers.ScreenLogger.IsLoaded">
-            <summary>
-            </summary>
-        </member>
-        <member name="F:RocketLib.Loggers.ScreenLogger.FullLogList">
-            <summary>
-            </summary>
-        </member>
-        <member name="M:RocketLib.Loggers.ScreenLogger.Clear">
-            <summary>
-            Clear the log on screen.
-            </summary>
-        </member>
-        <member name="M:RocketLib.Loggers.ScreenLogger.Log(System.Object,RLogType)">
-            <summary>
-            Add log to the screen.
-            </summary>
-            <param name="str">Log Message</param>
-            <param name="type">RLogType</param>
-        </member>
-        <member name="M:RocketLib.Loggers.ScreenLogger.Log(System.Object,System.String)">
-            <summary>
-            Add log to the screen. (BroforceMod edition)
-            </summary>
-            <param name="str">Log Message</param>
-            <param name="prefix">Prefix of the log</param>
-        </member>
-        <member name="M:RocketLib.Loggers.ScreenLogger.WhichColor(System.String)">
-            <summary>
-            </summary>
-            <param name="LogMsg"></param>
-            <returns></returns>
-        </member>
-        <member name="P:RocketLib.Main.Loaded">
-            <summary>
-            Is RocketLib is Loaded
-            </summary>
         </member>
         <member name="T:RocketLib.Menus.Vanilla.BaseCustomMenu">
             <summary>
@@ -1718,6 +1409,41 @@
         <member name="T:RocketLib.Menus.Elements.BroCard">
             <summary>
             UI element for displaying a bro in card format for grid view selection
+            </summary>
+        </member>
+        <member name="F:RocketLib.UMM.ModSave.gesture0">
+            <summary>
+            Military Salute
+            </summary>
+        </member>
+        <member name="F:RocketLib.UMM.ModSave.gesture1">
+            <summary>
+            Waving
+            </summary>
+        </member>
+        <member name="F:RocketLib.UMM.ModSave.gesture2">
+            <summary>
+            Point Direction
+            </summary>
+        </member>
+        <member name="F:RocketLib.UMM.ModSave.gesture3">
+            <summary>
+            Thrust
+            </summary>
+        </member>
+        <member name="F:RocketLib.UMM.ModSave.gesture4">
+            <summary>
+            Knee Drop
+            </summary>
+        </member>
+        <member name="F:RocketLib.UMM.ModSave.gesture5">
+            <summary>
+            Shhh
+            </summary>
+        </member>
+        <member name="F:RocketLib.UMM.ModSave.gesture6">
+            <summary>
+            Sing (Unused)
             </summary>
         </member>
         <member name="T:DictionarySerializationExtensions">

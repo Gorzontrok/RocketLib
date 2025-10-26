@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\LocalBroforcePath.props" Condition="Exists('..\LocalBroforcePath.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>\_Mod\RocketLib.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\RocketLib.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -197,28 +196,16 @@
     <Compile Include="UMM\DoNotDestroyUMMPatches.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="_Mod\Changelog - RocketLib.txt" />
-    <Content Include="_Mod\Changelog.txt" />
+    <Content Include="_ModContent\Changelog - RocketLib.txt" />
+    <Content Include="_ModContent\Changelog.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="_Mod\Info.json" />
+    <None Include="_ModContent\Info.json" />
   </ItemGroup>
   <ItemGroup />
+  <PropertyGroup>
+    <CopyXmlDocToModContent>true</CopyXmlDocToModContent>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>XCOPY /Y /R "$(TargetPath)" "$(ProjectDir)\_Mod\$(ProjectName).dll*"
-XCOPY /Y /I "$(ProjectDir)\_Mod\*.*" "$(BroforcePath)\Mods\RocketLib\"
-XCOPY /Y /I "$(ProjectDir)\_Mod\Resources\*.*" "$(BroforcePath)\Mods\RocketLib\Resources\"
-XCOPY /Y /R "$(TargetPath)" "..\..\..\..\Bro-Maker\lib\$(ProjectName).dll*"
-del "$(BroforcePath)\Mods\RocketLib\*.cache" 2&gt; nul || set errorlevel=0
-if "$(LaunchBroforceOnBuild)" == "true" (
-start steam://rungameid/274190)</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>if "$(CloseBroforceOnBuild)" == "true" (
-    taskkill /f /t /im Broforce_beta.exe 2&gt;nul || exit /b 0
-)
-XCOPY /Y /I "$(ProjectDir)\_Mod\*.*" "$(BroforcePath)\Mods\RocketLib\"</PreBuildEvent>
-    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-  </PropertyGroup>
+  <Import Project="..\Scripts\BroforceModBuild.targets" />
 </Project>
