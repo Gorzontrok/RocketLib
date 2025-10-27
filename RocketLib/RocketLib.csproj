@@ -208,4 +208,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Scripts\BroforceModBuild.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY /Y /R "$(TargetPath)" "..\..\..\..\Bro-Maker\lib\$(ProjectName).dll*"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

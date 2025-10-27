@@ -50,6 +50,7 @@ namespace RocketLib.Menus.Core
 
         private Coroutine transitionCoroutine;
         private Shake shakeComponent;
+        private bool skipNextTransition = false;
 
         private System.Collections.IEnumerator TransitionInRoutine()
         {
@@ -262,7 +263,7 @@ namespace RocketLib.Menus.Core
             }
 
             // If transitions are enabled, start the zoom-in animation
-            if (EnableTransition)
+            if (EnableTransition && !skipNextTransition)
             {
                 if (transitionCoroutine != null)
                 {
@@ -289,6 +290,8 @@ namespace RocketLib.Menus.Core
                     highlight.SetBoundsImmediate(bounds);
                 }
             }
+
+            skipNextTransition = false;
         }
 
         protected virtual void OnDisable()
@@ -485,8 +488,11 @@ namespace RocketLib.Menus.Core
 
             if (parentFlexMenu != null)
             {
-                parentFlexMenu.gameObject.SetActive(true);
-                activeMenu = parentFlexMenu;
+                Show(parentFlexMenu.GetType(),
+                     parentFlex: parentFlexMenu.parentFlexMenu,
+                     parentGame: parentFlexMenu.parentGameMenu,
+                     instanceId: parentFlexMenu.InstanceId,
+                     skipTransition: true);
                 gameObject.SetActive(false);
             }
             else if (parentGameMenu != null)
@@ -696,7 +702,7 @@ namespace RocketLib.Menus.Core
             return Show(returnTargetMenuType, null, MainMenu.instance, returnTargetMenuInstanceId);
         }
 
-        public static FlexMenu Show(System.Type menuType, FlexMenu parentFlex = null, Menu parentGame = null, string instanceId = "default")
+        public static FlexMenu Show(System.Type menuType, FlexMenu parentFlex = null, Menu parentGame = null, string instanceId = "default", bool skipTransition = false)
         {
             if (!typeof(FlexMenu).IsAssignableFrom(menuType))
             {
@@ -732,6 +738,7 @@ namespace RocketLib.Menus.Core
                     activeMenu.gameObject.SetActive(false);
                 }
 
+                existing.skipNextTransition = skipTransition;
                 existing.gameObject.SetActive(true);
                 activeMenu = existing;
 
@@ -762,15 +769,16 @@ namespace RocketLib.Menus.Core
                 activeMenu.gameObject.SetActive(false);
             }
 
+            newMenu.skipNextTransition = skipTransition;
             newMenu.gameObject.SetActive(true);
             activeMenu = newMenu;
 
             return newMenu;
         }
 
-        public static T Show<T>(FlexMenu parentFlex = null, Menu parentGame = null, string instanceId = "default") where T : FlexMenu
+        public static T Show<T>(FlexMenu parentFlex = null, Menu parentGame = null, string instanceId = "default", bool skipTransition = false) where T : FlexMenu
         {
-            return Show(typeof(T), parentFlex, parentGame, instanceId) as T;
+            return Show(typeof(T), parentFlex, parentGame, instanceId, skipTransition) as T;
         }
     }
 }
