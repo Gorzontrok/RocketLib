@@ -412,6 +412,7 @@ namespace RocketLib.Menus.Core
 
             if (declineJustPressed)
             {
+                NavigationManager.PlayActionSound();
                 GoBack();
             }
 

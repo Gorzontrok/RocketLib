@@ -79,7 +79,7 @@ namespace RocketLib.Utils
             {
                 result = CreateMaterial(filePath, Unlit_DepthCutout);
             }
-            else if (filePath.Contains(":"))
+            else if (filePath.Contains(":") && filePath[1] != ':')
             {
                 result = LoadAssetSync<Material>(filePath);
             }
@@ -186,7 +186,7 @@ namespace RocketLib.Utils
             {
                 tex = CreateTexture(filePath);
             }
-            else if (filePath.Contains(":"))
+            else if (filePath.Contains(":") && filePath[1] != ':')
             {
                 try
                 {
@@ -281,7 +281,7 @@ namespace RocketLib.Utils
             {
                 result = CreateAudioClip(filePath);
             }
-            else if (filePath.Contains(":"))
+            else if (filePath.Contains(":") && filePath[1] != ':')
             {
                 result = LoadAssetSync<AudioClip>(filePath);
             }
@@ -295,6 +295,27 @@ namespace RocketLib.Utils
                 audioClips.Add(filePath, result);
             }
             return result;
+        }
+
+        /// <summary>
+        /// Loads an array of audio clips that follow a standard numbering pattern,
+        /// such as "file0.wav", "file1.wav", "file2.wav"
+        /// </summary>
+        /// <param name="path">Path to the directory that contains the audio files</param>
+        /// <param name="fileNameWithoutExtension">Filename of the audio files without the extension</param>
+        /// <param name="length">Number of files to load</param>
+        /// <param name="startingNumber">Number of the first audio clip, defaults to 0</param>
+        /// <param name="extension">Extension of the audio files, defaults to .wav</param>
+        /// <returns></returns>
+        public static AudioClip[] GetAudioClipArray(string path, string fileNameWithoutExtension, int length, int startingNumber = 0, string extension = ".wav")
+        {
+            AudioClip[] clips = new AudioClip[length];
+            for (int i = 0 + startingNumber; i < length + startingNumber; ++i)
+            {
+                clips[i - startingNumber] = GetAudioClip(path, fileNameWithoutExtension + i + extension);
+            }
+
+            return clips;
         }
 
         /// <summary>
@@ -313,21 +334,29 @@ namespace RocketLib.Utils
         /// <summary>
         /// Creates an AudioClip from an audio file.
         /// The AudioClip is not cached, use GetAudioClip is caching is desired.
+        /// IMPORTANT: MP3 files will not load.
         /// </summary>
         /// <param name="filePath">Path to an audio file</param>
         /// <returns></returns>
         public static AudioClip CreateAudioClip(string filePath)
         {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("File not found", filePath);
+
             WWW getClip = new WWW("file:////" + filePath);
 
             while (!getClip.isDone)
             {
             }
-            ;
 
+            if (getClip.error != null)
+                RocketMain.Logger.Error(getClip.error);
 
-            AudioClip result = getClip.GetAudioClip(false, true);
-            result.name = Path.GetFileNameWithoutExtension(filePath);
+            AudioClip result = getClip.GetAudioClip(false, false);
+            if (result != null)
+                result.name = Path.GetFileNameWithoutExtension(filePath);
+            else
+                RocketMain.Logger.Error("Failed to load AudioClip from: " + filePath);
 
             return result;
         }

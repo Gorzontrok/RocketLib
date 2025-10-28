@@ -7,6 +7,9 @@ namespace RocketLib.Menus.Core
 {
     public class NavigationManager
     {
+        private static AudioClip[] drumSounds;
+        private static bool soundsLoaded = false;
+
         private LayoutElement rootElement;
         private LayoutElement focusedElement;
         private List<LayoutElement> focusableElements;
@@ -29,6 +32,19 @@ namespace RocketLib.Menus.Core
             rootElement = root;
             wrapNavigation = true;
             RefreshFocusableElements();
+            LoadSounds();
+        }
+
+        private static void LoadSounds()
+        {
+            if (soundsLoaded) return;
+
+            drumSounds = new AudioClip[2];
+            string directoryPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string resourcesPath = System.IO.Path.Combine(directoryPath, "Resources");
+            drumSounds[0] = Utils.ResourcesController.GetAudioClip(resourcesPath, "Drums1.wav");
+            drumSounds[1] = Utils.ResourcesController.GetAudioClip(resourcesPath, "Drums2.wav");
+            soundsLoaded = true;
         }
 
         public void RefreshFocusableElements()
@@ -104,6 +120,7 @@ namespace RocketLib.Menus.Core
             if (focusedElement != null)
             {
                 focusedElement.OnFocusGained();
+                PlayNavigationSound();
             }
         }
 
@@ -139,6 +156,7 @@ namespace RocketLib.Menus.Core
             else if (activate && focusedElement != null)
             {
                 focusedElement.OnActivated();
+                PlayActionSound();
                 handled = true;
             }
 
@@ -282,6 +300,28 @@ namespace RocketLib.Menus.Core
             SetFocus(null);
             focusableElements = null;
             rootElement = null;
+        }
+
+        private static void PlayNavigationSound()
+        {
+            if (drumSounds == null || drumSounds[0] == null) return;
+
+            Sound soundInstance = Sound.GetInstance();
+            if (soundInstance != null)
+            {
+                soundInstance.PlaySoundEffect(drumSounds[0], 0.25f);
+            }
+        }
+
+        public static void PlayActionSound()
+        {
+            if (drumSounds == null || drumSounds[1] == null) return;
+
+            Sound soundInstance = Sound.GetInstance();
+            if (soundInstance != null)
+            {
+                soundInstance.PlaySoundEffect(drumSounds[1], 0.25f, UnityEngine.Random.Range(0.95f, 1.1f));
+            }
         }
     }
 }
