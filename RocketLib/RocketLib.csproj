@@ -194,6 +194,7 @@
     <Compile Include="UMM\ModSave.cs" />
     <Compile Include="UMM\ModUI.cs" />
     <Compile Include="UMM\DoNotDestroyUMMPatches.cs" />
+    <Compile Include="UMM\WindowScaling.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="_ModContent\Changelog - RocketLib.txt" />
