@@ -8,12 +8,47 @@ using static RocketLib.CustomTriggers.CustomTriggerPatches;
 
 namespace RocketLib.CustomTriggers
 {
+    /// <summary>
+    /// Manages registration and lifecycle of custom triggers for the Broforce level editor.
+    /// </summary>
+    /// <remarks>
+    /// This class handles trigger registration, serialization, and integration with the level editor.
+    /// Modders should only need to call RegisterCustomTrigger to add new trigger types.
+    /// </remarks>
     public class CustomTriggerManager
     {
+        /// <summary>
+        /// List of all registered custom triggers, sorted by tag, priority (descending), and action name.
+        /// </summary>
         public static List<CustomTrigger> CustomTriggers = new List<CustomTrigger>();
         static TriggerActionInfo currentAction;
         static string currentActionName;
 
+        /// <summary>
+        /// Registers a new custom trigger type with the level editor.
+        /// Call this during mod initialization, before any levels are loaded.
+        /// </summary>
+        /// <param name="customTriggerActionType">
+        /// The Type of your CustomTriggerAction class (e.g., typeof(MyTriggerAction)).
+        /// Must inherit from CustomTriggerAction or LevelStartTriggerAction.
+        /// </param>
+        /// <param name="customTriggerActionInfoType">
+        /// The Type of your CustomTriggerActionInfo class (e.g., typeof(MyTriggerActionInfo)).
+        /// Must inherit from CustomTriggerActionInfo or LevelStartTriggerActionInfo.
+        /// </param>
+        /// <param name="actionName">
+        /// Display name for the trigger in the level editor (e.g., "My Mod - Spawn Item").
+        /// Must be unique across all registered triggers.
+        /// </param>
+        /// <param name="tag">
+        /// Category tag for grouping triggers in the menu (e.g., "Custom Bros", "My Mod").
+        /// Triggers with the same tag are grouped together.
+        /// </param>
+        /// <param name="priority">
+        /// Sort priority within the same tag. Higher values appear first. Default is 0.
+        /// Use higher priority for frequently-used triggers.
+        /// </param>
+        /// <exception cref="Exception">Thrown if a trigger with the same actionName is already registered.</exception>
         public static void RegisterCustomTrigger(Type customTriggerActionType, Type customTriggerActionInfoType, string actionName, string tag, int priority = 0)
         {
             if (CustomTriggers.Any(t => t.ActionName == actionName))
