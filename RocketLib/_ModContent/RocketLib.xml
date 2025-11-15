@@ -39,6 +39,245 @@
             The original array of hero save number interval. (read only)
             </summary>
         </member>
+        <member name="T:RocketLib.CustomTriggers.CustomTriggerAction`1">
+            <summary>
+            Base class for custom trigger action runtime behavior.
+            Extend this class to create the "Action" portion of a custom trigger, which implements
+            the runtime execution logic when the trigger is activated.
+            </summary>
+            <typeparam name="TInfo">The CustomTriggerActionInfo type that contains configuration for this action.</typeparam>
+            <remarks>
+            Override Start() for initialization and Update() for per-frame logic.
+            Set this.state to TriggerActionState.Done when execution is complete.
+            Access configuration via the strongly-typed 'info' field.
+            </remarks>
+        </member>
+        <member name="F:RocketLib.CustomTriggers.CustomTriggerAction`1.info">
+            <summary>
+            Strongly-typed reference to the configuration data for this trigger action.
+            </summary>
+        </member>
+        <member name="P:RocketLib.CustomTriggers.CustomTriggerAction`1.Info">
+            <summary>
+            Gets or sets the trigger action configuration.
+            </summary>
+        </member>
+        <member name="T:RocketLib.CustomTriggers.CustomTriggerActionInfo">
+            <summary>
+            Base class for custom trigger action configuration data.
+            Extend this class to create the "Info" portion of a custom trigger, which stores configuration
+            and provides the level editor GUI.
+            </summary>
+            <remarks>
+            This class is serialized to level files. All public fields will be saved and loaded.
+            Override ShowGUI to provide configuration options in the level editor.
+            </remarks>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerActionInfo.ShowGridPointOption(LevelEditorGUI,GridPoint,System.String)">
+            <summary>
+            Displays a button in the level editor GUI that allows setting a GridPoint by clicking on the map.
+            </summary>
+            <param name="gui">The LevelEditorGUI instance (passed from ShowGUI).</param>
+            <param name="point">The GridPoint to set. This will be modified when the user clicks on the map.</param>
+            <param name="label">The label text for the button (e.g., "Set Spawn Point").</param>
+            <remarks>
+            Call this from your ShowGUI override to allow users to select grid coordinates visually.
+            The button shows the current column and row, and clicking it allows the user to click on the map to set a new position.
+            </remarks>
+        </member>
+        <member name="T:RocketLib.CustomTriggers.CustomTriggerManager">
+            <summary>
+            Manages registration and lifecycle of custom triggers for the Broforce level editor.
+            </summary>
+            <remarks>
+            This class handles trigger registration, serialization, and integration with the level editor.
+            Modders should only need to call RegisterCustomTrigger to add new trigger types.
+            </remarks>
+        </member>
+        <member name="F:RocketLib.CustomTriggers.CustomTriggerManager.CustomTriggers">
+            <summary>
+            List of all registered custom triggers, sorted by tag, priority (descending), and action name.
+            </summary>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerManager.RegisterCustomTrigger(System.Type,System.Type,System.String,System.String,System.Int32)">
+            <summary>
+            Registers a new custom trigger type with the level editor.
+            Call this during mod initialization, before any levels are loaded.
+            </summary>
+            <param name="customTriggerActionType">
+            The Type of your CustomTriggerAction class (e.g., typeof(MyTriggerAction)).
+            Must inherit from CustomTriggerAction or LevelStartTriggerAction.
+            </param>
+            <param name="customTriggerActionInfoType">
+            The Type of your CustomTriggerActionInfo class (e.g., typeof(MyTriggerActionInfo)).
+            Must inherit from CustomTriggerActionInfo or LevelStartTriggerActionInfo.
+            </param>
+            <param name="actionName">
+            Display name for the trigger in the level editor (e.g., "My Mod - Spawn Item").
+            Must be unique across all registered triggers.
+            </param>
+            <param name="tag">
+            Category tag for grouping triggers in the menu (e.g., "Custom Bros", "My Mod").
+            Triggers with the same tag are grouped together.
+            </param>
+            <param name="priority">
+            Sort priority within the same tag. Higher values appear first. Default is 0.
+            Use higher priority for frequently-used triggers.
+            </param>
+            <exception cref="T:System.Exception">Thrown if a trigger with the same actionName is already registered.</exception>
+        </member>
+        <member name="T:RocketLib.CustomTriggers.CustomTriggerStateManager">
+            <summary>
+            Manages persistent state across trigger executions and level lifecycle.
+            Provides a simple key-value store that survives across trigger activations and level restarts.
+            </summary>
+            <remarks>
+            <para>
+            This manager uses a staging pattern to ensure proper initialization order during level start:
+            </para>
+            <list type="bullet">
+            <item><description>SetForLevelStart: Stages values to be applied later in the current level start sequence (after all triggers execute)</description></item>
+            <item><description>SetDuringLevel: Applies values immediately to the current level session</description></item>
+            </list>
+            <para>
+            Use SetForLevelStart in level-start triggers (when isLevelStart=true) and SetDuringLevel
+            when the trigger is activated mid-level (when isLevelStart=false).
+            </para>
+            </remarks>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerStateManager.Get``1(System.String,``0)">
+            <summary>
+            Retrieves a value from the current level state.
+            </summary>
+            <typeparam name="T">The type of the value to retrieve.</typeparam>
+            <param name="key">The unique key for this value.</param>
+            <param name="defaultValue">The value to return if the key is not found. Default is default(T).</param>
+            <returns>The stored value if found, otherwise the default value.</returns>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerStateManager.SetForLevelStart``1(System.String,``0)">
+            <summary>
+            Stages a value to be applied later in the current level start initialization sequence.
+            Use this in level-start triggers (when isLevelStart=true in ExecuteAction).
+            </summary>
+            <typeparam name="T">The type of the value to store.</typeparam>
+            <param name="key">The unique key for this value.</param>
+            <param name="value">The value to store.</param>
+            <remarks>
+            <para>
+            The value is staged and will be applied to current state after all level-start triggers have executed.
+            This ensures your trigger's state is available to systems that initialize after trigger execution.
+            </para>
+            <para>
+            On level restarts, level-start triggers run again, re-staging their values, which ensures
+            state persists across restarts as long as the trigger continues to execute.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerStateManager.SetDuringLevel``1(System.String,``0)">
+            <summary>
+            Sets a value immediately in the current level session.
+            Use this when triggers are activated mid-level (when isLevelStart=false in ExecuteAction).
+            </summary>
+            <typeparam name="T">The type of the value to store.</typeparam>
+            <param name="key">The unique key for this value.</param>
+            <param name="value">The value to store.</param>
+            <remarks>
+            The value is applied immediately and will be available via Get() in the current level session.
+            This value will be lost when the level restarts unless also set via SetForLevelStart.
+            </remarks>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerStateManager.RegisterLevelStartAction(System.Action)">
+            <summary>
+            Registers a callback to execute when the level starts (including restarts).
+            </summary>
+            <param name="callback">The action to execute at level start.</param>
+            <remarks>
+            Callbacks are executed after staged state is applied to current state.
+            Exceptions in callbacks are caught and logged to prevent breaking level initialization.
+            </remarks>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerStateManager.RegisterLevelEndAction(System.Action)">
+            <summary>
+            Registers a callback to execute when the level ends.
+            </summary>
+            <param name="callback">The action to execute at level end.</param>
+            <remarks>
+            Callbacks are executed before state is cleared and staged state is applied.
+            Useful for cleanup or saving information before the level restarts.
+            Exceptions in callbacks are caught and logged.
+            </remarks>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.CustomTriggerStateManager.OnLevelStart">
+            <summary>
+            Internal method called by RocketLib when a level starts.
+            Handles the state lifecycle: end callbacks → clear current → apply staging → start callbacks.
+            </summary>
+        </member>
+        <member name="T:RocketLib.CustomTriggers.LevelStartTriggerActionInfo">
+            <summary>
+            Extended base class for custom trigger configuration that can run at level start.
+            Provides a "Run at level start" toggle in the level editor.
+            </summary>
+            <remarks>
+            Use this as your Info base class when creating triggers that should optionally execute
+            at level start instead of when triggered by connections.
+            Pair with LevelStartTriggerAction for the runtime behavior.
+            </remarks>
+        </member>
+        <member name="F:RocketLib.CustomTriggers.LevelStartTriggerActionInfo.RunAtLevelStart">
+            <summary>
+            When true, this trigger executes at level start. When false, executes when activated by trigger connections.
+            </summary>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.LevelStartTriggerActionInfo.ShowGUI(LevelEditorGUI)">
+            <summary>
+            Shows the "Run at level start" toggle in the level editor.
+            Override this and call base.ShowGUI(gui) to add additional configuration options.
+            </summary>
+            <param name="gui">The LevelEditorGUI instance.</param>
+        </member>
+        <member name="T:RocketLib.CustomTriggers.LevelStartTriggerAction`1">
+            <summary>
+            Simplified base class for custom triggers that can run at level start or when triggered.
+            Automatically handles state management and provides a single ExecuteAction method.
+            </summary>
+            <typeparam name="TInfo">The LevelStartTriggerActionInfo type that contains configuration for this action.</typeparam>
+            <remarks>
+            This class simplifies trigger implementation by:
+            - Automatically setting state to Done after execution
+            - Providing a single ExecuteAction method instead of Start/Update
+            - Handling level start vs trigger activation logic
+            Use this when your trigger performs a one-time action and doesn't need per-frame updates.
+            </remarks>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.LevelStartTriggerAction`1.ExecuteAction(System.Boolean)">
+            <summary>
+            Implement this method to define your trigger's behavior.
+            Called once when the trigger executes, either at level start or when triggered by connections.
+            </summary>
+            <param name="isLevelStart">
+            True if executing at level start (info.RunAtLevelStart was true).
+            False if executing due to trigger activation.
+            Use this to decide whether to use CustomTriggerStateManager.SetForLevelStart or SetDuringLevel.
+            </param>
+        </member>
+        <member name="P:RocketLib.CustomTriggers.LevelStartTriggerAction`1.Info">
+            <summary>
+            Gets or sets the trigger action configuration.
+            When set, executes the action immediately if RunAtLevelStart is true.
+            </summary>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.LevelStartTriggerAction`1.Start">
+            <summary>
+            Called when the trigger is activated by connections (not at level start).
+            Automatically sets state to Done after execution.
+            </summary>
+        </member>
+        <member name="M:RocketLib.CustomTriggers.LevelStartTriggerAction`1.Update">
+            <summary>
+            Not used by LevelStartTriggerAction. All logic is in ExecuteAction.
+            </summary>
+        </member>
         <member name="M:RocketLib.Extensions.GrenadeExtensions.CompareToDefaultGrenade(Grenade)">
             <summary>
             Prints the values that have been changed in this object from the default values for the Grenade class.
@@ -534,6 +773,18 @@
             <param name="filePath">Path to an audio file</param>
             <returns></returns>
         </member>
+        <member name="M:RocketLib.Utils.ResourcesController.GetAudioClipArray(System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            Loads an array of audio clips that follow a standard numbering pattern,
+            such as "file0.wav", "file1.wav", "file2.wav"
+            </summary>
+            <param name="path">Path to the directory that contains the audio files</param>
+            <param name="fileNameWithoutExtension">Filename of the audio files without the extension</param>
+            <param name="length">Number of files to load</param>
+            <param name="startingNumber">Number of the first audio clip, defaults to 0</param>
+            <param name="extension">Extension of the audio files, defaults to .wav</param>
+            <returns></returns>
+        </member>
         <member name="M:RocketLib.Utils.ResourcesController.CreateAudioClip(System.String,System.String)">
             <summary>
             Creates an AudioClip from an audio file.
@@ -547,6 +798,7 @@
             <summary>
             Creates an AudioClip from an audio file.
             The AudioClip is not cached, use GetAudioClip is caching is desired.
+            IMPORTANT: MP3 files will not load.
             </summary>
             <param name="filePath">Path to an audio file</param>
             <returns></returns>
@@ -1444,6 +1696,57 @@
         <member name="F:RocketLib.UMM.ModSave.gesture6">
             <summary>
             Sing (Unused)
+            </summary>
+        </member>
+        <member name="T:RocketLib.UMM.WindowScaling">
+            <summary>
+            Provides window width detection and UI scaling utilities for UnityModManager GUIs.
+            Handles the two-pass ImGui rendering correctly to avoid control count mismatch errors.
+            </summary>
+        </member>
+        <member name="P:RocketLib.UMM.WindowScaling.Enabled">
+            <summary>
+            Enable/disable scaling globally. Set this once per frame based on your mod's settings.
+            Defaults to true.
+            </summary>
+        </member>
+        <member name="M:RocketLib.UMM.WindowScaling.TryCaptureWidth">
+            <summary>
+            Captures the window width on the first frame. Call this at the start of your OnGUI method.
+            Returns true when ready to render UI, false when still detecting width.
+            </summary>
+            <returns>True if width has been captured and UI can be rendered</returns>
+        </member>
+        <member name="P:RocketLib.UMM.WindowScaling.WindowWidth">
+            <summary>
+            Gets the detected window width, or -1 if not yet captured.
+            </summary>
+        </member>
+        <member name="P:RocketLib.UMM.WindowScaling.ScaleFactor">
+            <summary>
+            Gets the scale factor based on baseline width (1200px).
+            Returns 1.0 if width hasn't been captured yet.
+            </summary>
+        </member>
+        <member name="M:RocketLib.UMM.WindowScaling.ScaledWidth(System.Single)">
+            <summary>
+            Creates a scaled width GUILayoutOption.
+            Uses the Enabled property to determine whether to apply scaling.
+            </summary>
+            <param name="width">The base width value (assumes 1200px baseline)</param>
+            <returns>GUILayoutOption for use with GUILayout methods</returns>
+        </member>
+        <member name="M:RocketLib.UMM.WindowScaling.ScaledSpace(System.Single)">
+            <summary>
+            Creates scaled horizontal space.
+            Uses the Enabled property to determine whether to apply scaling.
+            </summary>
+            <param name="width">The base space width (assumes 1200px baseline)</param>
+        </member>
+        <member name="M:RocketLib.UMM.WindowScaling.Reset">
+            <summary>
+            Resets the cached window width, forcing re-detection on next frame.
+            Useful for testing or if the window is resized.
             </summary>
         </member>
         <member name="T:DictionarySerializationExtensions">
