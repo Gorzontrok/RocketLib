@@ -112,7 +112,6 @@ namespace RocketLib.Menus.Elements
 
                 // Create spawn indicator
                 CreateSpawnIndicator();
-
             }
             catch (Exception)
             {
@@ -151,17 +150,17 @@ namespace RocketLib.Menus.Elements
                     avatarSprite.plane = SpriteBase.SPRITE_PLANE.XY;
                     avatarSprite.anchor = SpriteBase.ANCHOR_METHOD.MIDDLE_CENTER;
                     avatarSprite.offset = Vector3.zero;
-                    avatarSprite.width = avatarSize / 2.0f;
-                    avatarSprite.height = avatarSize;
 
                     // Set texture if available
                     if (AvatarTexture != null)
                     {
                         SetupAvatarTexture();
+                        avatarSprite.SetSize(avatarSize / 2.0f, avatarSize);
                     }
                     else if (AvatarMaterial != null)
                     {
                         avatarRenderer.material = AvatarMaterial;
+                        avatarSprite.SetSize(avatarSize, avatarSize);
                     }
                 }
             }
@@ -466,8 +465,7 @@ namespace RocketLib.Menus.Elements
             if (avatarGO != null && avatarSprite != null)
             {
                 float avatarSize = ActualSize.x * AVATAR_SIZE_RATIO;
-                avatarSprite.width = avatarSize;
-                avatarSprite.height = avatarSize;
+                avatarSprite.SetSize(avatarSize / 2.0f, avatarSize);
 
                 float avatarY = ActualSize.y * 0.15f;  // A bit higher in the card
                 float avatarX = 4f;  // Offset to the right for better visual centering
