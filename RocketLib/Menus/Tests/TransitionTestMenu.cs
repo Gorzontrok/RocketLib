@@ -10,7 +10,6 @@ namespace RocketLib.Menus.Tests
     /// </summary>
     public class TransitionTestMenu : FlexMenu
     {
-        private readonly TextElement titleText;
         private TextElement statusText;
         private ActionButton transitionToggle;
 

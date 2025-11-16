@@ -47,9 +47,9 @@ namespace RocketLib.UMM
         public static void MainGUI()
         {
             GUILayout.BeginVertical("box");
-            if ( settings.ShowLogOnScreen != (settings.ShowLogOnScreen = GUILayout.Toggle(settings.ShowLogOnScreen, "Enable OnScreenLog")) )
+            if (settings.ShowLogOnScreen != (settings.ShowLogOnScreen = GUILayout.Toggle(settings.ShowLogOnScreen, "Enable OnScreenLog")))
             {
-                if ( settings.ShowLogOnScreen )
+                if (settings.ShowLogOnScreen)
                 {
                     ScreenLogger.Load();
                 }

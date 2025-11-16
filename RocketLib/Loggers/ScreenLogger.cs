@@ -23,7 +23,7 @@ namespace RocketLib.Loggers
         {
             get
             {
-                if (!RocketMain.Loaded) 
+                if (!RocketMain.Loaded)
                     return null;
                 if (!IsLoaded && RocketMain.Loaded)
                     Load();
@@ -49,7 +49,7 @@ namespace RocketLib.Loggers
 
         public static bool Load()
         {
-            if (IsLoaded) 
+            if (IsLoaded)
                 return true;
 
             try
@@ -153,7 +153,7 @@ namespace RocketLib.Loggers
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F7)) 
+            if (Input.GetKeyDown(KeyCode.F7))
                 Clear();
 
             if (LogsOnScreen.Count > 0)
@@ -168,7 +168,7 @@ namespace RocketLib.Loggers
                     TimeRemaining = Main.settings.LogTimer;
                 }
             }
-            if (LogsOnScreen.Count > 30) 
+            if (LogsOnScreen.Count > 30)
                 LogsOnScreen.Remove(LogsOnScreen.First());
             CheckUMMLog();
             WriteLogTXT();
@@ -213,7 +213,7 @@ namespace RocketLib.Loggers
             {
                 return Color.green;
             }
-                
+
             return Color.white;
         }
 

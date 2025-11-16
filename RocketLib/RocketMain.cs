@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using UnityModManagerNet;
 using RocketLib.Loggers;
 using RocketLib.Menus.Core;
 using RocketLib.Menus.Tests;
 using RocketLib.UMM;
+using UnityModManagerNet;
 
 namespace RocketLib
 {

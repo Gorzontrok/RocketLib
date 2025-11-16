@@ -22,11 +22,11 @@ namespace RocketLib.CustomTriggers
     /// </remarks>
     public static class CustomTriggerStateManager
     {
-        private static Dictionary<string, object> currentState = new Dictionary<string, object>();
-        private static Dictionary<string, object> stagingState = new Dictionary<string, object>();
+        private static readonly Dictionary<string, object> currentState = new Dictionary<string, object>();
+        private static readonly Dictionary<string, object> stagingState = new Dictionary<string, object>();
 
-        private static List<Action> onLevelStartCallbacks = new List<Action>();
-        private static List<Action> onLevelEndCallbacks = new List<Action>();
+        private static readonly List<Action> onLevelStartCallbacks = new List<Action>();
+        private static readonly List<Action> onLevelEndCallbacks = new List<Action>();
 
         /// <summary>
         /// Retrieves a value from the current level state.
@@ -123,7 +123,7 @@ namespace RocketLib.CustomTriggers
                 }
                 catch (Exception ex)
                 {
-                   RocketMain.Logger.Log("Error in level end callback: " + ex.ToString());
+                    RocketMain.Logger.Log("Error in level end callback: " + ex.ToString());
                 }
             }
 
@@ -140,7 +140,7 @@ namespace RocketLib.CustomTriggers
                 }
                 catch (Exception ex)
                 {
-                   RocketMain.Logger.Log("Error in level start callback: " + ex.ToString());
+                    RocketMain.Logger.Log("Error in level start callback: " + ex.ToString());
                 }
             }
         }

@@ -62,7 +62,8 @@ namespace RocketLib.Menus.Tests
                     Text = $"OPTION {i}",
                     WidthMode = SizeMode.Fill,
                     HeightMode = SizeMode.Fill,
-                    OnClick = () => {
+                    OnClick = () =>
+                    {
                         RocketMain.Logger.Log($"Grid option {index} selected!");
                     }
                 };
@@ -77,7 +78,8 @@ namespace RocketLib.Menus.Tests
                 Width = 150f,
                 HeightMode = SizeMode.Fixed,
                 Height = 40f,
-                OnClick = () => {
+                OnClick = () =>
+                {
                     GoBack();
                 }
             };

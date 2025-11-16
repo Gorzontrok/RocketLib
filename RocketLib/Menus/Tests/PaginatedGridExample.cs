@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using RocketLib.Menus.Core;
 using RocketLib.Menus.Elements;
 using RocketLib.Menus.Layout;
-using System.Collections.Generic;
 
 namespace RocketLib.Menus.Tests
 {
@@ -90,7 +90,8 @@ namespace RocketLib.Menus.Tests
                     Text = $"ITEM {i}",
                     WidthMode = SizeMode.Fill,
                     HeightMode = SizeMode.Fill,
-                    OnClick = () => {
+                    OnClick = () =>
+                    {
                         RocketMain.Logger.Log($"Item {index} selected!");
                     }
                 };
@@ -110,7 +111,8 @@ namespace RocketLib.Menus.Tests
             };
             rootContainer.AddChild(pageIndicator);
 
-            paginatedGrid.OnPageChanged = (page) => {
+            paginatedGrid.OnPageChanged = (page) =>
+            {
                 pageIndicator.Text = $"Page {page + 1} of {paginatedGrid.TotalPages}";
                 RocketMain.Logger.Log($"Changed to page {page + 1}");
             };
@@ -123,7 +125,8 @@ namespace RocketLib.Menus.Tests
                 Width = 150f,
                 HeightMode = SizeMode.Fixed,
                 Height = 40f,
-                OnClick = () => {
+                OnClick = () =>
+                {
                     GoBack();
                 }
             };

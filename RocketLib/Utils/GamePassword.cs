@@ -21,7 +21,7 @@ namespace RocketLib
         {
             get { return _passwords.ToArray(); }
         }
-        private static List<GamePassword> _passwords = new List<GamePassword>();
+        private static readonly List<GamePassword> _passwords = new List<GamePassword>();
 
         public readonly string password = string.Empty;
         public readonly Action action;
