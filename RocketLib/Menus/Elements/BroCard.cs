@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using RocketLib.Menus.Layout;
 using RocketLib.Menus.Utilities;
+using RocketLib.Utils;
 using UnityEngine;
 
 namespace RocketLib.Menus.Elements
@@ -24,7 +26,6 @@ namespace RocketLib.Menus.Elements
         // Data properties
         public string BroName { get; set; }
         public Texture2D AvatarTexture { get; set; }
-        public Material AvatarMaterial { get; set; }
         public bool IsLocked { get; set; }
         public bool IsSpawnEnabled { get; set; }
 
@@ -45,7 +46,6 @@ namespace RocketLib.Menus.Elements
 
         // Layout configuration
         private const float AVATAR_SIZE_RATIO = 1.0f;  // Avatar takes 100% of card width
-        private const float NAME_HEIGHT_RATIO = 0.2f;  // Name takes 20% of card height
         private const float INDICATOR_SIZE_RATIO = 0.08f; // Indicator is 8% of card size
         private const float NAME_FONT_SIZE = 4f; // Font size for bro names
 
@@ -157,10 +157,18 @@ namespace RocketLib.Menus.Elements
                         SetupAvatarTexture();
                         avatarSprite.SetSize(avatarSize / 2.0f, avatarSize);
                     }
-                    else if (AvatarMaterial != null)
+                    else
                     {
-                        avatarRenderer.material = AvatarMaterial;
-                        avatarSprite.SetSize(avatarSize, avatarSize);
+                        // Load default empty avatar
+                        string directoryPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                        string resourcesPath = Path.Combine(directoryPath, "Resources");
+                        AvatarTexture = ResourcesController.GetTexture(resourcesPath, "avatar_empty.png");
+
+                        if (AvatarTexture != null)
+                        {
+                            SetupAvatarTexture();
+                            avatarSprite.SetSize(avatarSize / 2.0f, avatarSize);
+                        }
                     }
                 }
             }
@@ -377,35 +385,6 @@ namespace RocketLib.Menus.Elements
             catch (Exception)
             {
             }
-        }
-
-        public void LoadBroData(string broName)
-        {
-            BroName = broName;
-
-            // Update name text if it exists
-            if (nameText != null)
-            {
-                nameText.text = broName.ToUpper();
-                ApplyTextScaling(); // Apply scaling for new name
-            }
-
-            // TODO: Load actual bro data from BroMaker
-            // For now, use placeholder values
-            IsLocked = UnityEngine.Random.Range(0, 2) == 0;  // Random 50/50 for testing
-            IsSpawnEnabled = !IsLocked && UnityEngine.Random.Range(0, 2) == 0;
-
-            UpdateVisualState();
-        }
-
-        public void SetAvatarFromTexture(Texture2D texture)
-        {
-            AvatarTexture = texture;
-            if (avatarSprite != null)
-            {
-                SetupAvatarTexture();
-            }
-            UpdateVisualState();
         }
 
         public void UpdateVisualState()
