@@ -1,3 +1,7 @@
+## v2.4.1: (unreleased)
+- Change settings file save location to avoid losing it on updates
+- Update mod icon
+
 ## v2.4.0:
 - Keybindings can now have modifiers
 - Fixed OnScreenLog not loading immediatly after game startup

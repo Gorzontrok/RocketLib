@@ -4,15 +4,9 @@ using System.IO;
 
 namespace RocketLib.UMM
 {
-    public class ModSave
+    public class ModSave : JsonModSettings
     {
-        public static string SavePath
-        {
-            get
-            {
-                return Path.Combine(Main.Mod.Path, "Keybindings.json");
-            }
-        }
+        protected override string FileName => "Keybindings.json";
         /// <summary>
         /// Military Salute
         /// </summary>
@@ -46,17 +40,20 @@ namespace RocketLib.UMM
         public void Save()
         {
             var json = AllModKeyBindings.ConvertToJson();
-            File.WriteAllText(SavePath, json);
+            var filepath = GetPath(Main.Mod);
+            Directory.CreateDirectory(Main.Mod.ConfigPath);
+            File.WriteAllText(filepath, json);
         }
 
         public static ModSave Load()
         {
             try
             {
-                if (File.Exists(SavePath))
+                var modsave = new ModSave();
+                var filepath = modsave.GetPath(Main.Mod);
+                if (File.Exists(filepath))
                 {
-                    AllModKeyBindings.ReadFromJson(File.ReadAllText(SavePath));
-                    ModSave modsave = new ModSave();
+                    AllModKeyBindings.ReadFromJson(File.ReadAllText(filepath));
                     Dictionary<string, KeyBindingForPlayers> modKeybindings;
                     AllModKeyBindings.TryGetAllKeyBindingsForMod(Main.Mod.Info.Id, out modKeybindings);
                     if (modKeybindings != null)
