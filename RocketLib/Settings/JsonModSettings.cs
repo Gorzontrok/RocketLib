@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityModManagerNet;
 
-namespace RocketLib
+namespace RocketLib.Settings
 {
     public class JsonModSettings
     {

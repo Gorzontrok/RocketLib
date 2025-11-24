@@ -1,6 +1,6 @@
 using UnityModManagerNet;
 
-namespace RocketLib
+namespace RocketLib.Settings
 {
     public abstract class XmlModSettings : UnityModManager.ModSettings
     {

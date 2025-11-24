@@ -6,7 +6,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using UnityModManagerNet;
 
-namespace RocketLib
+namespace RocketLib.Settings
 {
     /// <summary>
     /// Provides recovery functionality for corrupted or incompatible XML settings files.

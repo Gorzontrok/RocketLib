@@ -21,7 +21,7 @@ namespace RocketLib
         /// <summary>
         /// RocketLib settings
         /// </summary>
-        public static Settings settings => Main.settings;
+        public static UMM.Settings settings => Main.settings;
 
         internal static ILogger Logger;
 
