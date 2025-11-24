@@ -68,7 +68,6 @@ namespace RocketLib.UMM
             // Initialize ModOptionsMenu to show in menus
             RocketLib.Menus.Vanilla.ModOptionsMenu.Initialize();
 
-            //RegisterTestMenus();
             return true;
         }
 

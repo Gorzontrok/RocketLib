@@ -200,10 +200,6 @@
     <Compile Include="UMM\WindowScaling.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="_ModContent\Changelog - RocketLib.txt" />
-    <Content Include="_ModContent\Changelog.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="_ModContent\Info.json" />
   </ItemGroup>
   <ItemGroup />
