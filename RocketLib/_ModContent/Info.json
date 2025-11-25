@@ -2,7 +2,7 @@
   "Id": "RocketLib",
   "DisplayName": "RocketLib",
   "Author": "Gorzontrok",
-  "Version": "2.4.0",
+  "Version": "2.4.1",
   "AssemblyName": "RocketLib.dll",
   "EntryMethod": "RocketLib.UMM.Main.Load"
 }
