@@ -1,5 +1,6 @@
-## v2.4.1: (unreleased)
+## v2.4.1:
 - Change settings file save location to avoid losing it on updates
+- Add XML and JSON settings classes with additional functionality
 - Update mod icon
 
 ## v2.4.0:
