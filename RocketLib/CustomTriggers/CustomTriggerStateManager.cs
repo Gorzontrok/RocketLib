@@ -126,6 +126,7 @@ namespace RocketLib.CustomTriggers
                     RocketMain.Logger.Log("Error in level end callback: " + ex.ToString());
                 }
             }
+            onLevelEndCallbacks.Clear();
 
             currentState.Clear();
             foreach (var kvp in stagingState)
@@ -143,6 +144,7 @@ namespace RocketLib.CustomTriggers
                     RocketMain.Logger.Log("Error in level start callback: " + ex.ToString());
                 }
             }
+            onLevelStartCallbacks.Clear();
         }
     }
 }
