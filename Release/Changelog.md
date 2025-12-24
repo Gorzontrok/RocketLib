@@ -1,5 +1,6 @@
 ## v2.4.2 (unreleased):
 - Fix not clearing custom trigger level start and end callbacks.
+- Fix bug with keybindings Release() method.
 
 ## v2.4.1:
 - Change settings file save location to avoid losing it on updates

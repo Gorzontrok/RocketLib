@@ -170,12 +170,12 @@ namespace RocketLib
             if (wasDown && !down)
             {
                 wasDown = down;
-                return false;
+                return true;
             }
             else
             {
                 wasDown = down;
-                return true;
+                return false;
             }
         }
 
