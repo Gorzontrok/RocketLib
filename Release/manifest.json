@@ -1,7 +1,7 @@
 {
   "name": "RocketLib",
   "author": "RocketLib",
-  "version_number": "2.4.1",
+  "version_number": "2.4.2",
   "website_url": "https://github.com/Gorzontrok/RocketLib",
   "description": "A Broforce modding library with a variety of useful tools.",
   "dependencies": [

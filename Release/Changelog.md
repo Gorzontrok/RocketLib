@@ -1,4 +1,4 @@
-## v2.4.2 (unreleased):
+## v2.4.2:
 - Fix not clearing custom trigger level start and end callbacks.
 - Fix bug with keybindings Release() method.
 
