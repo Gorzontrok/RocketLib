@@ -1,3 +1,6 @@
+## v2.4.3(unreleased):
+- Better handling for levels with custom triggers that aren't installed.
+
 ## v2.4.2:
 - Fix not clearing custom trigger level start and end callbacks.
 - Fix bug with keybindings Release() method.

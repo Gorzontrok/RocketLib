@@ -235,6 +235,10 @@ namespace RocketLib.CustomTriggers
                 }
 
                 CustomTriggerActionInfo customInfo = ConvertToCustomInfo(info as WeatherActionInfo);
+                if (customInfo == null)
+                {
+                    throw new Exception("Failed to convert to CustomTriggerActionInfo");
+                }
 
                 TriggerAction action = Activator.CreateInstance(customTrigger.CustomTriggerActionType) as TriggerAction;
                 action.Info = customInfo;
@@ -268,7 +272,10 @@ namespace RocketLib.CustomTriggers
                     if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                     {
                         var customInfo = ConvertToCustomInfo(weatherAction);
-                        trigger.actions[i] = customInfo;
+                        if (customInfo != null)
+                        {
+                            trigger.actions[i] = customInfo;
+                        }
                     }
                 }
             }

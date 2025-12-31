@@ -49,7 +49,10 @@ namespace RocketLib.CustomTriggers
                         if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                         {
                             var customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
-                            trigger.actions[i] = customInfo;
+                            if (customInfo != null)
+                            {
+                                trigger.actions[i] = customInfo;
+                            }
                         }
                     }
                 }
@@ -107,7 +110,10 @@ namespace RocketLib.CustomTriggers
                             if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                             {
                                 var customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
-                                trigger.actions[i] = customInfo;
+                                if (customInfo != null)
+                                {
+                                    trigger.actions[i] = customInfo;
+                                }
                             }
                         }
                     }
@@ -142,8 +148,12 @@ namespace RocketLib.CustomTriggers
                 }
                 else if (info is WeatherActionInfo weatherInfo && info.type == TriggerActionType.Weather && weatherInfo.name != null && weatherInfo.name.StartsWith("CUSTOMTRIGGER|"))
                 {
-                    __result = CustomTriggerManager.CreateCustomAction(info);
-                    return false;
+                    TriggerAction action = CustomTriggerManager.CreateCustomAction(info);
+                    if (action != null)
+                    {
+                        __result = action;
+                        return false;
+                    }
                 }
 
                 return true;
@@ -190,7 +200,10 @@ namespace RocketLib.CustomTriggers
                         if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                         {
                             var customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
-                            trigger.actions[i] = customInfo;
+                            if (customInfo != null)
+                            {
+                                trigger.actions[i] = customInfo;
+                            }
                         }
                     }
                 }
