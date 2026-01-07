@@ -858,51 +858,6 @@
             <param name="texture--"></param>
             <returns></returns>
         </member>
-        <member name="T:RocketLib.Utils.SettingsRecovery">
-            <summary>
-            Provides recovery functionality for corrupted or incompatible XML settings files.
-            When UnityModManager fails to deserialize a settings file due to XML errors or schema changes,
-            this class attempts to recover as much data as possible from the invalid XML.
-            </summary>
-            <example>
-            <code>
-            // Settings.cs
-            public int SettingsVersion = 0;
-            
-            public override void Save(UnityModManager.ModEntry modEntry)
-            {
-                if (SettingsVersion == 0) SettingsVersion = 1;
-                Save(this, modEntry);
-            }
-            
-            // Main.cs Load method
-            settings = Settings.Load&lt;Settings&gt;(modEntry);
-            if (settings.SettingsVersion == 0)
-            {
-                var settingsPath = Path.Combine(modEntry.Path, "Settings.xml");
-                settings = SettingsRecovery.TryRecoverSettings&lt;Settings&gt;(settingsPath, settings);
-            }
-            if (settings.SettingsVersion == 0) settings.SettingsVersion = 1;
-            </code>
-            </example>
-        </member>
-        <member name="M:RocketLib.Utils.SettingsRecovery.TryRecoverSettings``1(System.String,``0)">
-            <summary>
-            Attempts to recover settings from a potentially corrupted XML file.
-            </summary>
-            <typeparam name="T">The settings class type, must inherit from UnityModManager.ModSettings</typeparam>
-            <param name="xmlPath">Path to the XML settings file to recover from</param>
-            <param name="defaultSettings">Optional default settings object to use as base, or null to create new</param>
-            <returns>A settings object with recovered values where possible, defaults for unrecoverable fields</returns>
-            <remarks>
-            Recovery process:
-            - Simple types (bool, int, float, string, enum) are recovered individually
-            - Arrays and Lists are recovered element by element, skipping invalid items
-            - Complex objects are recovered if their XML structure is valid
-            - Fields with XML attribute mappings ([XmlArray], [XmlElement]) are properly handled
-            - Invalid or missing fields are left at their default values
-            </remarks>
-        </member>
         <member name="M:RocketLib.ComponentExtensions.RemoveComponent``1(UnityEngine.Component)">
             <summary>
             Remove the component of type T from the current Component.
@@ -1662,6 +1617,186 @@
             <summary>
             UI element for displaying a bro in card format for grid view selection
             </summary>
+        </member>
+        <member name="T:RocketLib.Settings.SettingsRecovery">
+            <summary>
+            Provides recovery functionality for corrupted or incompatible XML settings files.
+            When UnityModManager fails to deserialize a settings file due to XML errors or schema changes,
+            this class attempts to recover as much data as possible from the invalid XML.
+            </summary>
+            <example>
+            <code>
+            // Settings.cs
+            public int SettingsVersion = 0;
+            
+            public override void Save(UnityModManager.ModEntry modEntry)
+            {
+                if (SettingsVersion == 0) SettingsVersion = 1;
+                Save(this, modEntry);
+            }
+            
+            // Main.cs Load method
+            settings = Settings.Load&lt;Settings&gt;(modEntry);
+            if (settings.SettingsVersion == 0)
+            {
+                var settingsPath = Path.Combine(modEntry.Path, "Settings.xml");
+                settings = SettingsRecovery.TryRecoverSettings&lt;Settings&gt;(settingsPath, settings);
+            }
+            if (settings.SettingsVersion == 0) settings.SettingsVersion = 1;
+            </code>
+            </example>
+        </member>
+        <member name="M:RocketLib.Settings.SettingsRecovery.TryRecoverSettings``1(System.String,``0)">
+            <summary>
+            Attempts to recover settings from a potentially corrupted XML file.
+            </summary>
+            <typeparam name="T">The settings class type, must inherit from UnityModManager.ModSettings</typeparam>
+            <param name="xmlPath">Path to the XML settings file to recover from</param>
+            <param name="defaultSettings">Optional default settings object to use as base, or null to create new</param>
+            <returns>A settings object with recovered values where possible, defaults for unrecoverable fields</returns>
+            <remarks>
+            Recovery process:
+            - Simple types (bool, int, float, string, enum) are recovered individually
+            - Arrays and Lists are recovered element by element, skipping invalid items
+            - Complex objects are recovered if their XML structure is valid
+            - Fields with XML attribute mappings ([XmlArray], [XmlElement]) are properly handled
+            - Invalid or missing fields are left at their default values
+            </remarks>
+        </member>
+        <member name="T:RocketLib.Settings.XmlModSettings">
+             <summary>
+             Base class for XML-based mod settings with automatic recovery from corrupted or incompatible files.
+             Inherits from UnityModManager.ModSettings and adds automatic recovery when deserialization fails.
+             </summary>
+             <example>
+             <code>
+             public class Settings : XmlModSettings
+             {
+                 public override int SettingsVersion { get; set; } = 1;
+                 public bool MyOption = true;
+                 public int MyValue = 42;
+             }
+            
+             // In your mod's Load method:
+             settings = XmlModSettings.Load&lt;Settings&gt;(modEntry);
+             </code>
+             </example>
+             <remarks>
+             Settings are saved to the mod's ConfigPath directory (persists across Thunderstore updates).
+             When SettingsVersion is 0 after loading, it indicates deserialization failed and recovery is attempted
+             using <see cref="M:RocketLib.Settings.SettingsRecovery.TryRecoverSettings``1(System.String,``0)"/>.
+             </remarks>
+        </member>
+        <member name="P:RocketLib.Settings.XmlModSettings.SettingsVersion">
+            <summary>
+            Version number for tracking settings schema changes.
+            A value of 0 after loading indicates deserialization failed.
+            </summary>
+        </member>
+        <member name="M:RocketLib.Settings.XmlModSettings.Load``1(UnityModManagerNet.UnityModManager.ModEntry)">
+            <summary>
+            Loads settings from the mod's ConfigPath, automatically recovering data if deserialization fails.
+            </summary>
+            <typeparam name="T">The settings class type, must inherit from XmlModSettings</typeparam>
+            <param name="modEntry">The mod entry to load settings for</param>
+            <returns>The loaded settings, or recovered/default settings if loading failed</returns>
+        </member>
+        <member name="T:RocketLib.Settings.JsonModSettings">
+             <summary>
+             Base class for JSON-based mod settings with built-in migration support for schema changes.
+             Provides automatic versioning, migration, and backup on failure.
+             </summary>
+             <example>
+             <code>
+             public class Settings : JsonModSettings
+             {
+                 protected override int CurrentVersion => 2;
+                 protected override string FileName => "MyModSettings.json";
+            
+                 public bool MyOption = true;
+                 public string NewField = "default";
+            
+                 protected override void MigrateJson(JObject json, int fromVersion)
+                 {
+                     if (fromVersion &lt; 2)
+                     {
+                         json["NewField"] = "migrated_value";
+                     }
+                 }
+             }
+            
+             // In your mod's Load method:
+             settings = JsonModSettings.Load&lt;Settings&gt;(modEntry);
+             </code>
+             </example>
+             <remarks>
+             Settings are saved to the mod's ConfigPath directory (persists across Thunderstore updates).
+             When loading settings with an older version, MigrateJson is called to transform the data,
+             and the migrated settings are automatically saved. If migration fails, the original file
+             is backed up and default settings are returned.
+             </remarks>
+        </member>
+        <member name="P:RocketLib.Settings.JsonModSettings.SettingsVersion">
+            <summary>
+            Version number stored in the settings file. Used to detect when migration is needed.
+            </summary>
+        </member>
+        <member name="P:RocketLib.Settings.JsonModSettings.CurrentVersion">
+            <summary>
+            The current schema version expected by the code. Override to increment when making breaking changes.
+            When file version is less than this, MigrateJson is called.
+            </summary>
+        </member>
+        <member name="P:RocketLib.Settings.JsonModSettings.FileName">
+            <summary>
+            The filename for the settings file. Override to use a custom name.
+            </summary>
+        </member>
+        <member name="M:RocketLib.Settings.JsonModSettings.GetPath(UnityModManagerNet.UnityModManager.ModEntry)">
+            <summary>
+            Gets the full path to the settings file.
+            </summary>
+            <param name="modEntry">The mod entry</param>
+            <returns>Full path to the settings file in the mod's ConfigPath</returns>
+        </member>
+        <member name="M:RocketLib.Settings.JsonModSettings.Save(UnityModManagerNet.UnityModManager.ModEntry)">
+            <summary>
+            Saves the current settings to disk.
+            </summary>
+            <param name="modEntry">The mod entry to save settings for</param>
+        </member>
+        <member name="M:RocketLib.Settings.JsonModSettings.MigrateJson(Newtonsoft.Json.Linq.JObject,System.Int32)">
+            <summary>
+            Override to handle migration from older settings versions.
+            Modify the JObject directly to transform old data to the new schema.
+            </summary>
+            <param name="json">The parsed JSON object to migrate</param>
+            <param name="fromVersion">The version number found in the file</param>
+            <remarks>
+            Migration uses a direct-jump pattern: migrate from any old version to current in one pass.
+            Use cascading if-statements (not else-if) to apply all necessary migrations.
+            </remarks>
+        </member>
+        <member name="M:RocketLib.Settings.JsonModSettings.Save``1(``0,UnityModManagerNet.UnityModManager.ModEntry)">
+            <summary>
+            Saves settings data to the mod's ConfigPath.
+            </summary>
+            <typeparam name="T">The settings class type</typeparam>
+            <param name="data">The settings object to save</param>
+            <param name="modEntry">The mod entry to save settings for</param>
+        </member>
+        <member name="M:RocketLib.Settings.JsonModSettings.Load``1(UnityModManagerNet.UnityModManager.ModEntry)">
+            <summary>
+            Loads settings from the mod's ConfigPath, automatically migrating if the file version is older.
+            </summary>
+            <typeparam name="T">The settings class type, must inherit from JsonModSettings</typeparam>
+            <param name="modEntry">The mod entry to load settings for</param>
+            <returns>The loaded settings, migrated settings, or default settings if loading failed</returns>
+            <remarks>
+            If the file version is less than CurrentVersion, MigrateJson is called and the migrated
+            settings are automatically saved. If migration throws an exception, the original file is
+            backed up to {filename}.bak and default settings are returned.
+            </remarks>
         </member>
         <member name="F:RocketLib.UMM.ModSave.gesture0">
             <summary>

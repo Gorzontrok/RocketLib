@@ -239,7 +239,7 @@ namespace RocketLib.Loggers
             try
             {
                 if (string.IsNullOrEmpty(LogFilePath))
-                    LogFilePath = Path.Combine(Main.Mod.Path, "Logs\\");
+                    LogFilePath = Path.Combine(Main.Mod.Path, "Logs");
                 if (!Directory.Exists(LogFilePath))
                 {
                     Directory.CreateDirectory(LogFilePath); // Ignore warning.

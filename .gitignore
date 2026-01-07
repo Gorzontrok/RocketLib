@@ -397,7 +397,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+.idea/
 
 
 LocalBroforcePath.props
 RocketLib/**/RocketLib.dll
+CLAUDE.md
