@@ -38,12 +38,13 @@ namespace RocketLib
         /// <param name="modId">Name of the mod</param>
         public static void AddKeyBinding(KeyBindingForPlayers keybinding, string modId)
         {
+            if (AllKeyBindings == null)
+            {
+                RocketMain.Logger.Error("AllKeyBindings dictionary is not initialized. Call RecreateDictionary() or ReadFromJson() first.");
+                throw new InvalidOperationException("AllKeyBindings dictionary is not initialized.");
+            }
             try
             {
-                if (AllKeyBindings == null)
-                {
-                    return;
-                }
                 Dictionary<string, KeyBindingForPlayers> currentModKeyBindings;
                 bool alreadyExists = AllKeyBindings.TryGetValue(modId, out currentModKeyBindings);
                 if (!alreadyExists)
@@ -68,12 +69,18 @@ namespace RocketLib
         /// <returns>True if it was found, false otherise</returns>
         public static bool TryGetKeyBinding(string modName, string keyName, out KeyBindingForPlayers keybinding)
         {
+            keybinding = null;
+            if (AllKeyBindings == null)
+            {
+                RocketMain.Logger.Error("AllKeyBindings dictionary is not initialized. Call RecreateDictionary() or ReadFromJson() first.");
+                throw new InvalidOperationException("AllKeyBindings dictionary is not initialized.");
+            }
+
             Dictionary<string, KeyBindingForPlayers> currentModKeyBindings;
             if (AllKeyBindings.TryGetValue(modName, out currentModKeyBindings))
             {
                 return currentModKeyBindings.TryGetValue(keyName, out keybinding);
             }
-            keybinding = null;
             return false;
         }
 
@@ -85,6 +92,12 @@ namespace RocketLib
         /// <returns>True if it was found, false otherise</returns>
         public static bool TryGetAllKeyBindingsForMod(string modName, out Dictionary<string, KeyBindingForPlayers> modKeyBindings)
         {
+            modKeyBindings = null;
+            if (AllKeyBindings == null)
+            {
+                RocketMain.Logger.Error("AllKeyBindings dictionary is not initialized. Call RecreateDictionary() or ReadFromJson() first.");
+                throw new InvalidOperationException("AllKeyBindings dictionary is not initialized.");
+            }
             return AllKeyBindings.TryGetValue(modName, out modKeyBindings);
         }
 
@@ -216,9 +229,12 @@ namespace RocketLib
             }
         }
 
-        // Empty constructor used when loading from JSON
         public KeyBindingForPlayers()
         {
+            player0 = new KeyBinding();
+            player1 = new KeyBinding();
+            player2 = new KeyBinding();
+            player3 = new KeyBinding();
         }
 
         /// <summary>
@@ -240,11 +256,6 @@ namespace RocketLib
         public virtual void AssignKey(int player, KeyCode key)
         {
             this[player].AssignKey(key);
-        }
-
-        public virtual void AssignKey(int player, string joystick, int direction)
-        {
-            this[player].AssignKey(joystick, direction);
         }
 
         /// <summary>
