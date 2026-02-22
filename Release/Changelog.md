@@ -1,4 +1,4 @@
-## v2.4.3(unreleased):
+## v2.4.3:
 - Better handling for levels with custom triggers that aren't installed.
 - Improve keybinding system.
 
