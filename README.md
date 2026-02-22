@@ -1,6 +1,6 @@
 # RocketLib
 
-[NexusMods Page](https://www.nexusmods.com/broforce/mods/9)  
+[Thunderstore Page](https://thunderstore.io/c/broforce/p/RocketLib/RocketLib/)  
 This is a collection of tools I use in my mods.
 
 **What's Inside :**  
