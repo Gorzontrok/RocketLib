@@ -43,7 +43,7 @@ namespace RocketLib.Loggers
         private List<string> LogsOnScreen = new List<string>();
         private List<string> LogsForTXT = new List<string>();
         private int UMM_NumberOfLogs;
-        private string LogFilePath = Main.Mod.Path + "Logs\\";
+        private string LogFilePath = Path.Combine(Main.Mod.Path, "Logs");
         private static ScreenLogger instance;
         //public static int fontSize = 13;
 
@@ -84,6 +84,9 @@ namespace RocketLib.Loggers
 
         private void ClearTXTFiles()
         {
+            if (!Directory.Exists(LogFilePath))
+                return;
+
             string FileNameToday = DateTime.UtcNow.Date.ToString("yyyy'-'MM'-'dd") + ".txt";
             foreach (string file in Directory.GetFiles(LogFilePath))
             {

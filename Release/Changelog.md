@@ -1,3 +1,6 @@
+## v2.4.4 (unreleased)
+- Fixed error in log on startup when Logs directory doesn't exist.
+
 ## v2.4.3:
 - Better handling for levels with custom triggers that aren't installed.
 - Improve keybinding system.
