@@ -20,7 +20,7 @@ namespace RocketLib.Menus.Tests
                 Name = "MainContainer",
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fill,
-                Padding = 20f,
+                Padding = 10f,
                 Spacing = 10f
             };
         }
@@ -34,9 +34,9 @@ namespace RocketLib.Menus.Tests
                 Name = "GridTitle",
                 Text = "SELECT AN OPTION",
                 HeightMode = SizeMode.Fixed,
-                Height = 40f,
+                Height = 60f,
                 WidthMode = SizeMode.Fill,
-                FontSize = 4f
+                FontSize = 9f
             };
             rootContainer.AddChild(title);
 
@@ -56,42 +56,34 @@ namespace RocketLib.Menus.Tests
             for (int i = 1; i <= 9; i++)
             {
                 int index = i;
-                var button = new ActionButton($"GridButton{i}")
+                gridContainer.AddChild(new ActionButton($"GridButton{i}")
                 {
                     Name = $"Option{i}",
                     Text = $"OPTION {i}",
                     WidthMode = SizeMode.Fill,
                     HeightMode = SizeMode.Fill,
-                    OnClick = () =>
-                    {
-                        RocketMain.Logger.Log($"Grid option {index} selected!");
-                    }
-                };
-                gridContainer.AddChild(button);
+                    FontSize = 5f,
+                    OnClick = () => RocketMain.Logger.Log($"Grid option {index} selected!")
+                });
             }
 
-            var backButton = new ActionButton("BackButton")
-            {
-                Name = "BackButton",
-                Text = "BACK",
-                WidthMode = SizeMode.Fixed,
-                Width = 150f,
-                HeightMode = SizeMode.Fixed,
-                Height = 40f,
-                OnClick = () =>
-                {
-                    GoBack();
-                }
-            };
-
-            var buttonContainer = new HorizontalLayoutContainer("ButtonContainer")
+            var buttonContainer = new VerticalLayoutContainer("ButtonContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fixed,
-                Height = 60f,
-                Spacing = 10f
+                Height = 40f,
+                ChildHorizontalAlignment = HorizontalAlignment.Center
             };
-            buttonContainer.AddChild(backButton);
+            buttonContainer.AddChild(new ActionButton("BackButton")
+            {
+                Text = "BACK",
+                WidthMode = SizeMode.Fixed,
+                Width = 85f,
+                HeightMode = SizeMode.Fixed,
+                Height = 27f,
+                FontSize = 5f,
+                OnClick = () => GoBack()
+            });
             rootContainer.AddChild(buttonContainer);
 
             RefreshLayout();

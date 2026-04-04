@@ -24,7 +24,7 @@ namespace RocketLib.Menus.Tests
                 Name = "MainContainer",
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fill,
-                Padding = 20f,
+                Padding = 10f,
                 Spacing = 10f
             };
         }
@@ -38,9 +38,9 @@ namespace RocketLib.Menus.Tests
                 Name = "PaginatedTitle",
                 Text = "SELECT AN ITEM",
                 HeightMode = SizeMode.Fixed,
-                Height = 40f,
+                Height = 60f,
                 WidthMode = SizeMode.Fill,
-                FontSize = 4f
+                FontSize = 11f
             };
             rootContainer.AddChild(title);
 
@@ -65,7 +65,8 @@ namespace RocketLib.Menus.Tests
                 WidthMode = SizeMode.Fixed,
                 Width = 40f,
                 HeightMode = SizeMode.Fixed,
-                Height = 30f
+                Height = 30f,
+                FontSize = 5f
             };
 
             var nextButton = new ActionButton("NextButton")
@@ -75,7 +76,8 @@ namespace RocketLib.Menus.Tests
                 WidthMode = SizeMode.Fixed,
                 Width = 40f,
                 HeightMode = SizeMode.Fixed,
-                Height = 30f
+                Height = 30f,
+                FontSize = 5f
             };
 
             paginatedGrid.SetNavigationButtons(previousButton, nextButton);
@@ -90,6 +92,7 @@ namespace RocketLib.Menus.Tests
                     Text = $"ITEM {i}",
                     WidthMode = SizeMode.Fill,
                     HeightMode = SizeMode.Fill,
+                    FontSize = 5f,
                     OnClick = () =>
                     {
                         RocketMain.Logger.Log($"Item {index} selected!");
@@ -105,9 +108,9 @@ namespace RocketLib.Menus.Tests
                 Name = "PageIndicator",
                 Text = $"Page {paginatedGrid.CurrentPage + 1} of {paginatedGrid.TotalPages}",
                 HeightMode = SizeMode.Fixed,
-                Height = 30f,
+                Height = 20f,
                 WidthMode = SizeMode.Fill,
-                FontSize = 3f
+                FontSize = 4f
             };
             rootContainer.AddChild(pageIndicator);
 
@@ -122,21 +125,22 @@ namespace RocketLib.Menus.Tests
                 Name = "BackButton",
                 Text = "BACK",
                 WidthMode = SizeMode.Fixed,
-                Width = 150f,
+                Width = 85f,
                 HeightMode = SizeMode.Fixed,
-                Height = 40f,
+                Height = 27f,
+                FontSize = 5f,
                 OnClick = () =>
                 {
                     GoBack();
                 }
             };
 
-            var buttonContainer = new HorizontalLayoutContainer("ButtonContainer")
+            var buttonContainer = new VerticalLayoutContainer("ButtonContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fixed,
-                Height = 60f,
-                Spacing = 10f
+                Height = 40f,
+                ChildHorizontalAlignment = HorizontalAlignment.Center
             };
             buttonContainer.AddChild(backButton);
             rootContainer.AddChild(buttonContainer);

@@ -30,101 +30,61 @@ namespace RocketLib.Menus.Tests
         {
             base.Start();
 
-            // Title
             var title = new TextElement("Title")
             {
                 Name = "MenuTitle",
                 Text = "FLEX MENU EXAMPLE",
                 HeightMode = SizeMode.Fixed,
-                Height = 50f,
+                Height = 60f,
                 WidthMode = SizeMode.Fill,
-                FontSize = 5f
+                FontSize = 10f
             };
             rootContainer.AddChild(title);
 
-            // Content container - takes all remaining space
             var contentContainer = new VerticalLayoutContainer("ContentContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fill,
-                Spacing = 5f,
+                Spacing = 8f,
                 Padding = 10f,
                 ChildHorizontalAlignment = HorizontalAlignment.Center
             };
             rootContainer.AddChild(contentContainer);
 
-            // Sample buttons
-            var button1 = new ActionButton("Button1")
+            for (int i = 1; i <= 3; i++)
             {
-                Name = "TestButton1",
-                Text = "FIRST BUTTON",
-                WidthMode = SizeMode.Fixed,
-                Width = 250f,
-                HeightMode = SizeMode.Fixed,
-                Height = 40f,
-                OnClick = () =>
+                int index = i;
+                contentContainer.AddChild(new ActionButton($"Button{i}")
                 {
-                    RocketMain.Logger.Log("First button clicked!");
-                }
-            };
-            contentContainer.AddChild(button1);
+                    Text = $"BUTTON {i}",
+                    WidthMode = SizeMode.Fixed,
+                    Width = 170f,
+                    HeightMode = SizeMode.Fixed,
+                    Height = 30f,
+                    FontSize = 5f,
+                    OnClick = () => RocketMain.Logger.Log($"Button {index} clicked!")
+                });
+            }
 
-            var button2 = new ActionButton("Button2")
-            {
-                Name = "TestButton2",
-                Text = "SECOND BUTTON",
-                WidthMode = SizeMode.Fixed,
-                Width = 250f,
-                HeightMode = SizeMode.Fixed,
-                Height = 40f,
-                OnClick = () =>
-                {
-                    RocketMain.Logger.Log("Second button clicked!");
-                }
-            };
-            contentContainer.AddChild(button2);
-
-            var button3 = new ActionButton("Button3")
-            {
-                Name = "TestButton3",
-                Text = "THIRD BUTTON",
-                WidthMode = SizeMode.Fixed,
-                Width = 250f,
-                HeightMode = SizeMode.Fixed,
-                Height = 40f,
-                OnClick = () =>
-                {
-                    RocketMain.Logger.Log("Third button clicked!");
-                }
-            };
-            contentContainer.AddChild(button3);
-
-            // Back button
-            var backButton = new ActionButton("BackButton")
-            {
-                Name = "BackButton",
-                Text = "BACK",
-                WidthMode = SizeMode.Fixed,
-                Width = 150f,
-                HeightMode = SizeMode.Fixed,
-                Height = 40f,
-                OnClick = () =>
-                {
-                    GoBack();
-                }
-            };
-
-            var buttonContainer = new HorizontalLayoutContainer("ButtonContainer")
+            var buttonContainer = new VerticalLayoutContainer("ButtonContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fixed,
-                Height = 60f,
-                ChildVerticalAlignment = VerticalAlignment.Center
+                Height = 40f,
+                ChildHorizontalAlignment = HorizontalAlignment.Right
             };
-            buttonContainer.AddChild(backButton);
+            buttonContainer.AddChild(new ActionButton("BackButton")
+            {
+                Text = "BACK",
+                WidthMode = SizeMode.Fixed,
+                Width = 85f,
+                HeightMode = SizeMode.Fixed,
+                Height = 27f,
+                FontSize = 4f,
+                OnClick = () => GoBack()
+            });
             rootContainer.AddChild(buttonContainer);
 
-            // CRITICAL: Must refresh layout after adding all elements
             RefreshLayout();
         }
     }

@@ -20,7 +20,21 @@ namespace RocketLib.Menus.Elements
             }
         }
 
-        public float FontSize { get; set; }
+        private float _fontSize = 3f;
+        public float FontSize
+        {
+            get { return _fontSize; }
+            set
+            {
+                if (_fontSize != value)
+                {
+                    _fontSize = value;
+                    boundsAvailable = false;
+                    fontNeedsUpdate = true;
+                }
+            }
+        }
+        private bool fontNeedsUpdate = false;
         public Action OnClick { get; set; }
 
         private TextMesh textMesh;
@@ -33,7 +47,6 @@ namespace RocketLib.Menus.Elements
         public ActionButton(string name) : base(name)
         {
             _text = "Button";
-            FontSize = 3f;
             IsFocusable = true;
 
             // Default size for buttons
@@ -64,13 +77,17 @@ namespace RocketLib.Menus.Elements
                 gameObject.transform.localPosition = new Vector3(ActualPosition.x, ActualPosition.y, -1f);
                 gameObject.transform.localScale = Vector3.one;  // No scaling - use direct character size
 
-                // Update text and color
                 if (textMesh != null)
                 {
                     textMesh.text = Text.ToUpper();
                     textMesh.color = Color.white;
 
-                    // Update cached width if using auto mode
+                    if (fontNeedsUpdate)
+                    {
+                        FontManager.ApplyFont(textMesh, BroforceFont.Hudson, FontSize);
+                        fontNeedsUpdate = false;
+                    }
+
                     if (WidthMode == Layout.SizeMode.Auto && !boundsAvailable)
                     {
                         MeasureAutoWidth();
