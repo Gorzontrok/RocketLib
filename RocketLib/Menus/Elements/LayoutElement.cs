@@ -67,6 +67,12 @@ namespace RocketLib.Menus.Elements
         public bool IsFocusable { get; set; }
         public bool IsFocused { get; set; }
 
+        // Explicit navigation overrides (null = use spatial navigation)
+        public LayoutElement NavigateUp { get; set; }
+        public LayoutElement NavigateDown { get; set; }
+        public LayoutElement NavigateLeft { get; set; }
+        public LayoutElement NavigateRight { get; set; }
+
         // User data
         public object Tag { get; set; }
 

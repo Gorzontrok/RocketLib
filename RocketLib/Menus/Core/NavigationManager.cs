@@ -190,6 +190,19 @@ namespace RocketLib.Menus.Core
                 return false;
             }
 
+            // Check explicit navigation overrides first
+            LayoutElement explicitTarget = null;
+            if (direction == Vector2.up) explicitTarget = focusedElement.NavigateUp;
+            else if (direction == Vector2.down) explicitTarget = focusedElement.NavigateDown;
+            else if (direction == Vector2.left) explicitTarget = focusedElement.NavigateLeft;
+            else if (direction == Vector2.right) explicitTarget = focusedElement.NavigateRight;
+
+            if (explicitTarget != null && focusableElements.Contains(explicitTarget))
+            {
+                SetFocus(explicitTarget);
+                return true;
+            }
+
             var currentPos = focusedElement.ActualPosition;
             LayoutElement bestCandidate = null;
             float bestScore = float.MaxValue;
@@ -202,11 +215,11 @@ namespace RocketLib.Menus.Core
                 var toElement = elementPos - currentPos;
 
                 float dot = Vector2.Dot(toElement.normalized, direction);
-                if (dot <= 0.1f) continue;
+                if (dot <= 0.2f) continue;
 
                 float distance = toElement.magnitude;
                 float angle = Mathf.Acos(dot);
-                float score = distance * (1f + angle * 2f);
+                float score = distance * (1f + angle);
 
                 if (score < bestScore)
                 {
@@ -233,40 +246,33 @@ namespace RocketLib.Menus.Core
         {
             if (focusableElements == null || focusableElements.Count == 0) return null;
 
-            if (direction == Vector2.up)
+            // Score candidates in the opposite direction, preferring elements
+            // that are far away and well-aligned — the "other end" of navigation
+            var oppositeDirection = -direction;
+            var currentPos = focusedElement.ActualPosition;
+            LayoutElement bestCandidate = null;
+            float bestScore = float.MaxValue;
+
+            foreach (var element in focusableElements)
             {
-                return focusableElements
-                    .Where(e => e != focusedElement)
-                    .OrderBy(e => e.ActualPosition.y)
-                    .ThenBy(e => Mathf.Abs(e.ActualPosition.x - focusedElement.ActualPosition.x))
-                    .FirstOrDefault();
-            }
-            else if (direction == Vector2.down)
-            {
-                return focusableElements
-                    .Where(e => e != focusedElement)
-                    .OrderByDescending(e => e.ActualPosition.y)
-                    .ThenBy(e => Mathf.Abs(e.ActualPosition.x - focusedElement.ActualPosition.x))
-                    .FirstOrDefault();
-            }
-            else if (direction == Vector2.left)
-            {
-                return focusableElements
-                    .Where(e => e != focusedElement)
-                    .OrderByDescending(e => e.ActualPosition.x)
-                    .ThenBy(e => Mathf.Abs(e.ActualPosition.y - focusedElement.ActualPosition.y))
-                    .FirstOrDefault();
-            }
-            else if (direction == Vector2.right)
-            {
-                return focusableElements
-                    .Where(e => e != focusedElement)
-                    .OrderBy(e => e.ActualPosition.x)
-                    .ThenBy(e => Mathf.Abs(e.ActualPosition.y - focusedElement.ActualPosition.y))
-                    .FirstOrDefault();
+                if (element == focusedElement) continue;
+
+                var toElement = element.ActualPosition - currentPos;
+                float dot = Vector2.Dot(toElement.normalized, oppositeDirection);
+                if (dot <= 0.2f) continue;
+
+                float distance = toElement.magnitude;
+                float angle = Mathf.Acos(dot);
+                float score = (1f + angle) / distance;
+
+                if (score < bestScore)
+                {
+                    bestScore = score;
+                    bestCandidate = element;
+                }
             }
 
-            return null;
+            return bestCandidate;
         }
 
         public void NavigateToElement(LayoutElement element)
