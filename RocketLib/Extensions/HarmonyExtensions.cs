@@ -140,7 +140,7 @@ public static class HarmonyExtensions
     /// <param name="map">Key: Field Name | Value: the value to give to the field</param>
     /// <param name="skipTheseFields">Fields to ignore</param>
     /// <param name="setter">Custom action to set fields</param>
-    public static void DynamicFieldsValueSetter(this object obj, Dictionary<string, object> map, string[] skipTheseFields = null, Action<Traverse, string, object> setter = null)
+    public static void DynamicFieldsValueSetter(this object obj, Dictionary<string, object> map, string[] skipTheseFields = null, Action<Traverse, string, object> setter = null, string context = null)
     {
         if (setter == null)
         {
@@ -161,16 +161,74 @@ public static class HarmonyExtensions
                 if (!skipTheseFields.Contains(kvp.Key))
                 {
                     field = traverse.FindFieldWithPath(kvp.Key);
+                    if (field.GetValueType() == null)
+                    {
+                        string ctx = context != null ? $" ({context})" : "";
+                        string suggestion = FindSimilarField(obj.GetType(), kvp.Key);
+                        if (suggestion != null)
+                            RocketMain.Logger.Warning($"Field '{kvp.Key}' not found on {obj.GetType().Name}{ctx}. Did you mean '{suggestion}'?");
+                        else
+                            RocketMain.Logger.Warning($"Field '{kvp.Key}' not found on {obj.GetType().Name}{ctx}");
+                        continue;
+                    }
                     setter(field, kvp.Key, kvp.Value);
                 }
             }
-            catch (NullReferenceException)
-            { }
             catch (Exception e)
             {
                 RocketMain.Logger.Exception($"Key: {kvp.Key} ; Value: {kvp.Value}\nAt type field {field.GetValueType()}", e);
             }
         }
+    }
+
+    private static string FindSimilarField(Type type, string name)
+    {
+        string nameLower = name.ToLower();
+        string bestMatch = null;
+        int bestDistance = int.MaxValue;
+
+        Type current = type;
+        while (current != null && current != typeof(object))
+        {
+            foreach (var f in current.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.DeclaredOnly))
+            {
+                string fieldLower = f.Name.ToLower();
+                if (fieldLower == nameLower)
+                    return f.Name;
+
+                int dist = LevenshteinDistance(nameLower, fieldLower);
+                if (dist < bestDistance && dist <= 3)
+                {
+                    bestDistance = dist;
+                    bestMatch = f.Name;
+                }
+            }
+            current = current.BaseType;
+        }
+        return bestMatch;
+    }
+
+    private static int LevenshteinDistance(string a, string b)
+    {
+        if (a.Length == 0) return b.Length;
+        if (b.Length == 0) return a.Length;
+
+        int[,] d = new int[a.Length + 1, b.Length + 1];
+        for (int i = 0; i <= a.Length; i++) d[i, 0] = i;
+        for (int j = 0; j <= b.Length; j++) d[0, j] = j;
+
+        for (int i = 1; i <= a.Length; i++)
+        {
+            for (int j = 1; j <= b.Length; j++)
+            {
+                int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
+                int del = d[i - 1, j] + 1;
+                int ins = d[i, j - 1] + 1;
+                int sub = d[i - 1, j - 1] + cost;
+                d[i, j] = del < ins ? (del < sub ? del : sub) : (ins < sub ? ins : sub);
+            }
+        }
+        return d[a.Length, b.Length];
     }
 
     /// <summary>
