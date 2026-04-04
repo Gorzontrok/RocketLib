@@ -127,11 +127,7 @@ namespace RocketLib.Menus.Core
             }
             else if (Kind == MenuKind.Flex)
             {
-                // FlexMenu always uses type-based creation
-                // Use reflection to call the generic Show<T> method
-                var showMethod = typeof(FlexMenu).GetMethod("Show", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-                var genericMethod = showMethod.MakeGenericMethod(MenuType);
-                genericMethod.Invoke(null, new object[] { null, parentMenu, "default" });
+                FlexMenu.Show(MenuType, parentGame: parentMenu);
             }
             else if (Kind == MenuKind.Action)
             {

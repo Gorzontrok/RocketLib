@@ -36,7 +36,10 @@ namespace RocketLib.UMM
 
         public static void OnGui(UnityModManager.ModEntry modEntry)
         {
-            _tabSelected = RGUI.Tab(_tabsName, _tabSelected, 10, 110);
+            WindowScaling.Enabled = settings.ScaleUIWithWindowWidth;
+            if (!WindowScaling.TryCaptureWidth()) return;
+
+            _tabSelected = RGUI.Tab(_tabsName, _tabSelected, 10, 110, scaleWithWindow: true);
 
             GUILayout.Space(30);
             Rect ToolTipRect = GUILayoutUtility.GetLastRect();
@@ -47,6 +50,7 @@ namespace RocketLib.UMM
         public static void MainGUI()
         {
             GUILayout.BeginVertical("box");
+            GUILayout.BeginHorizontal();
             if (settings.ShowLogOnScreen != (settings.ShowLogOnScreen = GUILayout.Toggle(settings.ShowLogOnScreen, "Enable OnScreenLog")))
             {
                 if (settings.ShowLogOnScreen)
@@ -54,6 +58,13 @@ namespace RocketLib.UMM
                     ScreenLogger.Load();
                 }
             }
+            settings.ScaleUIWithWindowWidth = GUILayout.Toggle(settings.ScaleUIWithWindowWidth, "Scale UI with window width");
+            if (settings.EnableDebugging != (settings.EnableDebugging = GUILayout.Toggle(settings.EnableDebugging, "RocketLib Debugging")))
+            {
+                if (settings.EnableDebugging)
+                    Main.RegisterTestMenus();
+            }
+            GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
 
@@ -61,7 +72,7 @@ namespace RocketLib.UMM
         {
             GUILayout.BeginVertical("box");
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Clear Log on screen", GUILayout.Width(150)))
+            if (GUILayout.Button("Clear Log on screen", WindowScaling.ScaledWidth(150)))
             {
                 ScreenLogger.Instance.Clear();
             }
@@ -72,12 +83,12 @@ namespace RocketLib.UMM
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Time before log disappear : " + settings.LogTimer.ToString(), GUILayout.ExpandWidth(false));
-            settings.LogTimer = (int)GUILayout.HorizontalScrollbar(settings.LogTimer, 1f, 1f, 11f, GUILayout.MaxWidth(200));
+            settings.LogTimer = (int)GUILayout.HorizontalScrollbar(settings.LogTimer, 1f, 1f, 11f, WindowScaling.ScaledWidth(200));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Log Font Size : " + settings.FontSize.ToString(), GUILayout.ExpandWidth(false));
-            settings.FontSize = (int)GUILayout.HorizontalScrollbar(settings.FontSize, 1f, 1f, 25f, GUILayout.MaxWidth(200));
+            settings.FontSize = (int)GUILayout.HorizontalScrollbar(settings.FontSize, 1f, 1f, 25f, WindowScaling.ScaledWidth(200));
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
@@ -86,9 +97,9 @@ namespace RocketLib.UMM
         {
             GUILayout.BeginVertical("box");
             GUILayout.BeginHorizontal();
-            _sceneStr = GUILayout.TextField(_sceneStr, GUILayout.Width(200));
-            GUILayout.Space(10);
-            if (GUILayout.Button("Load Scene", new GUILayoutOption[] { GUILayout.Width(150) }))
+            _sceneStr = GUILayout.TextField(_sceneStr, WindowScaling.ScaledWidth(200));
+            WindowScaling.ScaledSpace(10);
+            if (GUILayout.Button("Load Scene", WindowScaling.ScaledWidth(150)))
             {
                 try
                 {
@@ -101,7 +112,7 @@ namespace RocketLib.UMM
             }
             GUILayout.EndHorizontal();
             GUILayout.Space(10);
-            if (GUILayout.Button("Load Main Menu", new GUILayoutOption[] { GUILayout.Width(150) }))
+            if (GUILayout.Button("Load Main Menu", WindowScaling.ScaledWidth(150)))
             {
                 try
                 {
@@ -148,7 +159,7 @@ namespace RocketLib.UMM
                         GUILayout.Space(30);
                     }
                 }
-                if (GUILayout.Button("Clear All", GUILayout.Width(100)))
+                if (GUILayout.Button("Clear All", WindowScaling.ScaledWidth(100)))
                 {
                     AllModKeyBindings.ClearKeyBindingsForMod("RocketLib");
                 }

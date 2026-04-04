@@ -125,7 +125,7 @@ namespace RocketLib
         /// <param name="Space"></param>
         /// <param name="TabWidth"></param>
         /// <returns></returns>
-        public static int Tab(string[] Strings, int Number, int Space, int TabWidth)
+        public static int Tab(string[] Strings, int Number, int Space, int TabWidth, bool scaleWithWindow = false)
         {
             var TabStyle = new GUIStyle("button");
             var ActiveTabStyle = new GUIStyle("button");
@@ -133,7 +133,8 @@ namespace RocketLib
             GUILayout.BeginHorizontal();
             for (int i = 0; i < Strings.Length; i++)
             {
-                if (GUILayout.Button(Strings[i], (i == Number ? ActiveTabStyle : TabStyle), GUILayout.Width(TabWidth))) return i;
+                var widthOption = scaleWithWindow ? UMM.WindowScaling.ScaledWidth(TabWidth) : GUILayout.Width(TabWidth);
+                if (GUILayout.Button(Strings[i], (i == Number ? ActiveTabStyle : TabStyle), widthOption)) return i;
                 GUILayout.Space(Space);
             }
             GUILayout.EndHorizontal();

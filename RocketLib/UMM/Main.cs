@@ -68,43 +68,62 @@ namespace RocketLib.UMM
             // Initialize ModOptionsMenu to show in menus
             RocketLib.Menus.Vanilla.ModOptionsMenu.Initialize();
 
+            if (settings.EnableDebugging)
+                RegisterTestMenus();
+
             return true;
         }
 
-        static void RegisterTestMenus()
+        internal static void RegisterTestMenus()
         {
             try
             {
+                // Vanilla-style submenu examples
                 RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.VanillaSubmenuExample>(
-                    displayText: "TEST MAINMENU",
+                    displayText: "TEST VANILLA SUBMENU",
                     targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
                     position: RocketLib.Menus.Core.PositionMode.After,
                     positionReference: "START",
                     priority: 100
                 );
 
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.VanillaSubmenuExample>(
-                    displayText: "TEST OPTIONS MAINMENU",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.OptionsMenu,
+                // FlexMenu examples
+                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.BasicFlexMenuExample>(
+                    displayText: "TEST BASIC FLEXMENU",
+                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
                     position: RocketLib.Menus.Core.PositionMode.After,
-                    positionReference: "CONFIGURE CONTROLS",
-                    priority: 100
+                    positionReference: "START",
+                    priority: 99
                 );
 
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.VanillaSubmenuExample>(
-                    displayText: "TEST PAUSEMENU",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.PauseMenu,
+                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.GridLayoutExample>(
+                    displayText: "TEST GRID LAYOUT",
+                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
                     position: RocketLib.Menus.Core.PositionMode.After,
-                    positionReference: "RESUME GAME",
-                    priority: 100
+                    positionReference: "START",
+                    priority: 98
                 );
 
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.VanillaSubmenuExample>(
-                    displayText: "TEST OPTIONS PAUSEMENU",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.InGameOptionsMenu,
+                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.PaginatedGridExample>(
+                    displayText: "TEST PAGINATED GRID",
+                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
                     position: RocketLib.Menus.Core.PositionMode.After,
-                    positionReference: "BACK",
-                    priority: 100
+                    positionReference: "START",
+                    priority: 97
+                );
+
+                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.TransitionTestMenu>(
+                    displayText: "TEST TRANSITIONS",
+                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
+                    position: RocketLib.Menus.Core.PositionMode.After,
+                    positionReference: "START",
+                    priority: 96
+                );
+
+                // Mod options example
+                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.ModOptionsExample>(
+                    displayText: "Test Mod Options",
+                    targetMenu: RocketLib.Menus.Core.TargetMenu.ModOptions
                 );
 
                 Logger.Log("Test menus registered successfully");
@@ -173,6 +192,12 @@ namespace RocketLib.UMM
         public float LogTimer = 3;
         public int FontSize = 13;
         public bool ShowDebugLogs = false;
+
+        // UI Options
+        public bool ScaleUIWithWindowWidth = true;
+
+        // Debug Options
+        public bool EnableDebugging = false;
 
         public override void Save(UnityModManager.ModEntry modEntry)
         {
