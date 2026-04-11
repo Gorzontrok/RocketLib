@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using TFBGames.Systems;
 using UnityEngine;
+// ReSharper disable ShaderLabShaderReferenceNotResolved
 
 namespace RocketLib.Utils
 {
@@ -12,39 +13,23 @@ namespace RocketLib.Utils
         /// <summary>
         /// Particles/Alpha Blended
         /// </summary>
-        public static Shader Particle_AlphaBlend
-        {
-            get
-            {
-                return Shader.Find("Particles/Alpha Blended");
-            }
-        }
+        public static Shader Particle_AlphaBlend => Shader.Find("Particles/Alpha Blended");
 
         /// <summary>
         /// Unlit/Depth Cutout With ColouredImage
         /// </summary>
-        public static Shader Unlit_DepthCutout
-        {
-            get
-            {
-                return Shader.Find("Unlit/Depth Cutout With ColouredImage");
-            }
-        }
+        public static Shader Unlit_DepthCutout => Shader.Find("Unlit/Depth Cutout With ColouredImage");
 
         /// <summary>
         /// Particle/Additive
         /// </summary>
-        public static Shader Particle
-        {
-            get
-            {
-                return Shader.Find("Particle/Additive");
-            }
-        }
+        public static Shader Particle => Shader.Find("Particle/Additive");
 
-        private static readonly Dictionary<string, Material> materials = new Dictionary<string, Material>();
-        private static readonly Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
-        private static readonly Dictionary<string, AudioClip> audioClips = new Dictionary<string, AudioClip>();
+        public static string resourceFolder = "BroMaker.Assets.";
+
+        private static readonly Dictionary<string, Material> _materials = new Dictionary<string, Material>();
+        private static readonly Dictionary<string, Texture2D> _textures = new Dictionary<string, Texture2D>();
+        private static readonly Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
 
         /// <summary>
         /// Creates a Material using the shader Unlit_DepthCutout.
@@ -66,20 +51,17 @@ namespace RocketLib.Utils
         /// <returns></returns>
         public static Material GetMaterial(string filePath)
         {
-            // Ensure path is absolute
-            filePath = Path.GetFullPath(filePath);
-
-            Material result = null;
-            if (materials.ContainsKey(filePath))
+            Material result;
+            if (_materials.TryGetValue(filePath, out Material material))
             {
-                return materials[filePath];
+                return material;
             }
 
             if (File.Exists(filePath))
             {
                 result = CreateMaterial(filePath, Unlit_DepthCutout);
             }
-            else if (filePath.Contains(":") && filePath[1] != ':')
+            else if (filePath.Contains(":") && filePath[1] != ':') // Second condition is here to make sure it is not a disk path
             {
                 result = LoadAssetSync<Material>(filePath);
             }
@@ -90,7 +72,7 @@ namespace RocketLib.Utils
 
             if (result != null)
             {
-                materials.Add(filePath, result);
+                _materials.Add(filePath, result);
             }
             return result;
         }
@@ -103,8 +85,6 @@ namespace RocketLib.Utils
         /// <returns></returns>
         public static Material CreateMaterial(byte[] imageBytes)
         {
-            Material result = null;
-
             var tex = CreateTexture(imageBytes);
             if (tex != null)
             {
@@ -113,7 +93,7 @@ namespace RocketLib.Utils
                 return mat;
             }
 
-            return result;
+            return null;
         }
 
         /// <summary>
@@ -126,7 +106,7 @@ namespace RocketLib.Utils
         public static Material CreateMaterial(string filePath, Shader shader)
         {
             var tex = CreateTexture(filePath);
-            if (tex != null)
+            if (tex)
             {
                 var mat = new Material(shader);
                 mat.mainTexture = tex;
@@ -174,19 +154,15 @@ namespace RocketLib.Utils
         /// <returns></returns>
         public static Texture2D GetTexture(string filePath)
         {
-            // Ensure path is absolute
-            filePath = Path.GetFullPath(filePath);
-
-            Texture2D tex = null;
-            textures.TryGetValue(filePath, out tex);
-            if (tex != null)
+            _textures.TryGetValue(filePath, out Texture2D tex);
+            if (tex)
                 return tex;
 
             if (File.Exists(filePath))
             {
                 tex = CreateTexture(filePath);
             }
-            else if (filePath.Contains(":") && filePath[1] != ':')
+            else if (filePath.Contains(":") && filePath[1] != ':') // Second condition is here to make sure it is not a disk path
             {
                 try
                 {
@@ -200,8 +176,8 @@ namespace RocketLib.Utils
             else
                 tex = CreateTexture(filePath);
 
-            if (tex != null)
-                textures.Add(filePath, tex);
+            if (tex)
+                _textures.Add(filePath, tex);
             return tex;
         }
 
@@ -249,39 +225,38 @@ namespace RocketLib.Utils
 
         /// <summary>
         /// Creates an AudioClip from an audio file.
-        /// Loads AudioClip from cache if created previously. Note that the same cached AudioClip can't be played several times simultaneously.
+        /// Loads AudioClip from cache if created previously.
+        /// IMPORTANT: MP3 files will not load.
         /// </summary>
-        /// <param name="path">Path to an audio file</param>
-        /// <param name="fileName">Name of an audio file</param>
+        /// <param name="path">Path to the directory that contains the audio file</param>
+        /// <param name="fileName">Filename of an audio file, including the extension</param>
         /// <returns></returns>
         public static AudioClip GetAudioClip(string path, string fileName)
         {
             // Get full path converts / to \ which is needed because WWW doesn't like /
-            return GetAudioClip(Path.Combine(path, fileName));
+            return GetAudioClip(Path.GetFullPath(Path.Combine(path, fileName)));
         }
 
         /// <summary>
         /// Creates an AudioClip from an audio file.
-        /// Loads AudioClip from cache if created previously. Note that the same cached AudioClip can't be played several times simultaneously.
+        /// Loads AudioClip from cache if created previously.
+        /// IMPORTANT: MP3 files will not load.
         /// </summary>
         /// <param name="filePath">Path to an audio file</param>
         /// <returns></returns>
         public static AudioClip GetAudioClip(string filePath)
         {
-            // Ensure path is absolute
-            filePath = Path.GetFullPath(filePath);
-
-            AudioClip result = null;
-            if (audioClips.ContainsKey(filePath))
+            AudioClip result;
+            if (_audioClips.TryGetValue(filePath, out AudioClip clip))
             {
-                return audioClips[filePath];
+                return clip;
             }
 
             if (File.Exists(filePath))
             {
                 result = CreateAudioClip(filePath);
             }
-            else if (filePath.Contains(":") && filePath[1] != ':')
+            else if (filePath.Contains(":") && filePath[1] != ':') // Second condition is here to make sure it is not a disk path
             {
                 result = LoadAssetSync<AudioClip>(filePath);
             }
@@ -290,9 +265,9 @@ namespace RocketLib.Utils
                 result = CreateAudioClip(filePath);
             }
 
-            if (result != null)
+            if (result)
             {
-                audioClips.Add(filePath, result);
+                _audioClips.Add(filePath, result);
             }
             return result;
         }
@@ -302,17 +277,17 @@ namespace RocketLib.Utils
         /// such as "file0.wav", "file1.wav", "file2.wav"
         /// </summary>
         /// <param name="path">Path to the directory that contains the audio files</param>
-        /// <param name="fileNameWithoutExtension">Filename of the audio files without the extension</param>
+        /// <param name="fileNameWithouExtension">Filename of the audio files without the extension</param>
         /// <param name="length">Number of files to load</param>
         /// <param name="startingNumber">Number of the first audio clip, defaults to 0</param>
         /// <param name="extension">Extension of the audio files, defaults to .wav</param>
         /// <returns></returns>
-        public static AudioClip[] GetAudioClipArray(string path, string fileNameWithoutExtension, int length, int startingNumber = 0, string extension = ".wav")
+        public static AudioClip[] GetAudioClipArray(string path, string fileNameWithouExtension, int length, int startingNumber = 0, string extension = ".wav")
         {
             AudioClip[] clips = new AudioClip[length];
             for (int i = 0 + startingNumber; i < length + startingNumber; ++i)
             {
-                clips[i - startingNumber] = GetAudioClip(path, fileNameWithoutExtension + i + extension);
+                clips[i - startingNumber] = GetAudioClip(path, fileNameWithouExtension + i + extension);
             }
 
             return clips;
@@ -321,6 +296,7 @@ namespace RocketLib.Utils
         /// <summary>
         /// Creates an AudioClip from an audio file.
         /// The AudioClip is not cached, use GetAudioClip is caching is desired.
+        /// IMPORTANT: MP3 files will not load.
         /// </summary>
         /// <param name="path">Path to an audio file</param>
         /// <param name="fileName">Name of an audio file</param>
@@ -342,7 +318,6 @@ namespace RocketLib.Utils
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("File not found", filePath);
-
             WWW getClip = new WWW("file:////" + filePath);
 
             while (!getClip.isDone)
@@ -373,7 +348,13 @@ namespace RocketLib.Utils
             {
                 if (resFilestream == null) return null;
                 byte[] ba = new byte[resFilestream.Length];
-                resFilestream.Read(ba, 0, ba.Length);
+                int offset = 0;
+                while (offset < ba.Length)
+                {
+                    int read = resFilestream.Read(ba, offset, ba.Length - offset);
+                    if (read == 0) break;
+                    offset += read;
+                }
                 return ba;
             }
         }
@@ -390,3 +371,5 @@ namespace RocketLib.Utils
         }
     }
 }
+
+
