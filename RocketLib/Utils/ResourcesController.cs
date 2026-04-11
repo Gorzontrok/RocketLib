@@ -18,7 +18,12 @@ namespace RocketLib.Utils
         /// <summary>
         /// Unlit/Depth Cutout With ColouredImage
         /// </summary>
-        public static Shader Unlit_DepthCutout => Shader.Find("Unlit/Depth Cutout With ColouredImage");
+        public static Shader Unlit_DepthCutoutColouredImage => Shader.Find("Unlit/Depth Cutout With ColouredImage");
+
+        /// <summary>
+        /// Unlit/Depth Cutout With Image
+        /// </summary>
+        public static Shader Unlit_DepthCutoutImage => Shader.Find("Unlit/Depth Cutout With Image");
 
         /// <summary>
         /// Particle/Additive
@@ -32,7 +37,7 @@ namespace RocketLib.Utils
         private static readonly Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
 
         /// <summary>
-        /// Creates a Material using the shader Unlit_DepthCutout.
+        /// Creates a Material using the shader Unlit_DepthCutoutColouredImage.
         /// Loads Material from cache if created previously.
         /// </summary>
         /// <param name="path">Path to an image or asset</param>
@@ -44,7 +49,7 @@ namespace RocketLib.Utils
         }
 
         /// <summary>
-        /// Creates a Material using the shader Unlit_DepthCutout.
+        /// Creates a Material using the shader Unlit_DepthCutoutColouredImage.
         /// Loads Material from cache if created previously.
         /// </summary>
         /// <param name="filePath">Path to an image or asset file</param>
@@ -59,7 +64,7 @@ namespace RocketLib.Utils
 
             if (File.Exists(filePath))
             {
-                result = CreateMaterial(filePath, Unlit_DepthCutout);
+                result = CreateMaterial(filePath, Unlit_DepthCutoutColouredImage);
             }
             else if (filePath.Contains(":") && filePath[1] != ':') // Second condition is here to make sure it is not a disk path
             {
@@ -67,7 +72,7 @@ namespace RocketLib.Utils
             }
             else
             {
-                result = CreateMaterial(filePath, Unlit_DepthCutout);
+                result = CreateMaterial(filePath, Unlit_DepthCutoutColouredImage);
             }
 
             if (result != null)
@@ -78,7 +83,7 @@ namespace RocketLib.Utils
         }
 
         /// <summary>
-        /// Creates a Material from an array of bytes using the shader Unlit_DepthCutout.
+        /// Creates a Material from an array of bytes using the shader Unlit_DepthCutoutColouredImage.
         /// The Material is not cached, use GetMaterial if caching is desired.
         /// </summary>
         /// <param name="imageBytes">Byte array to load image from</param>
@@ -88,7 +93,7 @@ namespace RocketLib.Utils
             var tex = CreateTexture(imageBytes);
             if (tex != null)
             {
-                var mat = new Material(Unlit_DepthCutout);
+                var mat = new Material(Unlit_DepthCutoutColouredImage);
                 mat.mainTexture = tex;
                 return mat;
             }
@@ -208,10 +213,6 @@ namespace RocketLib.Utils
 
             Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
             tex.LoadImage(imageBytes);
-            tex.filterMode = FilterMode.Point;
-            tex.anisoLevel = 1;
-            tex.mipMapBias = 0;
-            tex.wrapMode = TextureWrapMode.Clamp;
 
             // Textures always load as ARGB32 when loading from a png, so this is necessary to convert it to RGBA32
             Texture2D convertedTexture = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, false);
@@ -219,7 +220,9 @@ namespace RocketLib.Utils
             convertedTexture.anisoLevel = 1;
             convertedTexture.mipMapBias = 0;
             convertedTexture.wrapMode = TextureWrapMode.Clamp;
-            Graphics.ConvertTexture(tex, convertedTexture);
+            convertedTexture.SetPixels32(tex.GetPixels32());
+            convertedTexture.Apply();
+            UnityEngine.Object.Destroy(tex);
             return convertedTexture;
         }
 

@@ -670,9 +670,14 @@
             Particles/Alpha Blended
             </summary>
         </member>
-        <member name="P:RocketLib.Utils.ResourcesController.Unlit_DepthCutout">
+        <member name="P:RocketLib.Utils.ResourcesController.Unlit_DepthCutoutColouredImage">
             <summary>
             Unlit/Depth Cutout With ColouredImage
+            </summary>
+        </member>
+        <member name="P:RocketLib.Utils.ResourcesController.Unlit_DepthCutoutImage">
+            <summary>
+            Unlit/Depth Cutout With Image
             </summary>
         </member>
         <member name="P:RocketLib.Utils.ResourcesController.Particle">
@@ -682,7 +687,7 @@
         </member>
         <member name="M:RocketLib.Utils.ResourcesController.GetMaterial(System.String,System.String)">
             <summary>
-            Creates a Material using the shader Unlit_DepthCutout.
+            Creates a Material using the shader Unlit_DepthCutoutColouredImage.
             Loads Material from cache if created previously.
             </summary>
             <param name="path">Path to an image or asset</param>
@@ -691,7 +696,7 @@
         </member>
         <member name="M:RocketLib.Utils.ResourcesController.GetMaterial(System.String)">
             <summary>
-            Creates a Material using the shader Unlit_DepthCutout.
+            Creates a Material using the shader Unlit_DepthCutoutColouredImage.
             Loads Material from cache if created previously.
             </summary>
             <param name="filePath">Path to an image or asset file</param>
@@ -699,7 +704,7 @@
         </member>
         <member name="M:RocketLib.Utils.ResourcesController.CreateMaterial(System.Byte[])">
             <summary>
-            Creates a Material from an array of bytes using the shader Unlit_DepthCutout.
+            Creates a Material from an array of bytes using the shader Unlit_DepthCutoutColouredImage.
             The Material is not cached, use GetMaterial if caching is desired.
             </summary>
             <param name="imageBytes">Byte array to load image from</param>
