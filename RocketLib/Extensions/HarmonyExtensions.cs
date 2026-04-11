@@ -140,6 +140,7 @@ public static class HarmonyExtensions
     /// <param name="map">Key: Field Name | Value: the value to give to the field</param>
     /// <param name="skipTheseFields">Fields to ignore</param>
     /// <param name="setter">Custom action to set fields</param>
+    /// <param name="context">Optional label included in "field not found" warnings to identify the caller (e.g., a config section name). Defaults to null.</param>
     public static void DynamicFieldsValueSetter(this object obj, Dictionary<string, object> map, string[] skipTheseFields = null, Action<Traverse, string, object> setter = null, string context = null)
     {
         if (setter == null)

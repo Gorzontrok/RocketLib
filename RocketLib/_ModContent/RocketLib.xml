@@ -759,16 +759,18 @@
         <member name="M:RocketLib.Utils.ResourcesController.GetAudioClip(System.String,System.String)">
             <summary>
             Creates an AudioClip from an audio file.
-            Loads AudioClip from cache if created previously. Note that the same cached AudioClip can't be played several times simultaneously.
+            Loads AudioClip from cache if created previously.
+            IMPORTANT: MP3 files will not load.
             </summary>
-            <param name="path">Path to an audio file</param>
-            <param name="fileName">Name of an audio file</param>
+            <param name="path">Path to the directory that contains the audio file</param>
+            <param name="fileName">Filename of an audio file, including the extension</param>
             <returns></returns>
         </member>
         <member name="M:RocketLib.Utils.ResourcesController.GetAudioClip(System.String)">
             <summary>
             Creates an AudioClip from an audio file.
-            Loads AudioClip from cache if created previously. Note that the same cached AudioClip can't be played several times simultaneously.
+            Loads AudioClip from cache if created previously.
+            IMPORTANT: MP3 files will not load.
             </summary>
             <param name="filePath">Path to an audio file</param>
             <returns></returns>
@@ -779,7 +781,7 @@
             such as "file0.wav", "file1.wav", "file2.wav"
             </summary>
             <param name="path">Path to the directory that contains the audio files</param>
-            <param name="fileNameWithoutExtension">Filename of the audio files without the extension</param>
+            <param name="fileNameWithouExtension">Filename of the audio files without the extension</param>
             <param name="length">Number of files to load</param>
             <param name="startingNumber">Number of the first audio clip, defaults to 0</param>
             <param name="extension">Extension of the audio files, defaults to .wav</param>
@@ -789,6 +791,7 @@
             <summary>
             Creates an AudioClip from an audio file.
             The AudioClip is not cached, use GetAudioClip is caching is desired.
+            IMPORTANT: MP3 files will not load.
             </summary>
             <param name="path">Path to an audio file</param>
             <param name="fileName">Name of an audio file</param>
@@ -1089,13 +1092,14 @@
             <param name="Width"></param>
             <returns>Index of the array</returns>
         </member>
-        <member name="M:RocketLib.RGUI.Tab(System.String[],System.Int32,System.Int32,System.Int32)">
+        <member name="M:RocketLib.RGUI.Tab(System.String[],System.Int32,System.Int32,System.Int32,System.Boolean)">
             <summary>
             </summary>
             <param name="Strings"></param>
             <param name="Number"></param>
             <param name="Space"></param>
             <param name="TabWidth"></param>
+            <param name="scaleWithWindow">If true, <paramref name="TabWidth"/> scales with the UMM window via <see cref="M:RocketLib.UMM.WindowScaling.ScaledWidth(System.Single)"/>. Defaults to false (raw pixel width).</param>
             <returns></returns>
         </member>
         <member name="T:RocketLib.Menus.Vanilla.BaseCustomMenu">
@@ -2064,7 +2068,7 @@
             <param name="fieldName"></param>
             <returns></returns>
         </member>
-        <member name="M:HarmonyExtensions.DynamicFieldsValueSetter(System.Object,System.Collections.Generic.Dictionary{System.String,System.Object},System.String[],System.Action{HarmonyLib.Traverse,System.String,System.Object})">
+        <member name="M:HarmonyExtensions.DynamicFieldsValueSetter(System.Object,System.Collections.Generic.Dictionary{System.String,System.Object},System.String[],System.Action{HarmonyLib.Traverse,System.String,System.Object},System.String)">
             <summary>
             Set multiple fields on an object from a <see cref="!:Dictionary&lt;string, object&gt;"/>
             Can navigate through instances from fields using the separator <see cref="F:HarmonyExtensions.PATH_SEPARATOR"/> in the <see cref="!:Dictionary&lt;string, object&gt;"/> key.
@@ -2074,6 +2078,7 @@
             <param name="map">Key: Field Name | Value: the value to give to the field</param>
             <param name="skipTheseFields">Fields to ignore</param>
             <param name="setter">Custom action to set fields</param>
+            <param name="context">Optional label included in "field not found" warnings to identify the caller (e.g., a config section name). Defaults to null.</param>
         </member>
         <member name="M:HarmonyExtensions.FindFieldWithPath(System.Object,System.String)">
             <summary>

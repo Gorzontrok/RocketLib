@@ -124,6 +124,7 @@ namespace RocketLib
         /// <param name="Number"></param>
         /// <param name="Space"></param>
         /// <param name="TabWidth"></param>
+        /// <param name="scaleWithWindow">If true, <paramref name="TabWidth"/> scales with the UMM window via <see cref="UMM.WindowScaling.ScaledWidth(float)"/>. Defaults to false (raw pixel width).</param>
         /// <returns></returns>
         public static int Tab(string[] Strings, int Number, int Space, int TabWidth, bool scaleWithWindow = false)
         {
