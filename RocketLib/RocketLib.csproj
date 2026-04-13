@@ -190,6 +190,7 @@
     <Compile Include="CustomTriggers\CustomTriggerActionInfo.cs" />
     <Compile Include="CustomTriggers\CustomTriggerManager.cs" />
     <Compile Include="CustomTriggers\CustomTriggerPatches.cs" />
+    <Compile Include="Network\NetworkPatches.cs" />
     <Compile Include="CustomTriggers\CustomTriggerStateManager.cs" />
     <Compile Include="CustomTriggers\LevelStartTriggerActionInfo.cs" />
     <Compile Include="CustomTriggers\LevelStartTriggerAction.cs" />
