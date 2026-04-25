@@ -200,7 +200,7 @@
     <Compile Include="UMM\Mod.cs" />
     <Compile Include="UMM\ModSave.cs" />
     <Compile Include="UMM\ModUI.cs" />
-    <Compile Include="UMM\DoNotDestroyUMMPatches.cs" />
+    <Compile Include="UMM\UMMPatches.cs" />
     <Compile Include="UMM\WindowScaling.cs" />
   </ItemGroup>
   <ItemGroup>
