@@ -114,6 +114,7 @@
     <Compile Include="JsonConverters\ColorJsonConverter.cs" />
     <Compile Include="Loggers\Loggers.cs" />
     <Compile Include="RocketMain.cs" />
+    <Compile Include="Utils\UniqueNum.cs" />
     <Compile Include="Utils\DrawDebug.cs" />
     <Compile Include="Utils\ObjectComparer.cs" />
     <Compile Include="Utils\RocketLibUtils.cs" />

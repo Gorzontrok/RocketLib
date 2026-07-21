@@ -343,6 +343,11 @@
             RocketLib settings
             </summary>
         </member>
+        <member name="T:RocketLib.Utils.UniqueNum">
+            <summary>
+            This Player Num take damage from everyone and does damages to everyone except players.
+            </summary>
+        </member>
         <member name="M:RocketLib.Utils.DrawDebug.DrawLine(System.String,UnityEngine.Vector3,UnityEngine.Vector3,UnityEngine.Color,System.Single)">
             <summary>
             Draw a debug line
