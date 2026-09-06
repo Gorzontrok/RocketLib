@@ -280,7 +280,8 @@ namespace RocketLib.Menus.Utilities
             }
         }
 
-        private static Font GetFont(BroforceFont font)
+        /// <summary>Gets the Broforce-bundled `Font` resource for the given enum, or null if not loaded.</summary>
+        public static Font GetFont(BroforceFont font)
         {
             if (!fontNameMap.ContainsKey(font))
             {
@@ -289,17 +290,57 @@ namespace RocketLib.Menus.Utilities
             }
 
             string fontName = fontNameMap[font];
-            if (!fontCache.ContainsKey(fontName))
+            Font cached;
+            if (TryGetCachedFont(fontName, out cached))
             {
-                LoadFonts();
-                if (!fontCache.ContainsKey(fontName))
-                {
-                    RocketMain.Logger.Error($"[FontManager] Font '{fontName}' not found in Resources");
-                    return null;
-                }
+                return cached;
             }
 
-            return fontCache[fontName];
+            LoadFonts();
+            if (!TryGetCachedFont(fontName, out cached))
+            {
+                RocketMain.Logger.Error($"[FontManager] Font '{fontName}' not found in Resources");
+                return null;
+            }
+
+            return cached;
+        }
+
+        /// <summary>Gets the Broforce-bundled `Font` resource for the given enum, or null if not loaded. Unlike <see cref="GetFont"/>, a miss is silent — use this when the font may legitimately not be loaded yet.</summary>
+        public static Font TryGetFont(BroforceFont font)
+        {
+            if (!fontNameMap.ContainsKey(font))
+            {
+                return null;
+            }
+
+            string fontName = fontNameMap[font];
+            Font cached;
+            if (TryGetCachedFont(fontName, out cached))
+            {
+                return cached;
+            }
+
+            LoadFonts();
+            return TryGetCachedFont(fontName, out cached) ? cached : null;
+        }
+
+        // A cached Font destroyed on a scene unload compares equal to null but still sits in the dictionary.
+        private static bool TryGetCachedFont(string fontName, out Font font)
+        {
+            if (!fontCache.TryGetValue(fontName, out font))
+            {
+                return false;
+            }
+
+            if (font != null)
+            {
+                return true;
+            }
+
+            fontCache.Remove(fontName);
+            font = null;
+            return false;
         }
 
         private static bool IsDynamicFont(Font font)
