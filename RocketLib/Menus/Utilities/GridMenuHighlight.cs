@@ -89,7 +89,7 @@ namespace RocketLib.Menus.Utilities
         public void SetTargetBounds(Rect bounds)
         {
             Vector3 center = new Vector3(bounds.center.x, bounds.center.y, 0f);
-            Vector3 size = new Vector3(bounds.width + BorderPadding * 2, bounds.height + BorderPadding * 2, 1f);
+            Vector3 size = new Vector3(bounds.width + (BorderPadding * 2), bounds.height + (BorderPadding * 2), 1f);
             SetTargetPos(center, bounceOnMove);
             SetTargetSize(size, false);
         }
@@ -103,7 +103,7 @@ namespace RocketLib.Menus.Utilities
         public void SetBoundsImmediate(Rect bounds)
         {
             Vector3 center = new Vector3(bounds.center.x, bounds.center.y, 0f);
-            Vector3 size = new Vector3(bounds.width + BorderPadding * 2, bounds.height + BorderPadding * 2, 1f);
+            Vector3 size = new Vector3(bounds.width + (BorderPadding * 2), bounds.height + (BorderPadding * 2), 1f);
             targetPos = center;
             transform.localPosition = new Vector3(center.x, center.y, zOffset);
             SetTargetSize(size, false);
@@ -131,8 +131,8 @@ namespace RocketLib.Menus.Utilities
                 bouncingHighlightCounter += Time.deltaTime * 2f;
                 float num = Mathf.Clamp((0.7f - bouncingHighlightCounter) * 3f, 0f, 1f);
                 float num2 = 1f - num;
-                float num3 = Mathf.Sin(bouncingHighlightCounter * 3f + 1f / (0.1f + bouncingHighlightCounter * bouncingHighlightCounter * 2f));
-                transform.localScale = new Vector3((1f + num3 * 0.04f) * num + num2, (1f + num3 * 0.07f) * num + num2, 1f);
+                float num3 = Mathf.Sin((bouncingHighlightCounter * 3f) + (1f / (0.1f + (bouncingHighlightCounter * bouncingHighlightCounter * 2f))));
+                transform.localScale = new Vector3(((1f + (num3 * 0.04f)) * num) + num2, ((1f + (num3 * 0.07f)) * num) + num2, 1f);
             }
 
             Vector3 newPos = Vector3.Lerp(transform.localPosition, targetPos, Time.deltaTime * speed);
@@ -167,7 +167,7 @@ namespace RocketLib.Menus.Utilities
 
             // Scale corners based on border thickness
             // Original corner size is 21x21 pixels, which matches a 10f border thickness
-            float scaledCornerSize = (BorderThickness / 10f) * cornerSize;
+            float scaledCornerSize = BorderThickness / 10f * cornerSize;
             float halfCorner = scaledCornerSize * 0.5f;
 
             if (cornerTopLeft != null)
@@ -196,26 +196,26 @@ namespace RocketLib.Menus.Utilities
 
             if (sideTop != null)
             {
-                sideTop.transform.localPosition = new Vector3(0f, halfHeight - BorderThickness * 0.5f, 0f);
-                sideTop.SetSize(targetSize.x - scaledCornerSize * 2f, BorderThickness);
+                sideTop.transform.localPosition = new Vector3(0f, halfHeight - (BorderThickness * 0.5f), 0f);
+                sideTop.SetSize(targetSize.x - (scaledCornerSize * 2f), BorderThickness);
             }
 
             if (sideBottom != null)
             {
-                sideBottom.transform.localPosition = new Vector3(0f, -halfHeight + BorderThickness * 0.5f, 0f);
-                sideBottom.SetSize(targetSize.x - scaledCornerSize * 2f, BorderThickness);
+                sideBottom.transform.localPosition = new Vector3(0f, -halfHeight + (BorderThickness * 0.5f), 0f);
+                sideBottom.SetSize(targetSize.x - (scaledCornerSize * 2f), BorderThickness);
             }
 
             if (sideLeft != null)
             {
-                sideLeft.transform.localPosition = new Vector3(-halfWidth + BorderThickness * 0.5f, 0f, 0f);
-                sideLeft.SetSize(BorderThickness, targetSize.y - scaledCornerSize * 2f);
+                sideLeft.transform.localPosition = new Vector3(-halfWidth + (BorderThickness * 0.5f), 0f, 0f);
+                sideLeft.SetSize(BorderThickness, targetSize.y - (scaledCornerSize * 2f));
             }
 
             if (sideRight != null)
             {
-                sideRight.transform.localPosition = new Vector3(halfWidth - BorderThickness * 0.5f, 0f, 0f);
-                sideRight.SetSize(BorderThickness, targetSize.y - scaledCornerSize * 2f);
+                sideRight.transform.localPosition = new Vector3(halfWidth - (BorderThickness * 0.5f), 0f, 0f);
+                sideRight.SetSize(BorderThickness, targetSize.y - (scaledCornerSize * 2f));
             }
         }
     }

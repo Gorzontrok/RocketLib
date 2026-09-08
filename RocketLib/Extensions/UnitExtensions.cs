@@ -1,6 +1,4 @@
-﻿
-
-namespace RocketLib
+﻿namespace RocketLib
 {
     public static class UnitExtensions
     {

@@ -37,7 +37,7 @@ namespace RocketLib
             // Load Newtonsoft
             try
             {
-                Assembly.LoadFile(Path.Combine(UMM.Main.Mod.Path, NEWTONSOFT_ASSEMBLY_NAME));
+                Assembly.LoadFile(Path.Combine(Main.Mod.Path, NEWTONSOFT_ASSEMBLY_NAME));
             }
             catch (Exception ex)
             {
@@ -87,8 +87,7 @@ namespace RocketLib
                 positionReference: "OPTIONS"
             );
 
-            RocketMain.Logger.Log("Test menus registered successfully");
+            Logger.Log("Test menus registered successfully");
         }
     }
 }
-

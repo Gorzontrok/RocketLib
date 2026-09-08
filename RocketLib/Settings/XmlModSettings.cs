@@ -7,14 +7,14 @@ namespace RocketLib.Settings
     /// Inherits from UnityModManager.ModSettings and adds automatic recovery when deserialization fails.
     /// </summary>
     /// <example>
-    /// <code>
+    ///     <code>
     /// public class Settings : XmlModSettings
     /// {
     ///     public override int SettingsVersion { get; set; } = 1;
     ///     public bool MyOption = true;
     ///     public int MyValue = 42;
     /// }
-    ///
+    /// 
     /// // In your mod's Load method:
     /// settings = XmlModSettings.Load&lt;Settings&gt;(modEntry);
     /// </code>
@@ -22,7 +22,7 @@ namespace RocketLib.Settings
     /// <remarks>
     /// Settings are saved to the mod's ConfigPath directory (persists across Thunderstore updates).
     /// When SettingsVersion is 0 after loading, it indicates deserialization failed and recovery is attempted
-    /// using <see cref="SettingsRecovery.TryRecoverSettings{T}"/>.
+    /// using <see cref="SettingsRecovery.TryRecoverSettings{T}" />.
     /// </remarks>
     public abstract class XmlModSettings : UnityModManager.ModSettings
     {
@@ -48,7 +48,9 @@ namespace RocketLib.Settings
                 settings = SettingsRecovery.TryRecoverSettings<T>(settingsPath, settings);
 
                 if (settings.SettingsVersion == 0)
+                {
                     settings.SettingsVersion = 1;
+                }
             }
 
             return settings;

@@ -13,11 +13,9 @@ namespace RocketLib
     [Serializable]
     public class SerializableKeyValuePair<TKey, TValue>
     {
-        [XmlElement("Key")]
-        public TKey Key { get; set; }
+        [XmlElement("Key")] public TKey Key { get; set; }
 
-        [XmlElement("Value")]
-        public TValue Value { get; set; }
+        [XmlElement("Value")] public TValue Value { get; set; }
 
         public SerializableKeyValuePair() { }
 
@@ -41,7 +39,9 @@ public static class DictionarySerializationExtensions
         this Dictionary<TKey, TValue> dictionary)
     {
         if (dictionary == null)
+        {
             return new RocketLib.SerializableKeyValuePair<TKey, TValue>[0];
+        }
 
         return dictionary.Select(kvp => new RocketLib.SerializableKeyValuePair<TKey, TValue>(kvp.Key, kvp.Value)).ToArray();
     }
@@ -53,9 +53,11 @@ public static class DictionarySerializationExtensions
         this RocketLib.SerializableKeyValuePair<TKey, TValue>[] array)
     {
         if (array == null)
+        {
             return new Dictionary<TKey, TValue>();
+        }
 
-        return System.Linq.Enumerable.ToDictionary(array, kvp => kvp.Key, kvp => kvp.Value);
+        return Enumerable.ToDictionary(array, kvp => kvp.Key, kvp => kvp.Value);
     }
 
     /// <summary>
@@ -66,7 +68,9 @@ public static class DictionarySerializationExtensions
         Func<KeyValuePair<TKey, TValue>, TWrapper> converter)
     {
         if (dictionary == null)
+        {
             return new TWrapper[0];
+        }
 
         return dictionary.Select(converter).ToArray();
     }
@@ -80,8 +84,10 @@ public static class DictionarySerializationExtensions
         Func<TWrapper, TValue> valueSelector)
     {
         if (array == null)
+        {
             return new Dictionary<TKey, TValue>();
+        }
 
-        return System.Linq.Enumerable.ToDictionary(array, keySelector, valueSelector);
+        return Enumerable.ToDictionary(array, keySelector, valueSelector);
     }
 }

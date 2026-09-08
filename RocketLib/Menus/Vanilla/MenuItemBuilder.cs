@@ -93,7 +93,7 @@ namespace RocketLib.Menus.Vanilla
         /// <returns>This builder for chaining</returns>
         public MenuItemBuilder WithData(object data)
         {
-            this.customData = data;
+            customData = data;
             return this;
         }
 
@@ -167,6 +167,7 @@ namespace RocketLib.Menus.Vanilla
 
         private static readonly System.Collections.Generic.Dictionary<string, Action> dynamicActions =
             new System.Collections.Generic.Dictionary<string, Action>();
+
         public class ToggleActionPair
         {
             public Action<bool> Toggle { get; set; }
@@ -175,6 +176,7 @@ namespace RocketLib.Menus.Vanilla
 
         private static readonly System.Collections.Generic.Dictionary<string, ToggleActionPair> toggleActions =
             new System.Collections.Generic.Dictionary<string, ToggleActionPair>();
+
         private static readonly System.Collections.Generic.Dictionary<string, object> customDataStorage =
             new System.Collections.Generic.Dictionary<string, object>();
 

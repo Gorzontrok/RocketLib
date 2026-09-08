@@ -24,10 +24,16 @@ namespace RocketLib.Menus.Layout
 
         protected override void ArrangeChildren()
         {
-            if (Children.Count == 0) return;
+            if (Children.Count == 0)
+            {
+                return;
+            }
 
-            var childrenToPosition = this.GetChildrenToPosition();
-            if (childrenToPosition.Count == 0) return;
+            var childrenToPosition = GetChildrenToPosition();
+            if (childrenToPosition.Count == 0)
+            {
+                return;
+            }
 
             float availableWidth = ActualSize.x - (Padding * 2);
             float availableHeight = ActualSize.y - (Padding * 2);
@@ -68,7 +74,7 @@ namespace RocketLib.Menus.Layout
                         childWidth = Mathf.Min(child.Width, cellWidth);
                         break;
                     case SizeMode.Percentage:
-                        childWidth = (child.Width / 100f) * cellWidth;
+                        childWidth = child.Width / 100f * cellWidth;
                         break;
 
                     case SizeMode.Fill:
@@ -81,17 +87,29 @@ namespace RocketLib.Menus.Layout
                         childHeight = Mathf.Min(child.Height, cellHeight);
                         break;
                     case SizeMode.Percentage:
-                        childHeight = (child.Height / 100f) * cellHeight;
+                        childHeight = child.Height / 100f * cellHeight;
                         break;
 
                     case SizeMode.Fill:
                         break;
                 }
 
-                if (child.MinSize.x > 0) childWidth = Mathf.Max(childWidth, child.MinSize.x);
-                if (child.MaxSize.x > 0) childWidth = Mathf.Min(childWidth, child.MaxSize.x);
-                if (child.MinSize.y > 0) childHeight = Mathf.Max(childHeight, child.MinSize.y);
-                if (child.MaxSize.y > 0) childHeight = Mathf.Min(childHeight, child.MaxSize.y);
+                if (child.MinSize.x > 0)
+                {
+                    childWidth = Mathf.Max(childWidth, child.MinSize.x);
+                }
+                if (child.MaxSize.x > 0)
+                {
+                    childWidth = Mathf.Min(childWidth, child.MaxSize.x);
+                }
+                if (child.MinSize.y > 0)
+                {
+                    childHeight = Mathf.Max(childHeight, child.MinSize.y);
+                }
+                if (child.MaxSize.y > 0)
+                {
+                    childHeight = Mathf.Min(childHeight, child.MaxSize.y);
+                }
 
                 childWidth = Mathf.Min(childWidth, cellWidth);
                 childHeight = Mathf.Min(childHeight, cellHeight);
@@ -131,7 +149,10 @@ namespace RocketLib.Menus.Layout
 
         private void DetectOverflow(List<LayoutElement> childrenToPosition, int actualColumns, int actualRows)
         {
-            if (childrenToPosition.Count == 0) return;
+            if (childrenToPosition.Count == 0)
+            {
+                return;
+            }
 
             // Get actual camera bounds dynamically
             float screenTop, screenBottom, screenLeft, screenRight;
@@ -154,10 +175,16 @@ namespace RocketLib.Menus.Layout
                 {
                     string childName = string.IsNullOrEmpty(child.Name) ? child.GetType().Name : child.Name;
                     string issue = "";
-                    if (childTop > screenTop) issue = $"top {childTop:F0} > screen {screenTop:F0}";
+                    if (childTop > screenTop)
+                    {
+                        issue = $"top {childTop:F0} > screen {screenTop:F0}";
+                    }
                     if (childBottom < screenBottom)
                     {
-                        if (!string.IsNullOrEmpty(issue)) issue += ", ";
+                        if (!string.IsNullOrEmpty(issue))
+                        {
+                            issue += ", ";
+                        }
                         issue += $"bottom {childBottom:F0} < screen {screenBottom:F0}";
                     }
                     offScreenElements.Add($"{child.GetType().Name} '{childName}' ({issue})");
@@ -196,9 +223,5 @@ namespace RocketLib.Menus.Layout
                 }
             }
         }
-
-
-
-
     }
 }

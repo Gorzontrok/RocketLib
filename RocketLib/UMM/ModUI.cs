@@ -10,6 +10,7 @@ namespace RocketLib.UMM
     internal static class ModUI
     {
         public const int KEYBIND_WINDOW_ID = -1;
+
         private static Settings settings
         {
             get { return Main.settings; }
@@ -37,7 +38,10 @@ namespace RocketLib.UMM
         public static void OnGui(UnityModManager.ModEntry modEntry)
         {
             WindowScaling.Enabled = settings.ScaleUIWithWindowWidth;
-            if (!WindowScaling.TryCaptureWidth()) return;
+            if (!WindowScaling.TryCaptureWidth())
+            {
+                return;
+            }
 
             _tabSelected = RGUI.Tab(_tabsName, _tabSelected, 10, 110, scaleWithWindow: true);
 
@@ -62,7 +66,9 @@ namespace RocketLib.UMM
             if (settings.EnableDebugging != (settings.EnableDebugging = GUILayout.Toggle(settings.EnableDebugging, "RocketLib Debugging")))
             {
                 if (settings.EnableDebugging)
+                {
                     Main.RegisterTestMenus();
+                }
             }
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();

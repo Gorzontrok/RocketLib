@@ -47,9 +47,9 @@ namespace RocketLib.Menus.Layout
         private FlexMenu parentMenu;
 
         // Layout zones
-        private const float BUTTON_WIDTH = 40f;  // Smaller width
-        private const float BUTTON_HEIGHT = 30f;  // Smaller height
-        private const float BUTTON_MARGIN = 5f;  // Much less margin
+        private const float BUTTON_WIDTH = 40f; // Smaller width
+        private const float BUTTON_HEIGHT = 30f; // Smaller height
+        private const float BUTTON_MARGIN = 5f; // Much less margin
 
         public PaginatedGridContainer(string name = "PaginatedGridContainer") : base(name)
         {
@@ -104,8 +104,8 @@ namespace RocketLib.Menus.Layout
                 Padding = GridPadding,
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fill,
-                IsVisible = (pageIndex == CurrentPage),
-                IsFocusable = false  // Grid containers themselves should never be focusable
+                IsVisible = pageIndex == CurrentPage,
+                IsFocusable = false // Grid containers themselves should never be focusable
             };
 
             // Add items to this page
@@ -127,7 +127,7 @@ namespace RocketLib.Menus.Layout
             if (previousButton != null)
             {
                 previousButton.ActualPosition = new Vector2(
-                    ActualPosition.x - (ActualSize.x / 2) + BUTTON_WIDTH / 2 + BUTTON_MARGIN,
+                    ActualPosition.x - (ActualSize.x / 2) + (BUTTON_WIDTH / 2) + BUTTON_MARGIN,
                     ActualPosition.y
                 );
                 previousButton.ActualSize = new Vector2(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -136,7 +136,7 @@ namespace RocketLib.Menus.Layout
             if (nextButton != null)
             {
                 nextButton.ActualPosition = new Vector2(
-                    ActualPosition.x + (ActualSize.x / 2) - BUTTON_WIDTH / 2 - BUTTON_MARGIN,
+                    ActualPosition.x + (ActualSize.x / 2) - (BUTTON_WIDTH / 2) - BUTTON_MARGIN,
                     ActualPosition.y
                 );
                 nextButton.ActualSize = new Vector2(BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -146,7 +146,7 @@ namespace RocketLib.Menus.Layout
             float gridAreaLeft = ActualPosition.x - (ActualSize.x / 2) + BUTTON_WIDTH + BUTTON_MARGIN;
             float gridAreaRight = ActualPosition.x + (ActualSize.x / 2) - BUTTON_WIDTH - BUTTON_MARGIN;
             float gridAreaWidth = gridAreaRight - gridAreaLeft;
-            float gridCenterX = gridAreaLeft + gridAreaWidth / 2;
+            float gridCenterX = gridAreaLeft + (gridAreaWidth / 2);
 
             // Position grids
             for (int i = 0; i < gridPages.Count; i++)
@@ -234,7 +234,10 @@ namespace RocketLib.Menus.Layout
         /// </summary>
         public void NextPage()
         {
-            if (isTransitioning || CurrentPage >= TotalPages - 1) return;
+            if (isTransitioning || CurrentPage >= TotalPages - 1)
+            {
+                return;
+            }
 
             StartTransition(CurrentPage, CurrentPage + 1, -1f);
         }
@@ -244,7 +247,10 @@ namespace RocketLib.Menus.Layout
         /// </summary>
         public void PreviousPage()
         {
-            if (isTransitioning || CurrentPage <= 0) return;
+            if (isTransitioning || CurrentPage <= 0)
+            {
+                return;
+            }
 
             StartTransition(CurrentPage, CurrentPage - 1, 1f);
         }
@@ -254,7 +260,10 @@ namespace RocketLib.Menus.Layout
         /// </summary>
         public void GoToPage(int pageIndex)
         {
-            if (pageIndex < 0 || pageIndex >= TotalPages) return;
+            if (pageIndex < 0 || pageIndex >= TotalPages)
+            {
+                return;
+            }
 
             CurrentPage = pageIndex;
             UpdatePageVisibility();
@@ -298,7 +307,7 @@ namespace RocketLib.Menus.Layout
         {
             for (int i = 0; i < gridPages.Count; i++)
             {
-                bool isCurrentPage = (i == CurrentPage);
+                bool isCurrentPage = i == CurrentPage;
                 var grid = gridPages[i];
 
                 // Set visibility
@@ -357,7 +366,10 @@ namespace RocketLib.Menus.Layout
         {
             var elements = new List<LayoutElement>();
 
-            if (!IsEnabled) return elements;
+            if (!IsEnabled)
+            {
+                return elements;
+            }
 
             // Only get focusable elements from the CURRENT page's grid
             if (CurrentPage >= 0 && CurrentPage < gridPages.Count)
@@ -402,7 +414,9 @@ namespace RocketLib.Menus.Layout
                 foreach (var child in currentGrid.Children)
                 {
                     if (child.IsFocused)
+                    {
                         return child;
+                    }
                 }
             }
             return null;

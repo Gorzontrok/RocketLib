@@ -7,6 +7,7 @@ namespace RocketLib.Menus.Elements
     public class ActionButton : LayoutElement
     {
         private string _text = "Button";
+
         public string Text
         {
             get { return _text; }
@@ -21,6 +22,7 @@ namespace RocketLib.Menus.Elements
         }
 
         private float _fontSize = 3f;
+
         public float FontSize
         {
             get { return _fontSize; }
@@ -34,6 +36,7 @@ namespace RocketLib.Menus.Elements
                 }
             }
         }
+
         private bool fontNeedsUpdate = false;
         public Action OnClick { get; set; }
 
@@ -75,7 +78,7 @@ namespace RocketLib.Menus.Elements
 
                 // Update position and size based on ActualPosition/ActualSize set by parent
                 gameObject.transform.localPosition = new Vector3(ActualPosition.x, ActualPosition.y, -1f);
-                gameObject.transform.localScale = Vector3.one;  // No scaling - use direct character size
+                gameObject.transform.localScale = Vector3.one; // No scaling - use direct character size
 
                 if (textMesh != null)
                 {
@@ -124,7 +127,7 @@ namespace RocketLib.Menus.Elements
         public override void Cleanup()
         {
             textMesh = null;
-            base.Cleanup();  // Base class handles GameObject destruction
+            base.Cleanup(); // Base class handles GameObject destruction
         }
 
         public override void OnActivated()

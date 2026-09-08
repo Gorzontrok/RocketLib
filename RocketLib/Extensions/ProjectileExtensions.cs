@@ -12,7 +12,7 @@ namespace RocketLib.Extensions
         {
             Projectile defaultProjectile = new GameObject("TemporaryProjectile", typeof(Transform), typeof(MeshFilter), typeof(MeshRenderer), typeof(SpriteSM), typeof(Projectile)).GetComponent<Projectile>();
             defaultProjectile.PrintDifferences(projectile);
-            UnityEngine.Object.Destroy(defaultProjectile);
+            Object.Destroy(defaultProjectile);
         }
     }
 }

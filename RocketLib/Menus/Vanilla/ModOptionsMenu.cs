@@ -95,7 +95,7 @@ namespace RocketLib.Menus.Vanilla
                 color = Color.white
             });
 
-            this.masterItems = itemList.ToArray();
+            masterItems = itemList.ToArray();
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace RocketLib.Menus.Vanilla
 
         protected override void RunInput()
         {
-            if (!activatedThisFrame && accept && !Menu.acceptPrev
+            if (!activatedThisFrame && accept && !acceptPrev
                 && highlightIndex < masterItems.Length
                 && masterItems[highlightIndex].invokeMethod.StartsWith("OpenMod_"))
             {

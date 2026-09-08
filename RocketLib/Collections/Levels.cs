@@ -25,6 +25,7 @@ namespace RocketLib.Collections
                 return _all;
             }
         }
+
         private static string[] _all;
 
         public static class Challenges
@@ -41,10 +42,13 @@ namespace RocketLib.Collections
                 get
                 {
                     if (_all.IsNullOrEmpty())
+                    {
                         _all = new string[] { AMMO, MECH_DROP, PHEROMONES, RC_CAR, STEROIDS, TIME_WATCH };
+                    }
                     return _all;
                 }
             }
+
             private static string[] _all;
         }
 
@@ -60,10 +64,13 @@ namespace RocketLib.Collections
                 get
                 {
                     if (_all.IsNullOrEmpty())
+                    {
                         _all = new string[] { GOLDEN_LIGTH, INVINCIBLE, AIR_FLEX, TELEPORT };
+                    }
                     return _all;
                 }
             }
+
             private static string[] _all;
         }
 
@@ -75,7 +82,7 @@ namespace RocketLib.Collections
                 {
                     if (_all.IsNullOrEmpty())
                     {
-                        _all = new string[] { INTRO, MISSION_1, MISSION_2, VILLAGE, WHITEHOUSE, };
+                        _all = new string[] { INTRO, MISSION_1, MISSION_2, VILLAGE, WHITEHOUSE };
                         var temp = new List<string>(_all);
                         temp.AddRange(Aliens.All);
                         temp.AddRange(Bombardements.All);
@@ -86,6 +93,7 @@ namespace RocketLib.Collections
                     return _all;
                 }
             }
+
             private static string[] _all;
 
             public const string HELL = "WM_Hell";
@@ -94,6 +102,7 @@ namespace RocketLib.Collections
             public const string MISSION_2 = "WM_Mission2(mouse)";
             public const string VILLAGE = "WM_Village1(mouse)";
             public const string WHITEHOUSE = "WM_Whitehouse";
+
             public static class Aliens
             {
                 public const string FIRST = "WM_AlienMission1(mouse)";
@@ -106,10 +115,13 @@ namespace RocketLib.Collections
                     get
                     {
                         if (_all.IsNullOrEmpty())
+                        {
                             _all = new string[] { FIRST, SECOND, THIRD, FOURTH };
+                        }
                         return _all;
                     }
                 }
+
                 private static string[] _all;
             }
 
@@ -123,10 +135,13 @@ namespace RocketLib.Collections
                     get
                     {
                         if (_all.IsNullOrEmpty())
+                        {
                             _all = new string[] { FIRST, SECOND };
+                        }
                         return _all;
                     }
                 }
+
                 private static string[] _all;
             }
 
@@ -140,12 +155,16 @@ namespace RocketLib.Collections
                     get
                     {
                         if (_all.IsNullOrEmpty())
+                        {
                             _all = new string[] { FIRST, SECOND };
+                        }
                         return _all;
                     }
                 }
+
                 private static string[] _all;
             }
+
             public static class Kazakhstan
             {
                 public const string INDUSTRIAL = "WM_KazakhstanIndustrial(mouse)";
@@ -156,13 +175,15 @@ namespace RocketLib.Collections
                     get
                     {
                         if (_all.IsNullOrEmpty())
+                        {
                             _all = new string[] { INDUSTRIAL, RAINY };
+                        }
                         return _all;
                     }
                 }
+
                 private static string[] _all;
             }
-
         }
 
         public static class WWB
@@ -177,10 +198,13 @@ namespace RocketLib.Collections
                 get
                 {
                     if (_all.IsNullOrEmpty())
+                    {
                         _all = new string[] { ELEVATOR_ACTION, MOUNT_BROLYMPUS, SEVEN, HEIGHT };
+                    }
                     return _all;
                 }
             }
+
             private static string[] _all;
         }
 
@@ -198,10 +222,13 @@ namespace RocketLib.Collections
                 get
                 {
                     if (_all.IsNullOrEmpty())
+                    {
                         _all = new string[] { EXPENDABROS, TWITCHCON_EXHIBITION, ALIEN_EXHIBITION, BOSS_RUSH, VIETNAM, VIETNAM_NETWORKED };
+                    }
                     return _all;
                 }
             }
+
             private static string[] _all;
         }
 
@@ -216,10 +243,13 @@ namespace RocketLib.Collections
                 get
                 {
                     if (_all.IsNullOrEmpty())
+                    {
                         _all = new string[] { BRODOWN, DEATHMATCH, RACE };
+                    }
                     return _all;
                 }
             }
+
             private static string[] _all;
         }
 

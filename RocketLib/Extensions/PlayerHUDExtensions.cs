@@ -14,11 +14,15 @@ namespace RocketLib
                 if (i >= materials.Length)
                 {
                     if (grenadeIcon == null)
+                    {
                         grenadeIcon = GameSystems.ResourceManager.LoadAssetSync<Material>("sharedtextures:GrenadeIcon");
+                    }
                     playerHUD.grenadeIcons[i].GetComponent<Renderer>().material = grenadeIcon;
                 }
                 else
+                {
                     playerHUD.grenadeIcons[i].GetComponent<Renderer>().material = materials[i];
+                }
             }
         }
 

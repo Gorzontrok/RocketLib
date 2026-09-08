@@ -7,7 +7,7 @@ namespace RocketLib
     {
         public static bool IsPlayer(this NetworkedUnit self)
         {
-            return (self as TestVanDammeAnim) != null && self.As<TestVanDammeAnim>().player != null && self.playerNum >= Nums.PLAYER_MIN && self.playerNum < Nums.PLAYER_MAX;
+            return self as TestVanDammeAnim != null && self.As<TestVanDammeAnim>().player != null && self.playerNum >= Nums.PLAYER_MIN && self.playerNum < Nums.PLAYER_MAX;
         }
 
         public static bool IsPlayerSide(this NetworkedUnit self)
@@ -40,36 +40,44 @@ namespace RocketLib
         {
             Map.DisturbWildLife(unit.X, unit.Y, range, unit.playerNum);
         }
+
         public static bool DamageDoodads<T>(this T unit, int damage, DamageType damageType, float range, Vector2 force, out bool hitImpenetrableDoodad) where T : NetworkedUnit
         {
             return Map.DamageDoodads(damage, damageType, unit.X, unit.Y, force.x, force.y, range, unit.playerNum, out hitImpenetrableDoodad, unit);
         }
+
         #region AlertNearbyMooks
         public static void AlertNearbyMooks<T>(this T unit, Vector2 range) where T : NetworkedUnit
         {
             AlertNearbyMooks(unit, range.x, range.y);
         }
+
         public static void AlertNearbyMooks<T>(this T unit, float xRange, float yRange) where T : NetworkedUnit
         {
             Map.AlertNearbyMooks(unit.X, unit.Y, xRange, yRange, unit.playerNum);
         }
+
         public static void AlertNearbyMooks<T>(this T unit, Vector2 range, GridPoint startPoint) where T : NetworkedUnit
         {
             AlertNearbyMooks(unit, range.x, range.y, startPoint);
         }
+
         public static void AlertNearbyMooks<T>(this T unit, float xRange, float yRange, GridPoint startPoint) where T : NetworkedUnit
         {
             Map.AlertNearbyMooks(unit.X, unit.Y, xRange, yRange, unit.playerNum, startPoint);
         }
         #endregion
+
         public static void BlindUnits<T>(this T unit, float range, float blindTime = 9f) where T : NetworkedUnit
         {
             Map.BlindUnits(unit.playerNum, unit.X, unit.Y, range, blindTime);
         }
+
         public static void BotherNearbyMooks<T>(this T unit, Vector2 range) where T : NetworkedUnit
         {
             BotherNearbyMooks(unit, range.x, range.y);
         }
+
         public static void BotherNearbyMooks<T>(this T unit, float xRange, float yRange) where T : NetworkedUnit
         {
             Map.BotherNearbyMooks(unit.X, unit.Y, xRange, yRange, unit.playerNum);

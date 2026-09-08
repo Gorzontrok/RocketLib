@@ -34,10 +34,10 @@ namespace RocketLib.Menus.Elements
         public float MinimumTextScale { get; set; } = 0.6f;
 
         // Visual properties
-        public Color LockedTintColor { get; set; } = new Color(0.15f, 0.15f, 0.15f, 1f);  // Much darker for locked
-        public Color EnabledSpawnColor { get; set; } = new Color(0.3f, 1f, 0.3f, 1f);  // Bright green
-        public Color DisabledSpawnColor { get; set; } = new Color(0.8f, 0.3f, 0.3f, 1f);  // Muted red/orange
-        public Color LockedSpawnColor { get; set; } = new Color(0.4f, 0.4f, 0.4f, 0.6f);  // Dark gray, semi-transparent
+        public Color LockedTintColor { get; set; } = new Color(0.15f, 0.15f, 0.15f, 1f); // Much darker for locked
+        public Color EnabledSpawnColor { get; set; } = new Color(0.3f, 1f, 0.3f, 1f); // Bright green
+        public Color DisabledSpawnColor { get; set; } = new Color(0.8f, 0.3f, 0.3f, 1f); // Muted red/orange
+        public Color LockedSpawnColor { get; set; } = new Color(0.4f, 0.4f, 0.4f, 0.6f); // Dark gray, semi-transparent
         public float HoverBrightnessMultiplier { get; set; } = 1.2f;
 
         // Events
@@ -45,7 +45,7 @@ namespace RocketLib.Menus.Elements
         public Action OnHover { get; set; }
 
         // Layout configuration
-        private const float AVATAR_SIZE_RATIO = 1.0f;  // Avatar takes 100% of card width
+        private const float AVATAR_SIZE_RATIO = 1.0f; // Avatar takes 100% of card width
         private const float INDICATOR_SIZE_RATIO = 0.08f; // Indicator is 8% of card size
         private const float NAME_FONT_SIZE = 4f; // Font size for bro names
 
@@ -123,7 +123,8 @@ namespace RocketLib.Menus.Elements
             try
             {
                 // Create GameObject with SpriteSM components
-                avatarGO = new GameObject("Avatar", new Type[] {
+                avatarGO = new GameObject("Avatar", new Type[]
+                {
                     typeof(MeshRenderer),
                     typeof(MeshFilter),
                     typeof(SpriteSM)
@@ -131,8 +132,8 @@ namespace RocketLib.Menus.Elements
 
                 // Position avatar in upper portion of card
                 float avatarSize = ActualSize.x * AVATAR_SIZE_RATIO;
-                float avatarY = ActualSize.y * 0.15f;  // A bit higher in the card
-                float avatarX = 4f;  // Offset to the right for better visual centering
+                float avatarY = ActualSize.y * 0.15f; // A bit higher in the card
+                float avatarX = 4f; // Offset to the right for better visual centering
                 avatarGO.transform.SetParentAndResetScale(gameObject.transform, new Vector3(avatarX, avatarY, 0.1f));
 
                 // Get components
@@ -209,7 +210,9 @@ namespace RocketLib.Menus.Elements
         private float MeasureTextWidth(string text)
         {
             if (string.IsNullOrEmpty(text))
+            {
                 return 0f;
+            }
 
             return FontManager.CalculateTextWidth(BroforceFont.Hudson, text, NAME_FONT_SIZE);
         }
@@ -267,13 +270,13 @@ namespace RocketLib.Menus.Elements
                 spawnIndicatorSprite.sortingOrder = 103;
 
                 // Create a glowing circle sprite for the indicator
-                Sprite circleSprite = CreateCircleSprite(32);  // Create at reasonable resolution
+                Sprite circleSprite = CreateCircleSprite(32); // Create at reasonable resolution
                 if (circleSprite != null)
                 {
                     spawnIndicatorSprite.sprite = circleSprite;
                     // Scale to desired world size - sprite is now 112 pixels (32 radius * 2 + 48 for glow)
                     // We want the core circle to be indicatorSize world units
-                    float spriteSize = 112f;  // Updated for glow with rays
+                    float spriteSize = 112f; // Updated for glow with rays
                     float pixelsPerUnit = 100f; // Unity default
                     float currentWorldSize = spriteSize / pixelsPerUnit; // 0.8 world units
                     float desiredScale = indicatorSize / currentWorldSize;
@@ -295,14 +298,14 @@ namespace RocketLib.Menus.Elements
         {
             try
             {
-                int size = radius * 2 + 48; // Extra space for glow rays
+                int size = (radius * 2) + 48; // Extra space for glow rays
                 Texture2D texture = new Texture2D(size, size);
                 Color[] colors = new Color[size * size];
 
                 Vector2 center = new Vector2(size / 2f, size / 2f);
-                float innerRadius = radius * 0.6f;  // Solid bright core
-                float glowStart = radius * 0.85f;   // Where the glow begins
-                float outerGlow = radius + 24f;     // Extended glow range
+                float innerRadius = radius * 0.6f; // Solid bright core
+                float glowStart = radius * 0.85f; // Where the glow begins
+                float outerGlow = radius + 24f; // Extended glow range
 
                 for (int y = 0; y < size; y++)
                 {
@@ -313,7 +316,7 @@ namespace RocketLib.Menus.Elements
                         if (distance <= innerRadius)
                         {
                             // Solid bright center
-                            colors[y * size + x] = Color.white;
+                            colors[(y * size) + x] = Color.white;
                         }
                         else if (distance <= glowStart)
                         {
@@ -321,25 +324,25 @@ namespace RocketLib.Menus.Elements
                             float t = (distance - innerRadius) / (glowStart - innerRadius);
                             float alpha = 1f;
                             float brightness = Mathf.Lerp(1f, 0.85f, t * t); // Quadratic falloff
-                            colors[y * size + x] = new Color(brightness, brightness, brightness, alpha);
+                            colors[(y * size) + x] = new Color(brightness, brightness, brightness, alpha);
                         }
                         else if (distance <= radius)
                         {
                             // Sharp edge transition to glow
                             float t = (distance - glowStart) / (radius - glowStart);
                             float alpha = Mathf.Lerp(0.9f, 0.3f, t * t * t); // Cubic falloff for sharp edge
-                            colors[y * size + x] = new Color(1f, 1f, 1f, alpha);
+                            colors[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
                         }
                         else if (distance <= outerGlow)
                         {
                             // Actual glow effect - exponential falloff for realistic light
                             float t = (distance - radius) / (outerGlow - radius);
                             float alpha = 0.3f * Mathf.Exp(-3f * t); // Exponential decay
-                            colors[y * size + x] = new Color(1f, 1f, 1f, alpha);
+                            colors[(y * size) + x] = new Color(1f, 1f, 1f, alpha);
                         }
                         else
                         {
-                            colors[y * size + x] = Color.clear;
+                            colors[(y * size) + x] = Color.clear;
                         }
                     }
                 }
@@ -357,14 +360,17 @@ namespace RocketLib.Menus.Elements
 
         private void SetupAvatarTexture()
         {
-            if (avatarSprite == null || AvatarTexture == null) return;
+            if (avatarSprite == null || AvatarTexture == null)
+            {
+                return;
+            }
 
             try
             {
                 // Create a proper sprite material
                 Shader shader = Shader.Find("Unlit/Transparent Colored") ??
-                               Shader.Find("Sprites/Default") ??
-                               Shader.Find("Unlit/Texture");
+                                Shader.Find("Sprites/Default") ??
+                                Shader.Find("Unlit/Texture");
 
                 if (shader != null)
                 {
@@ -418,7 +424,7 @@ namespace RocketLib.Menus.Elements
                 Color targetColor;
                 if (IsLocked)
                 {
-                    targetColor = LockedSpawnColor;  // Gray for locked
+                    targetColor = LockedSpawnColor; // Gray for locked
                 }
                 else
                 {
@@ -428,7 +434,7 @@ namespace RocketLib.Menus.Elements
                 // Add subtle pulse for enabled bros
                 if (!IsLocked && IsSpawnEnabled)
                 {
-                    float pulse = Mathf.Sin(Time.time * 2f) * 0.1f + 0.9f; // Oscillate between 0.8 and 1.0
+                    float pulse = (Mathf.Sin(Time.time * 2f) * 0.1f) + 0.9f; // Oscillate between 0.8 and 1.0
                     targetColor.a *= pulse;
                 }
 
@@ -446,14 +452,14 @@ namespace RocketLib.Menus.Elements
                 float avatarSize = ActualSize.x * AVATAR_SIZE_RATIO;
                 avatarSprite.SetSize(avatarSize / 2.0f, avatarSize);
 
-                float avatarY = ActualSize.y * 0.15f;  // A bit higher in the card
-                float avatarX = 4f;  // Offset to the right for better visual centering
+                float avatarY = ActualSize.y * 0.15f; // A bit higher in the card
+                float avatarX = 4f; // Offset to the right for better visual centering
                 avatarGO.transform.localPosition = new Vector3(avatarX, avatarY, 0.1f);
             }
 
             if (nameGO != null)
             {
-                float nameY = -(ActualSize.y * 0.38f);  // Just a bit higher
+                float nameY = -(ActualSize.y * 0.38f); // Just a bit higher
                 nameGO.transform.localPosition = new Vector3(0, nameY, 0.1f);
 
                 // Reapply text scaling when layout changes
@@ -468,7 +474,7 @@ namespace RocketLib.Menus.Elements
                 spawnIndicatorGO.transform.localPosition = new Vector3(indicatorX, indicatorY, 0.05f);
 
                 // Match the scale calculation from CreateSpawnIndicator
-                float spriteSize = 112f;  // Updated for glow with rays
+                float spriteSize = 112f; // Updated for glow with rays
                 float pixelsPerUnit = 100f;
                 float currentWorldSize = spriteSize / pixelsPerUnit; // 1.12 world units
                 float desiredScale = indicatorSize / currentWorldSize;

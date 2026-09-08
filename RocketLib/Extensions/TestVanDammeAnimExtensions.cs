@@ -12,6 +12,7 @@ public static class TestVanDammeAnimExtensions
     {
         return self.GetFieldValue<SpriteSM>("sprite");
     }
+
     public static Sound Sound(this TestVanDammeAnim self)
     {
         return self.GetFieldValue<Sound>("sound");
@@ -44,9 +45,9 @@ public static class TestVanDammeAnimExtensions
         LayerMask platformLayer = anim.GetFieldValue<LayerMask>("platformLayer");
         RaycastHit raycastHit;
         return (Physics.Raycast(new Vector3(anim.X, anim.Y + 5f, 0f), Vector3.down, out raycastHit, 16f, platformLayer) ||
-            Physics.Raycast(new Vector3(anim.X + 4f, anim.Y + 5f, 0f), Vector3.down, out raycastHit, 16f, platformLayer) ||
-            Physics.Raycast(new Vector3(anim.X - 4f, anim.Y + 5f, 0f), Vector3.down, out raycastHit, 16f, platformLayer)) &&
-            raycastHit.collider.GetComponentInParent<Animal>() != null;
+                Physics.Raycast(new Vector3(anim.X + 4f, anim.Y + 5f, 0f), Vector3.down, out raycastHit, 16f, platformLayer) ||
+                Physics.Raycast(new Vector3(anim.X - 4f, anim.Y + 5f, 0f), Vector3.down, out raycastHit, 16f, platformLayer)) &&
+               raycastHit.collider.GetComponentInParent<Animal>() != null;
     }
 
     public static void SetReviveSource(this TestVanDammeAnim testVanDammeAnim, TestVanDammeAnim reviveSource)

@@ -14,12 +14,12 @@ namespace RocketLib.UMM
         public static UnityModManager.ModEntry Mod;
         public static Settings settings;
 
-        static RocketLib.Loggers.ILogger Logger
+        private static Loggers.ILogger Logger
         {
             get => RocketMain.Logger;
         }
 
-        static bool Load(UnityModManager.ModEntry modEntry)
+        private static bool Load(UnityModManager.ModEntry modEntry)
         {
             Mod = modEntry;
 
@@ -66,10 +66,12 @@ namespace RocketLib.UMM
             }
 
             // Initialize ModOptionsMenu to show in menus
-            RocketLib.Menus.Vanilla.ModOptionsMenu.Initialize();
+            Menus.Vanilla.ModOptionsMenu.Initialize();
 
             if (settings.EnableDebugging)
+            {
                 RegisterTestMenus();
+            }
 
             return true;
         }
@@ -79,51 +81,51 @@ namespace RocketLib.UMM
             try
             {
                 // Vanilla-style submenu examples
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.VanillaSubmenuExample>(
+                Menus.Core.MenuRegistry.RegisterMenu<Menus.Tests.VanillaSubmenuExample>(
                     displayText: "TEST VANILLA SUBMENU",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
-                    position: RocketLib.Menus.Core.PositionMode.After,
+                    targetMenu: Menus.Core.TargetMenu.MainMenu,
+                    position: Menus.Core.PositionMode.After,
                     positionReference: "START",
                     priority: 100
                 );
 
                 // FlexMenu examples
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.BasicFlexMenuExample>(
+                Menus.Core.MenuRegistry.RegisterMenu<Menus.Tests.BasicFlexMenuExample>(
                     displayText: "TEST BASIC FLEXMENU",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
-                    position: RocketLib.Menus.Core.PositionMode.After,
+                    targetMenu: Menus.Core.TargetMenu.MainMenu,
+                    position: Menus.Core.PositionMode.After,
                     positionReference: "START",
                     priority: 99
                 );
 
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.GridLayoutExample>(
+                Menus.Core.MenuRegistry.RegisterMenu<Menus.Tests.GridLayoutExample>(
                     displayText: "TEST GRID LAYOUT",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
-                    position: RocketLib.Menus.Core.PositionMode.After,
+                    targetMenu: Menus.Core.TargetMenu.MainMenu,
+                    position: Menus.Core.PositionMode.After,
                     positionReference: "START",
                     priority: 98
                 );
 
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.PaginatedGridExample>(
+                Menus.Core.MenuRegistry.RegisterMenu<Menus.Tests.PaginatedGridExample>(
                     displayText: "TEST PAGINATED GRID",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
-                    position: RocketLib.Menus.Core.PositionMode.After,
+                    targetMenu: Menus.Core.TargetMenu.MainMenu,
+                    position: Menus.Core.PositionMode.After,
                     positionReference: "START",
                     priority: 97
                 );
 
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.TransitionTestMenu>(
+                Menus.Core.MenuRegistry.RegisterMenu<Menus.Tests.TransitionTestMenu>(
                     displayText: "TEST TRANSITIONS",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.MainMenu,
-                    position: RocketLib.Menus.Core.PositionMode.After,
+                    targetMenu: Menus.Core.TargetMenu.MainMenu,
+                    position: Menus.Core.PositionMode.After,
                     positionReference: "START",
                     priority: 96
                 );
 
                 // Mod options example
-                RocketLib.Menus.Core.MenuRegistry.RegisterMenu<RocketLib.Menus.Tests.ModOptionsExample>(
+                Menus.Core.MenuRegistry.RegisterMenu<Menus.Tests.ModOptionsExample>(
                     displayText: "Test Mod Options",
-                    targetMenu: RocketLib.Menus.Core.TargetMenu.ModOptions
+                    targetMenu: Menus.Core.TargetMenu.ModOptions
                 );
 
                 Logger.Log("Test menus registered successfully");
@@ -134,7 +136,7 @@ namespace RocketLib.UMM
             }
         }
 
-        static string MakeUSAColorOnBroforce()
+        private static string MakeUSAColorOnBroforce()
         {
             string origCustomRequirements = "Broforce";
             string CustomRequirements = string.Empty;
@@ -164,20 +166,23 @@ namespace RocketLib.UMM
             return CustomRequirements;
         }
 
-        static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
         {
             settings.Save(modEntry);
         }
 
-        static void OnUpdate(UnityModManager.ModEntry modEntry, float dt)
+        private static void OnUpdate(UnityModManager.ModEntry modEntry, float dt)
         {
             if (!LevelEditorGUI.IsActive)
+            {
                 ShowMouseController.ShowMouse = false;
+            }
             Cursor.lockState = CursorLockMode.None;
 
             UMM.Mod.Update();
         }
-        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+
+        private static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
         {
             Enabled = value;
             return true;
@@ -206,4 +211,3 @@ namespace RocketLib.UMM
         }
     }
 }
-

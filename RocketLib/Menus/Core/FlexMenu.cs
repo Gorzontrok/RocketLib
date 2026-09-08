@@ -10,9 +10,9 @@ namespace RocketLib.Menus.Core
 {
     public enum FocusRestoreMode
     {
-        Default,            // Always return to default/first element
+        Default, // Always return to default/first element
         LastSubmenuTrigger, // Return to element that opened a submenu
-        LastFocused         // Return to whatever was last focused
+        LastFocused // Return to whatever was last focused
     }
 
     public class FlexMenu : MonoBehaviour
@@ -64,7 +64,7 @@ namespace RocketLib.Menus.Core
                         wasMainMenuLogoVisible = mainMenu.logo.gameObject.activeSelf;
                     }
 
-                    var versionDisplay = GameObject.FindObjectOfType<DisplayVersionNumber>();
+                    var versionDisplay = FindObjectOfType<DisplayVersionNumber>();
                     if (versionDisplay != null)
                     {
                         versionDisplayObject = versionDisplay.gameObject;
@@ -165,7 +165,7 @@ namespace RocketLib.Menus.Core
         protected GameObject versionDisplayObject;
 
         protected float lastInputTime;
-        protected bool wasAcceptPressed = false;  // Track if accept was pressed last frame
+        protected bool wasAcceptPressed = false; // Track if accept was pressed last frame
         protected bool wasDeclinePressed = false; // Track if decline was pressed last frame
 
         // Focus restoration
@@ -209,8 +209,8 @@ namespace RocketLib.Menus.Core
             rootContainer = new VerticalLayoutContainer
             {
                 Name = "RootContainer",
-                WidthMode = Layout.SizeMode.Fill,
-                HeightMode = Layout.SizeMode.Fill,
+                WidthMode = SizeMode.Fill,
+                HeightMode = SizeMode.Fill
             };
         }
 
@@ -253,8 +253,8 @@ namespace RocketLib.Menus.Core
         protected virtual void OnEnable()
         {
             IsActive = true;
-            lastInputTime = Time.time + 0.2f;  // Add 200ms input delay to prevent click-through
-            wasAcceptPressed = false;  // Reset input state
+            lastInputTime = Time.time + 0.2f; // Add 200ms input delay to prevent click-through
+            wasAcceptPressed = false; // Reset input state
             wasDeclinePressed = false;
 
             if (!(EnableTransition && parentGameMenu != null && parentGameMenu.name == "MainMenu"))
@@ -338,7 +338,10 @@ namespace RocketLib.Menus.Core
 
         protected virtual void Update()
         {
-            if (!IsActive) return;
+            if (!IsActive)
+            {
+                return;
+            }
 
             HandleInput();
             UpdateHighlight();
@@ -373,13 +376,13 @@ namespace RocketLib.Menus.Core
             // Prevent any input during initial cooldown period
             if (Time.time < lastInputTime)
             {
-                return;  // Still in cooldown after menu activation
+                return; // Still in cooldown after menu activation
             }
 
             // Check timing like Broforce does (200ms for directional, 50ms for accept/decline)
             if (up || down || left || right)
             {
-                if (Time.time - lastInputTime < 0.2f)  // upDownDelay
+                if (Time.time - lastInputTime < 0.2f) // upDownDelay
                 {
                     return; // Too soon, ignore input
                 }
@@ -403,9 +406,9 @@ namespace RocketLib.Menus.Core
             if (up || down || left || right || acceptJustPressed)
             {
                 navigationManager?.ProcessInput(
-                    left ? -1f : (right ? 1f : 0f),
-                    up ? 1f : (down ? -1f : 0f),
-                    acceptJustPressed,  // Only activate on initial press, not hold
+                    left ? -1f : right ? 1f : 0f,
+                    up ? 1f : down ? -1f : 0f,
+                    acceptJustPressed, // Only activate on initial press, not hold
                     declineJustPressed
                 );
             }
@@ -423,7 +426,10 @@ namespace RocketLib.Menus.Core
 
         protected virtual void RestoreFocus()
         {
-            if (navigationManager == null) return;
+            if (navigationManager == null)
+            {
+                return;
+            }
 
             LayoutElement elementToFocus = null;
 
@@ -463,7 +469,10 @@ namespace RocketLib.Menus.Core
 
         protected virtual void UpdateHighlight()
         {
-            if (highlight == null || navigationManager == null) return;
+            if (highlight == null || navigationManager == null)
+            {
+                return;
+            }
 
             var focused = navigationManager.FocusedElement;
             if (focused != null)
@@ -490,10 +499,10 @@ namespace RocketLib.Menus.Core
             if (parentFlexMenu != null)
             {
                 Show(parentFlexMenu.GetType(),
-                     parentFlex: parentFlexMenu.parentFlexMenu,
-                     parentGame: parentFlexMenu.parentGameMenu,
-                     instanceId: parentFlexMenu.InstanceId,
-                     skipTransition: true);
+                    parentFlex: parentFlexMenu.parentFlexMenu,
+                    parentGame: parentFlexMenu.parentGameMenu,
+                    instanceId: parentFlexMenu.InstanceId,
+                    skipTransition: true);
                 gameObject.SetActive(false);
             }
             else if (parentGameMenu != null)
@@ -566,10 +575,10 @@ namespace RocketLib.Menus.Core
                 }
 
                 // Store the original state of the version display
-                var versionDisplay = GameObject.FindObjectOfType<DisplayVersionNumber>();
+                var versionDisplay = FindObjectOfType<DisplayVersionNumber>();
                 if (versionDisplay != null)
                 {
-                    versionDisplayObject = versionDisplay.gameObject;  // Store reference
+                    versionDisplayObject = versionDisplay.gameObject; // Store reference
                     wasVersionTextVisible = versionDisplayObject.activeSelf;
                 }
 
@@ -583,7 +592,7 @@ namespace RocketLib.Menus.Core
                 menu.logo.gameObject.SetActive(false);
             }
 
-            var version = GameObject.FindObjectOfType<DisplayVersionNumber>();
+            var version = FindObjectOfType<DisplayVersionNumber>();
             if (version != null)
             {
                 version.gameObject.SetActive(false);
@@ -612,7 +621,7 @@ namespace RocketLib.Menus.Core
             else
             {
                 // Fallback to finding it if we don't have the reference
-                var versionDisplay = GameObject.FindObjectOfType<DisplayVersionNumber>();
+                var versionDisplay = FindObjectOfType<DisplayVersionNumber>();
                 if (versionDisplay != null)
                 {
                     versionDisplay.gameObject.SetActive(wasVersionTextVisible);

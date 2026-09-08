@@ -97,7 +97,9 @@ namespace RocketLib.Utils
         public static Texture FromPath(string path)
         {
             if (path.IsNullOrEmpty())
+            {
                 throw new ArgumentNullException("path");
+            }
 
             Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
             tex.LoadImage(File.ReadAllBytes(path));

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Rewired;
@@ -42,15 +41,13 @@ namespace RocketLib
         public int rewiredInputId = -1;
         public bool rewiredIsAxis = false;
 
-        [JsonIgnore, XmlIgnore]
-        public bool IsRewiredBinding => rewiredPlayerId >= 0;
+        [JsonIgnore] [XmlIgnore] public bool IsRewiredBinding => rewiredPlayerId >= 0;
 
-        [JsonIgnore, XmlIgnore]
-        public bool isSettingKey;
-        [JsonIgnore, XmlIgnore]
-        internal static Rect toolTipRect;
-        [JsonIgnore, XmlIgnore]
-        private bool wasDown = false;
+        [JsonIgnore] [XmlIgnore] public bool isSettingKey;
+        [JsonIgnore] [XmlIgnore] internal static Rect toolTipRect;
+
+        [JsonIgnore] [XmlIgnore] private bool wasDown = false;
+
         // XInput / Steam Input ON button names (IDs 6-19)
         private static readonly Dictionary<int, string> XInputButtonNames = new Dictionary<int, string>
         {
@@ -122,15 +119,21 @@ namespace RocketLib
         public static ControllerMappingType GetMappingTypeFromJoystickName(string name)
         {
             if (string.IsNullOrEmpty(name))
+            {
                 return ControllerMappingType.Xbox;
+            }
 
             string lower = name.ToLower();
             if (lower.Contains("dualsense") || lower.Contains("dualshock") ||
                 lower.Contains("playstation") || lower.Contains("sony"))
+            {
                 return ControllerMappingType.PlayStation;
+            }
 
             if (lower.Contains("pro controller") || lower.Contains("nintendo"))
+            {
                 return ControllerMappingType.SwitchPro;
+            }
 
             return ControllerMappingType.Xbox;
         }
@@ -147,7 +150,9 @@ namespace RocketLib
                 {
                     // Could be native PS with different D-Pad/stick IDs
                     if (NativePlayStationButtonNames.TryGetValue(elementId, out string nativeName))
+                    {
                         return nativeName;
+                    }
                 }
 
                 switch (type)
@@ -181,7 +186,9 @@ namespace RocketLib
             }
 
             if (dict != null && dict.TryGetValue(elementId, out string displayName))
+            {
                 return displayName;
+            }
 
             // Fallback to Rewired's name or generic
             return !string.IsNullOrEmpty(rewiredName) ? rewiredName : $"Button {elementId}";
@@ -217,15 +224,23 @@ namespace RocketLib
                         return $"Right Stick {dirName}";
                     }
                     if (isGenericTemplate)
+                    {
                         return type == ControllerMappingType.SwitchPro ? "ZR" : "RT";
+                    }
                     if (type == ControllerMappingType.PlayStation)
+                    {
                         return "L2";
+                    }
                     return type == ControllerMappingType.SwitchPro ? "ZL" : "LT";
                 case 5:
                     if (isGenericTemplate)
+                    {
                         return type == ControllerMappingType.SwitchPro ? "ZL" : "LT";
+                    }
                     if (type == ControllerMappingType.PlayStation)
+                    {
                         return "R2";
+                    }
                     return type == ControllerMappingType.SwitchPro ? "ZR" : "RT";
                 default:
                     return $"Axis {axisIndex} {(direction > 0 ? "(+)" : "(-)")}";
@@ -234,7 +249,7 @@ namespace RocketLib
 
         public KeyBinding()
         {
-            this.name = string.Empty;
+            name = string.Empty;
             AssignKey(KeyCode.None);
         }
 
@@ -247,46 +262,58 @@ namespace RocketLib
         public virtual bool Equals(KeyBinding other)
         {
             if (other == null)
-                return false;
-
-            // Rewired binding comparison
-            if (this.IsRewiredBinding || other.IsRewiredBinding)
             {
-                return this.rewiredPlayerId == other.rewiredPlayerId &&
-                       this.rewiredInputId == other.rewiredInputId &&
-                       this.rewiredIsAxis == other.rewiredIsAxis &&
-                       this.joystickDirection == other.joystickDirection;
+                return false;
             }
 
-            return this.key == other.key && this.modifiers == other.modifiers;
+            // Rewired binding comparison
+            if (IsRewiredBinding || other.IsRewiredBinding)
+            {
+                return rewiredPlayerId == other.rewiredPlayerId &&
+                       rewiredInputId == other.rewiredInputId &&
+                       rewiredIsAxis == other.rewiredIsAxis &&
+                       joystickDirection == other.joystickDirection;
+            }
+
+            return key == other.key && modifiers == other.modifiers;
         }
 
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
+            }
 
             KeyBinding keyBindingObj = obj as KeyBinding;
             if (keyBindingObj == null)
+            {
                 return false;
+            }
             else
+            {
                 return Equals(keyBindingObj);
+            }
         }
 
         public static bool operator ==(KeyBinding keyBinding1, KeyBinding keyBinding2)
         {
-            if (((object)keyBinding1) == null || ((object)keyBinding2) == null)
-                return object.Equals(keyBinding1, keyBinding2);
+            if ((object)keyBinding1 == null || (object)keyBinding2 == null)
+            {
+                return Equals(keyBinding1, keyBinding2);
+            }
 
             return keyBinding1.Equals(keyBinding2);
         }
 
         public static bool operator !=(KeyBinding keyBinding1, KeyBinding keyBinding2)
         {
-            if (((object)keyBinding1) == null || ((object)keyBinding2) == null)
-                return !object.Equals(keyBinding1, keyBinding2);
+            if ((object)keyBinding1 == null || (object)keyBinding2 == null)
+            {
+                return !Equals(keyBinding1, keyBinding2);
+            }
 
-            return !(keyBinding1.Equals(keyBinding2));
+            return !keyBinding1.Equals(keyBinding2);
         }
 
         public override int GetHashCode()
@@ -295,7 +322,7 @@ namespace RocketLib
             {
                 return rewiredPlayerId.GetHashCode() ^ rewiredInputId.GetHashCode() ^ rewiredIsAxis.GetHashCode() ^ joystickDirection.GetHashCode();
             }
-            return this.key.GetHashCode() ^ this.modifiers.GetHashCode();
+            return key.GetHashCode() ^ modifiers.GetHashCode();
         }
 
         /// <summary>
@@ -304,17 +331,21 @@ namespace RocketLib
         /// <returns>True if a keybinding is assigned, otherwise false.</returns>
         public bool HasKeyAssigned()
         {
-            return this.key != KeyCode.None || this.IsRewiredBinding;
+            return key != KeyCode.None || IsRewiredBinding;
         }
 
         private Joystick GetRewiredJoystick()
         {
             if (rewiredPlayerId < 0 || rewiredPlayerId > 3 || !ReInput.isReady)
+            {
                 return null;
+            }
 
             var player = ReInput.players.GetPlayer(rewiredPlayerId);
             if (player == null || player.controllers.joystickCount == 0)
+            {
                 return null;
+            }
 
             return player.controllers.Joysticks[0];
         }
@@ -329,7 +360,10 @@ namespace RocketLib
             if (IsRewiredBinding)
             {
                 var joystick = GetRewiredJoystick();
-                if (joystick == null) return false;
+                if (joystick == null)
+                {
+                    return false;
+                }
 
                 if (rewiredIsAxis)
                 {
@@ -345,14 +379,22 @@ namespace RocketLib
             {
                 ModifierKeys currentModifiers = ModifierKeys.None;
                 if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                {
                     currentModifiers |= ModifierKeys.Ctrl;
+                }
                 if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                {
                     currentModifiers |= ModifierKeys.Shift;
+                }
                 if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+                {
                     currentModifiers |= ModifierKeys.Alt;
+                }
 
                 if ((currentModifiers & modifiers) != modifiers)
+                {
                     return false;
+                }
             }
 
             return Input.GetKey(key);
@@ -401,7 +443,10 @@ namespace RocketLib
             if (IsRewiredBinding && rewiredIsAxis)
             {
                 var joystick = GetRewiredJoystick();
-                if (joystick == null) return 0f;
+                if (joystick == null)
+                {
+                    return 0f;
+                }
                 return joystick.GetAxis(rewiredInputId);
             }
             return -2f;
@@ -414,68 +459,78 @@ namespace RocketLib
                 key = KeyCode.None;
             }
             this.key = key;
-            this.isSettingKey = false;
-            this.modifiers = ModifierKeys.None;
-            this.joystickDirection = 1;
-            this.joystickDisplayName = null;
-            this.mappingType = ControllerMappingType.Xbox;
-            this.rewiredPlayerId = -1;
-            this.rewiredInputId = -1;
-            this.rewiredIsAxis = false;
+            isSettingKey = false;
+            modifiers = ModifierKeys.None;
+            joystickDirection = 1;
+            joystickDisplayName = null;
+            mappingType = ControllerMappingType.Xbox;
+            rewiredPlayerId = -1;
+            rewiredInputId = -1;
+            rewiredIsAxis = false;
         }
 
         public virtual void AssignRewiredButton(int playerId, int elementId, ControllerMappingType type, string displayName)
         {
             ClearKey();
-            this.rewiredPlayerId = playerId;
-            this.rewiredInputId = elementId;
-            this.rewiredIsAxis = false;
-            this.mappingType = type;
-            this.joystickDisplayName = displayName;
-            this.isSettingKey = false;
+            rewiredPlayerId = playerId;
+            rewiredInputId = elementId;
+            rewiredIsAxis = false;
+            mappingType = type;
+            joystickDisplayName = displayName;
+            isSettingKey = false;
         }
 
         public virtual void AssignRewiredAxis(int playerId, int axisIndex, int direction, ControllerMappingType type, string displayName)
         {
             ClearKey();
-            this.rewiredPlayerId = playerId;
-            this.rewiredInputId = axisIndex;
-            this.rewiredIsAxis = true;
-            this.joystickDirection = direction;
-            this.mappingType = type;
-            this.joystickDisplayName = displayName;
-            this.isSettingKey = false;
+            rewiredPlayerId = playerId;
+            rewiredInputId = axisIndex;
+            rewiredIsAxis = true;
+            joystickDirection = direction;
+            mappingType = type;
+            joystickDisplayName = displayName;
+            isSettingKey = false;
         }
 
         public virtual void ClearKey()
         {
-            this.key = KeyCode.None;
-            this.isSettingKey = false;
-            this.modifiers = ModifierKeys.None;
-            this.joystickDirection = 1;
-            this.joystickDisplayName = null;
-            this.mappingType = ControllerMappingType.Xbox;
-            this.rewiredPlayerId = -1;
-            this.rewiredInputId = -1;
-            this.rewiredIsAxis = false;
+            key = KeyCode.None;
+            isSettingKey = false;
+            modifiers = ModifierKeys.None;
+            joystickDirection = 1;
+            joystickDisplayName = null;
+            mappingType = ControllerMappingType.Xbox;
+            rewiredPlayerId = -1;
+            rewiredInputId = -1;
+            rewiredIsAxis = false;
         }
 
         private string GetKeyDisplayString()
         {
             // Rewired binding
             if (IsRewiredBinding)
-                return this.joystickDisplayName ?? "Controller";
+            {
+                return joystickDisplayName ?? "Controller";
+            }
 
             if (key == KeyCode.None)
+            {
                 return "None";
+            }
 
             string displayString = "";
             if ((modifiers & ModifierKeys.Ctrl) != 0)
+            {
                 displayString += "Ctrl+";
+            }
             if ((modifiers & ModifierKeys.Shift) != 0)
+            {
                 displayString += "Shift+";
+            }
             if ((modifiers & ModifierKeys.Alt) != 0)
+            {
                 displayString += "Alt+";
+            }
             displayString += key.ToString();
 
             return displayString;
@@ -491,12 +546,18 @@ namespace RocketLib
             for (int p = 0; p < 4; p++)
             {
                 var player = ReInput.players.GetPlayer(p);
-                if (player == null || player.controllers.joystickCount == 0) continue;
+                if (player == null || player.controllers.joystickCount == 0)
+                {
+                    continue;
+                }
 
                 var joystick = player.controllers.Joysticks[0];
                 foreach (var element in joystick.ElementIdentifiers)
                 {
-                    if (element.elementType != ControllerElementType.Button) continue;
+                    if (element.elementType != ControllerElementType.Button)
+                    {
+                        continue;
+                    }
                     if (joystick.GetButtonDownById(element.id))
                     {
                         playerId = p;
@@ -521,7 +582,10 @@ namespace RocketLib
             for (int p = 0; p < 4; p++)
             {
                 var player = ReInput.players.GetPlayer(p);
-                if (player == null || player.controllers.joystickCount == 0) continue;
+                if (player == null || player.controllers.joystickCount == 0)
+                {
+                    continue;
+                }
 
                 var joystick = player.controllers.Joysticks[0];
 
@@ -540,7 +604,10 @@ namespace RocketLib
             for (int p = 0; p < 4; p++)
             {
                 var player = ReInput.players.GetPlayer(p);
-                if (player == null || player.controllers.joystickCount == 0) continue;
+                if (player == null || player.controllers.joystickCount == 0)
+                {
+                    continue;
+                }
 
                 var joystick = player.controllers.Joysticks[0];
 
@@ -562,12 +629,17 @@ namespace RocketLib
             displayName = null;
 
             if (!_bindingInputInitialized)
+            {
                 return false;
+            }
 
             for (int p = 0; p < 4; p++)
             {
                 var player = ReInput.players.GetPlayer(p);
-                if (player == null || player.controllers.joystickCount == 0) continue;
+                if (player == null || player.controllers.joystickCount == 0)
+                {
+                    continue;
+                }
 
                 var joystick = player.controllers.Joysticks[0];
                 for (int i = 0; i < 10; i++)
@@ -660,8 +732,14 @@ namespace RocketLib
                 // Try keyboard (skip JoystickButton* KeyCodes, skip modifiers alone)
                 foreach (KeyCode keyCode in keyCodes)
                 {
-                    if (!Input.GetKeyUp(keyCode)) continue;
-                    if (keyCode.ToString().Contains("Joystick")) continue;
+                    if (!Input.GetKeyUp(keyCode))
+                    {
+                        continue;
+                    }
+                    if (keyCode.ToString().Contains("Joystick"))
+                    {
+                        continue;
+                    }
 
                     // Don't bind modifier keys alone
                     if (keyCode == KeyCode.LeftControl || keyCode == KeyCode.RightControl ||
@@ -676,11 +754,17 @@ namespace RocketLib
                     // Check and set modifier keys
                     keyBinding.modifiers = ModifierKeys.None;
                     if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                    {
                         keyBinding.modifiers |= ModifierKeys.Ctrl;
+                    }
                     if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                    {
                         keyBinding.modifiers |= ModifierKeys.Shift;
+                    }
                     if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+                    {
                         keyBinding.modifiers |= ModifierKeys.Alt;
+                    }
 
                     exit = true;
                     break;
@@ -706,7 +790,7 @@ namespace RocketLib
             GUILayout.Space(10);
             bool result;
             string toolTip = displayToolTip ? "Press Delete to clear" : "";
-            if (this.isSettingKey)
+            if (isSettingKey)
             {
                 result = GUILayout.Button(new GUIContent("Press Any Key/Button", toolTip));
             }
@@ -716,7 +800,7 @@ namespace RocketLib
             }
             toolTipRect = GUILayoutUtility.GetLastRect();
             GUILayout.EndHorizontal();
-            if (result && !this.isSettingKey && !InputReader.IsBlocked)
+            if (result && !isSettingKey && !InputReader.IsBlocked)
             {
                 UnityModManager.UI.Instance.StartCoroutine(BindKey(this));
             }
@@ -737,8 +821,8 @@ namespace RocketLib
             }
             bool result;
             string toolTip = displayToolTip ? "Press Delete to clear" : "";
-            string prefix = includeNameInside ? (name + ": ") : "";
-            if (this.isSettingKey)
+            string prefix = includeNameInside ? name + ": " : "";
+            if (isSettingKey)
             {
                 result = GUILayout.Button(new GUIContent(prefix + "Press Any Key/Button", toolTip));
             }
@@ -748,7 +832,7 @@ namespace RocketLib
             }
             toolTipRect = GUILayoutUtility.GetLastRect();
             GUILayout.EndHorizontal();
-            if (result && !this.isSettingKey && !InputReader.IsBlocked)
+            if (result && !isSettingKey && !InputReader.IsBlocked)
             {
                 UnityModManager.UI.Instance.StartCoroutine(BindKey(this));
             }

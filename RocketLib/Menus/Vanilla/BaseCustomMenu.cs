@@ -16,6 +16,7 @@ namespace RocketLib.Menus.Vanilla
         /// Display title for this menu
         /// </summary>
         public abstract string MenuTitle { get; }
+
         /// <summary>
         /// Instance identifier (set by MenuRegistry for caching)
         /// </summary>
@@ -44,7 +45,7 @@ namespace RocketLib.Menus.Vanilla
         {
             PrevMenu = parent;
 
-            UnityEngine.Object.DontDestroyOnLoad(this);
+            DontDestroyOnLoad(this);
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace RocketLib.Menus.Vanilla
 
             SetupMenuItems();
 
-            this.desktopItems = this.masterItems;
+            desktopItems = masterItems;
 
             base.Awake();
         }
@@ -79,12 +80,12 @@ namespace RocketLib.Menus.Vanilla
         {
             if (PrevMenu.textPrefab != null)
             {
-                this.textPrefab = PrevMenu.textPrefab;
+                textPrefab = PrevMenu.textPrefab;
             }
 
             if (PrevMenu.drumSounds != null)
             {
-                this.drumSounds = PrevMenu.drumSounds;
+                drumSounds = PrevMenu.drumSounds;
             }
 
             // Create our own highlight instead of sharing with parent
@@ -99,28 +100,28 @@ namespace RocketLib.Menus.Vanilla
 
 
             // Inherit spacing values from parent menu instead of using hardcoded values
-            this.verticalSpacing = PrevMenu.verticalSpacing;
-            this.verticalSpacingCompressed = PrevMenu.verticalSpacingCompressed;
-            this.initialVerticalOffset = PrevMenu.initialVerticalOffset;
+            verticalSpacing = PrevMenu.verticalSpacing;
+            verticalSpacingCompressed = PrevMenu.verticalSpacingCompressed;
+            initialVerticalOffset = PrevMenu.initialVerticalOffset;
 
-            this.fadeItems = true;
-            this.fadeDistance = 0;
-            this.hideDistance = -1;
-            this.moveHighlight = false;
+            fadeItems = true;
+            fadeDistance = 0;
+            hideDistance = -1;
+            moveHighlight = false;
 
             // Inherit font sizing from parent menu
             Traverse parentTraverse = Traverse.Create(PrevMenu);
-            this.overrideIndivdualItemCharacterSizes = parentTraverse.Field<bool>("overrideIndivdualItemCharacterSizes").Value;
-            this.characterSizes = parentTraverse.Field<float>("characterSizes").Value;
-            this.lineSpacing = parentTraverse.Field<float>("lineSpacing").Value;
-            this.deselectedTextScale = parentTraverse.Field<float>("deselectedTextScale").Value;
+            overrideIndivdualItemCharacterSizes = parentTraverse.Field<bool>("overrideIndivdualItemCharacterSizes").Value;
+            characterSizes = parentTraverse.Field<float>("characterSizes").Value;
+            lineSpacing = parentTraverse.Field<float>("lineSpacing").Value;
+            deselectedTextScale = parentTraverse.Field<float>("deselectedTextScale").Value;
         }
 
         private void CreateCustomHighlight()
         {
-            if (this.menuHighlight == null)
+            if (menuHighlight == null)
             {
-                this.menuHighlight = HighlightFactory.CreateHighlight(this.transform, 17);
+                menuHighlight = HighlightFactory.CreateHighlight(transform, 17);
             }
         }
 
@@ -130,9 +131,9 @@ namespace RocketLib.Menus.Vanilla
         public virtual void OnMenuOpened()
         {
             // Ensure highlight is visible when menu opens
-            if (this.menuHighlight != null && this.menuHighlight.gameObject != null)
+            if (menuHighlight != null && menuHighlight.gameObject != null)
             {
-                this.menuHighlight.gameObject.SetActive(true);
+                menuHighlight.gameObject.SetActive(true);
             }
         }
 
@@ -143,13 +144,13 @@ namespace RocketLib.Menus.Vanilla
         {
             if (PrevMenu != null)
             {
-                this.MenuActive = false;
-                this.PrevMenu.MenuActive = true;
-                this.PrevMenu.TransitionIn();
+                MenuActive = false;
+                PrevMenu.MenuActive = true;
+                PrevMenu.TransitionIn();
             }
             else
             {
-                this.MenuActive = false;
+                MenuActive = false;
             }
         }
 
@@ -159,14 +160,23 @@ namespace RocketLib.Menus.Vanilla
         /// <returns>The parent menu if found, null otherwise</returns>
         protected virtual Menu FindParentMenuInScene()
         {
-            var mainMenu = GameObject.FindObjectOfType<MainMenu>();
-            if (mainMenu != null) return mainMenu;
+            var mainMenu = FindObjectOfType<MainMenu>();
+            if (mainMenu != null)
+            {
+                return mainMenu;
+            }
 
-            var pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
-            if (pauseMenu != null) return pauseMenu;
+            var pauseMenu = FindObjectOfType<PauseMenu>();
+            if (pauseMenu != null)
+            {
+                return pauseMenu;
+            }
 
-            var optionsMenu = GameObject.FindObjectOfType<OptionsMenu>();
-            if (optionsMenu != null) return optionsMenu;
+            var optionsMenu = FindObjectOfType<OptionsMenu>();
+            if (optionsMenu != null)
+            {
+                return optionsMenu;
+            }
 
             return null;
         }
@@ -209,15 +219,15 @@ namespace RocketLib.Menus.Vanilla
                 item.invokeMethod = $"Toggle{methodName}";
             }
 
-            if (this.masterItems == null)
+            if (masterItems == null)
             {
-                this.masterItems = new MenuBarItem[] { item };
+                masterItems = new MenuBarItem[] { item };
             }
             else
             {
-                var list = new List<MenuBarItem>(this.masterItems);
+                var list = new List<MenuBarItem>(masterItems);
                 list.Add(item);
-                this.masterItems = list.ToArray();
+                masterItems = list.ToArray();
             }
         }
 
@@ -235,7 +245,7 @@ namespace RocketLib.Menus.Vanilla
         {
             base.Update();
 
-            if (this.menuActive && !this.activatedThisFrame &&
+            if (menuActive && !activatedThisFrame &&
                 (Input.GetKeyDown(KeyCode.Escape) || InputReader.GetControllerPressingCancel() > -1))
             {
                 OnMenuClosed();

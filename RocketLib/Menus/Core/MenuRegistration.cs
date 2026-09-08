@@ -1,10 +1,9 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RocketLib.Menus.Core
 {
-    using System.Collections.Generic;
-
     internal static class MenuInstanceCache
     {
         private static readonly Dictionary<string, Vanilla.BaseCustomMenu> instances = new Dictionary<string, Vanilla.BaseCustomMenu>();
@@ -38,16 +37,17 @@ namespace RocketLib.Menus.Core
             instances.Remove(menuId);
         }
     }
+
     /// <summary>
     /// Target menus where menu items can be injected
     /// </summary>
     public enum TargetMenu
     {
-        MainMenu,           // Game's main menu
-        PauseMenu,          // In-game pause menu
-        OptionsMenu,        // Options submenu (from MainMenu)
-        InGameOptionsMenu,  // Options submenu (from PauseMenu)
-        ModOptions          // Mod options submenu
+        MainMenu, // Game's main menu
+        PauseMenu, // In-game pause menu
+        OptionsMenu, // Options submenu (from MainMenu)
+        InGameOptionsMenu, // Options submenu (from PauseMenu)
+        ModOptions // Mod options submenu
     }
 
     /// <summary>
@@ -55,9 +55,9 @@ namespace RocketLib.Menus.Core
     /// </summary>
     public enum MenuKind
     {
-        BaseCustom,    // Vanilla-style menu
-        Flex,          // FlexMenu with layout system
-        Action         // Custom action (no menu, just runs code)
+        BaseCustom, // Vanilla-style menu
+        Flex, // FlexMenu with layout system
+        Action // Custom action (no menu, just runs code)
     }
 
     /// <summary>
@@ -65,10 +65,10 @@ namespace RocketLib.Menus.Core
     /// </summary>
     public enum PositionMode
     {
-        Auto,        // Find best position automatically
-        Before,      // Insert before the reference item
-        After,       // Insert after the reference item
-        End          // Add at the end
+        Auto, // Find best position automatically
+        Before, // Insert before the reference item
+        After, // Insert after the reference item
+        End // Add at the end
     }
 
     /// <summary>
@@ -80,7 +80,9 @@ namespace RocketLib.Menus.Core
         public MenuRegistration(string displayText, TargetMenu targetMenu)
         {
             if (string.IsNullOrEmpty(displayText))
+            {
                 throw new ArgumentNullException(nameof(displayText));
+            }
 
             DisplayText = displayText;
             TargetMenu = targetMenu;
@@ -109,9 +111,9 @@ namespace RocketLib.Menus.Core
         public Action<Menu> OnSelect { get; set; }
 
         // Menu item placement
-        public PositionMode Position { get; set; }      // Ignored for ModOptions
-        public string PositionReference { get; set; }   // Ignored for ModOptions
-        public int Priority { get; set; }               // Primary for ModOptions, secondary for others
+        public PositionMode Position { get; set; } // Ignored for ModOptions
+        public string PositionReference { get; set; } // Ignored for ModOptions
+        public int Priority { get; set; } // Primary for ModOptions, secondary for others
 
         // Visibility control
         public Func<Menu, bool> IsVisible { get; set; }

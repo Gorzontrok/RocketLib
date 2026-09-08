@@ -31,7 +31,7 @@ namespace RocketLib.UI
         /// <summary>Screen anchor for the notification stack.</summary>
         public static NotificationPosition Position { get; set; } = NotificationPosition.TopRight;
 
-        /// <summary>Maximum number of notifications visible on screen at once. Calls beyond the cap are queued internally and slide in as visible notifications dismiss; the queue length is capped by <see cref="MaxQueued"/>.</summary>
+        /// <summary>Maximum number of notifications visible on screen at once. Calls beyond the cap are queued internally and slide in as visible notifications dismiss; the queue length is capped by <see cref="MaxQueued" />.</summary>
         public static int MaxVisible { get; set; } = 5;
 
         /// <summary>Caps how many notifications wait behind the visible ones; arrivals beyond the cap collapse into a single "N more notifications" entry whose click action is the first click action among the folded notifications.</summary>
@@ -44,10 +44,10 @@ namespace RocketLib.UI
         /// Display a notification. Must be called from the main thread. `onClick` makes the body clickable; clicking the close button never invokes it.
         /// </summary>
         public static void Show(string message,
-                                NotificationSeverity severity = NotificationSeverity.Info,
-                                float duration = 5f,
-                                string source = null,
-                                Action onClick = null)
+            NotificationSeverity severity = NotificationSeverity.Info,
+            float duration = 5f,
+            string source = null,
+            Action onClick = null)
         {
             NotificationHost.Instance.Enqueue(message, severity, duration, source, onClick);
         }
@@ -423,7 +423,7 @@ namespace RocketLib.UI
                 float slideOffsetX = (1f - slideEase) * (isLeft ? -Width - 32f : isCenter ? 0f : Width + 32f);
                 float slideOffsetY = isCenter ? (1f - slideEase) * (isBottom ? 24f : -24f) : 0f;
                 float fadeT = Mathf.Clamp01(n.FadeT);
-                float alpha = slideEase * (1f - (1f - fadeT) * (1f - fadeT));
+                float alpha = slideEase * (1f - ((1f - fadeT) * (1f - fadeT)));
 
                 float yPos = anchorYBase + n.CurrentY + slideOffsetY;
                 Rect rect = new Rect(anchorX + slideOffsetX, yPos, Width, n.Height);
@@ -465,7 +465,7 @@ namespace RocketLib.UI
 
         private float ComputeHeight(ActiveNotification n)
         {
-            float contentWidth = Width - SeverityBarWidth - Padding * 2f;
+            float contentWidth = Width - SeverityBarWidth - (Padding * 2f);
             EnsureMeasured(n, contentWidth);
             float messageHeight = _messageStyle != null ? n.CachedFullHeight : 20f;
 
@@ -475,7 +475,7 @@ namespace RocketLib.UI
             n.Truncated = truncated;
 
             // A huge message (stack traces) would otherwise expand past the screen on hover.
-            float expandCeiling = Mathf.Max(maxMessageHeight, (Screen.height / LogicalScale()) * 0.5f);
+            float expandCeiling = Mathf.Max(maxMessageHeight, Screen.height / LogicalScale() * 0.5f);
             float expandedHeight = Mathf.Min(messageHeight, expandCeiling);
 
             float visibleMessageHeight = truncated && n.HoverExpandT < 0.999f
@@ -510,7 +510,7 @@ namespace RocketLib.UI
 
             float contentX = rect.x + SeverityBarWidth + Padding;
             float contentY = rect.y + Padding;
-            float contentWidth = rect.width - SeverityBarWidth - Padding * 2f;
+            float contentWidth = rect.width - SeverityBarWidth - (Padding * 2f);
 
             // Severity icon
             Color prevColor = GUI.color;
@@ -531,7 +531,7 @@ namespace RocketLib.UI
             {
                 Vector2 pillSize = _sourcePillStyle.CalcSize(new GUIContent(n.Source));
                 float pillW = Mathf.Min(pillSize.x + 12f, Mathf.Max(0f, closeLeft - 6f - badgeReserve - pillRight));
-                Rect pillBg = new Rect(pillRight, contentY + (HeaderHeight - 18f) * 0.5f, pillW, 18f);
+                Rect pillBg = new Rect(pillRight, contentY + ((HeaderHeight - 18f) * 0.5f), pillW, 18f);
                 DrawSolid(pillBg, new Color(1f, 1f, 1f, 0.12f * alpha));
                 GUI.color = new Color(1f, 1f, 1f, alpha);
                 GUI.Label(pillBg, n.Source, _sourcePillStyle);
@@ -542,7 +542,7 @@ namespace RocketLib.UI
             if (badgeText != null)
             {
                 GUI.color = new Color(1f, 1f, 1f, 0.7f * alpha);
-                Rect badgeRect = new Rect(badgeLeft, contentY + (HeaderHeight - 18f) * 0.5f, badgeWidth, 18f);
+                Rect badgeRect = new Rect(badgeLeft, contentY + ((HeaderHeight - 18f) * 0.5f), badgeWidth, 18f);
                 GUI.Label(badgeRect, badgeText, _countBadgeStyle);
             }
 
@@ -657,7 +657,7 @@ namespace RocketLib.UI
             int best = 1;
             while (low <= high)
             {
-                int mid = low + (high - low) / 2;
+                int mid = low + ((high - low) / 2);
                 if (style.CalcHeight(new GUIContent(message.Substring(0, mid) + "…"), width) <= maxHeight)
                 {
                     best = mid;
@@ -875,9 +875,9 @@ namespace RocketLib.UI
     }
 
     [HarmonyPatch(typeof(MainMenu), "Awake")]
-    static class NotificationGate_MainMenu_Awake_Patch
+    internal static class NotificationGate_MainMenu_Awake_Patch
     {
-        static void Postfix()
+        private static void Postfix()
         {
             NotificationHost._mainMenuReached = true;
         }

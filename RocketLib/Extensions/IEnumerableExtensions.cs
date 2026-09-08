@@ -26,6 +26,7 @@ public static class IEnumerableExtensions
     {
         return self == null || self.Count() == 0;
     }
+
     /// <summary>
     /// Is Collection NOT null or empty
     /// </summary>

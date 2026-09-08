@@ -9,7 +9,6 @@ namespace RocketLib.UMM
     /// </summary>
     public static class WindowScaling
     {
-        private static float _windowWidth = -1f;
         private const float BASELINE_WIDTH = 1200f;
 
         /// <summary>
@@ -26,7 +25,10 @@ namespace RocketLib.UMM
         public static bool TryCaptureWidth()
         {
             // If already captured, we're ready
-            if (_windowWidth >= 0) return true;
+            if (WindowWidth >= 0)
+            {
+                return true;
+            }
 
             // Not captured yet - do capture but return false for this entire frame
             // This ensures consistent return value during both Layout and Repaint passes
@@ -36,7 +38,7 @@ namespace RocketLib.UMM
                 Rect rect = GUILayoutUtility.GetRect(0, 0, GUILayout.ExpandWidth(true));
                 if (Event.current.type == EventType.Repaint && rect.width > 1)
                 {
-                    _windowWidth = rect.width;
+                    WindowWidth = rect.width;
                 }
                 GUILayout.EndHorizontal();
             }
@@ -51,13 +53,13 @@ namespace RocketLib.UMM
         /// <summary>
         /// Gets the detected window width, or -1 if not yet captured.
         /// </summary>
-        public static float WindowWidth => _windowWidth;
+        public static float WindowWidth { get; private set; } = -1f;
 
         /// <summary>
         /// Gets the scale factor based on baseline width (1200px).
         /// Returns 1.0 if width hasn't been captured yet.
         /// </summary>
-        public static float ScaleFactor => _windowWidth > 0 ? _windowWidth / BASELINE_WIDTH : 1.0f;
+        public static float ScaleFactor => WindowWidth > 0 ? WindowWidth / BASELINE_WIDTH : 1.0f;
 
         /// <summary>
         /// Creates a scaled width GUILayoutOption.
@@ -86,7 +88,7 @@ namespace RocketLib.UMM
         /// </summary>
         public static void Reset()
         {
-            _windowWidth = -1f;
+            WindowWidth = -1f;
         }
     }
 }

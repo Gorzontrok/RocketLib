@@ -37,10 +37,16 @@ namespace RocketLib.Menus.Layout
 
         protected override void ArrangeChildren()
         {
-            if (Children.Count == 0) return;
+            if (Children.Count == 0)
+            {
+                return;
+            }
 
-            var childrenToPosition = this.GetChildrenToPosition();
-            if (childrenToPosition.Count == 0) return;
+            var childrenToPosition = GetChildrenToPosition();
+            if (childrenToPosition.Count == 0)
+            {
+                return;
+            }
 
             float availableWidth = ActualSize.x - (Padding * 2);
             float availableHeight = ActualSize.y - (Padding * 2);
@@ -64,7 +70,7 @@ namespace RocketLib.Menus.Layout
                         childWidth = child.Width;
                         break;
                     case SizeMode.Percentage:
-                        childWidth = (child.Width / 100f) * availableWidth;
+                        childWidth = child.Width / 100f * availableWidth;
                         break;
 
                     case SizeMode.Fill:
@@ -78,7 +84,7 @@ namespace RocketLib.Menus.Layout
                         childHeight = child.Height;
                         break;
                     case SizeMode.Percentage:
-                        childHeight = (child.Height / 100f) * availableHeight;
+                        childHeight = child.Height / 100f * availableHeight;
                         break;
 
                     case SizeMode.Fill:
@@ -87,10 +93,22 @@ namespace RocketLib.Menus.Layout
                 }
 
                 // Apply constraints
-                if (child.MinSize.x > 0) childWidth = Mathf.Max(childWidth, child.MinSize.x);
-                if (child.MaxSize.x > 0) childWidth = Mathf.Min(childWidth, child.MaxSize.x);
-                if (child.MinSize.y > 0) childHeight = Mathf.Max(childHeight, child.MinSize.y);
-                if (child.MaxSize.y > 0) childHeight = Mathf.Min(childHeight, child.MaxSize.y);
+                if (child.MinSize.x > 0)
+                {
+                    childWidth = Mathf.Max(childWidth, child.MinSize.x);
+                }
+                if (child.MaxSize.x > 0)
+                {
+                    childWidth = Mathf.Min(childWidth, child.MaxSize.x);
+                }
+                if (child.MinSize.y > 0)
+                {
+                    childHeight = Mathf.Max(childHeight, child.MinSize.y);
+                }
+                if (child.MaxSize.y > 0)
+                {
+                    childHeight = Mathf.Min(childHeight, child.MaxSize.y);
+                }
 
                 // Set actual position (relative to container center)
                 child.ActualPosition = ActualPosition + relativePos;
@@ -103,7 +121,10 @@ namespace RocketLib.Menus.Layout
 
         private void DetectOutOfBounds(List<LayoutElement> childrenToPosition)
         {
-            if (childrenToPosition.Count == 0) return;
+            if (childrenToPosition.Count == 0)
+            {
+                return;
+            }
 
             // Get actual camera bounds dynamically
             float screenTop, screenBottom, screenLeft, screenRight;
@@ -132,20 +153,32 @@ namespace RocketLib.Menus.Layout
                     childLeft < screenLeft || childRight > screenRight)
                 {
                     string issue = "";
-                    if (childTop > screenTop) issue = $"top {childTop:F0} > screen {screenTop:F0}";
+                    if (childTop > screenTop)
+                    {
+                        issue = $"top {childTop:F0} > screen {screenTop:F0}";
+                    }
                     if (childBottom < screenBottom)
                     {
-                        if (!string.IsNullOrEmpty(issue)) issue += ", ";
+                        if (!string.IsNullOrEmpty(issue))
+                        {
+                            issue += ", ";
+                        }
                         issue += $"bottom {childBottom:F0} < screen {screenBottom:F0}";
                     }
                     if (childLeft < screenLeft)
                     {
-                        if (!string.IsNullOrEmpty(issue)) issue += ", ";
+                        if (!string.IsNullOrEmpty(issue))
+                        {
+                            issue += ", ";
+                        }
                         issue += $"left {childLeft:F0} < screen {screenLeft:F0}";
                     }
                     if (childRight > screenRight)
                     {
-                        if (!string.IsNullOrEmpty(issue)) issue += ", ";
+                        if (!string.IsNullOrEmpty(issue))
+                        {
+                            issue += ", ";
+                        }
                         issue += $"right {childRight:F0} > screen {screenRight:F0}";
                     }
                     offScreenElements.Add($"{child.GetType().Name} '{childName}' ({issue})");

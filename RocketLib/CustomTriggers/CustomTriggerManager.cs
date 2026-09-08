@@ -21,8 +21,9 @@ namespace RocketLib.CustomTriggers
         /// List of all registered custom triggers, sorted by tag, priority (descending), and action name.
         /// </summary>
         public static List<CustomTrigger> CustomTriggers = new List<CustomTrigger>();
-        static TriggerActionInfo currentAction;
-        static string currentActionName;
+
+        private static TriggerActionInfo currentAction;
+        private static string currentActionName;
 
         /// <summary>
         /// Registers a new custom trigger type with the level editor.
@@ -264,7 +265,9 @@ namespace RocketLib.CustomTriggers
             foreach (var trigger in mapData.TriggerList)
             {
                 if (trigger.actions == null)
+                {
                     continue;
+                }
 
                 for (int i = 0; i < trigger.actions.Count; i++)
                 {

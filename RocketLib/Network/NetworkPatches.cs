@@ -12,23 +12,34 @@ namespace RocketLib.Network
     {
         // AOT cache miss fallback: modded types aren't cached, causing silent 0-byte serialization
         [HarmonyPatch(typeof(TypeSerializer), "SerializeObjectWithType")]
-        static class TypeSerializer_SerializeObjectWithType_Patch
+        private static class TypeSerializer_SerializeObjectWithType_Patch
         {
-            static bool Prefix(object obj, Type type, BinaryWriter writer)
+            private static bool Prefix(object obj, Type type, BinaryWriter writer)
             {
-                if (obj == null) return true;
+                if (obj == null)
+                {
+                    return true;
+                }
 
                 var instance = TypeSerializer.Instance;
-                if (instance == null) return true;
+                if (instance == null)
+                {
+                    return true;
+                }
 
                 var cache = _cacheField != null
                     ? _cacheField.GetValue(instance) as Dictionary<Type, MethodInfo>
                     : null;
-                if (cache == null) return true;
+                if (cache == null)
+                {
+                    return true;
+                }
 
                 MethodInfo methodInfo;
                 if (cache.TryGetValue(type, out methodInfo))
+                {
                     return true;
+                }
 
                 try
                 {
@@ -46,9 +57,9 @@ namespace RocketLib.Network
 
         // GetMethod can't find private [AllowedRPC] methods on base classes for derived types
         [HarmonyPatch(typeof(RPCSecurity), "IsAllowed", new Type[] { typeof(Type), typeof(string) })]
-        static class RPCSecurity_IsAllowed_Patch
+        private static class RPCSecurity_IsAllowed_Patch
         {
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
                 var getMethodCall = AccessTools.Method(typeof(Type), "GetMethod",
                     new Type[] { typeof(string), typeof(BindingFlags) });
@@ -73,9 +84,9 @@ namespace RocketLib.Network
 
         // InvokeMember can't find private base class methods; also adds exception logging
         [HarmonyPatch(typeof(NonStaticRPCObject), "Execute")]
-        static class NonStaticRPCObject_Execute_Patch
+        private static class NonStaticRPCObject_Execute_Patch
         {
-            static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
             {
                 var invokeMemberCall = AccessTools.Method(typeof(Type), "InvokeMember",
                     new Type[] { typeof(string), typeof(BindingFlags), typeof(Binder), typeof(object), typeof(object[]) });
@@ -109,7 +120,7 @@ namespace RocketLib.Network
                 return codeMatcher.InstructionEnumeration();
             }
 
-            static Exception Finalizer(Exception __exception, NonStaticRPCObject __instance)
+            private static Exception Finalizer(Exception __exception, NonStaticRPCObject __instance)
             {
                 if (__exception != null)
                 {
@@ -124,7 +135,7 @@ namespace RocketLib.Network
         internal static class RPCInheritanceHelper
         {
             private const BindingFlags AllDeclared = BindingFlags.Instance | BindingFlags.Static
-                | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+                                                                           | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
             public static MethodInfo FindMethodIncludingBasePrivate(Type type, string methodName)
             {
@@ -135,14 +146,18 @@ namespace RocketLib.Network
                     {
                         var method = current.GetMethod(methodName, AllDeclared);
                         if (method != null)
+                        {
                             return method;
+                        }
                     }
                     catch (AmbiguousMatchException)
                     {
                         foreach (var m in current.GetMethods(AllDeclared))
                         {
                             if (m.Name == methodName)
+                            {
                                 return m;
+                            }
                         }
                     }
                     current = current.BaseType;
@@ -163,6 +178,7 @@ namespace RocketLib.Network
         // Cached reflection for serialization patch
         private static readonly FieldInfo _cacheField = typeof(TypeSerializer)
             .GetField("cached_SerializeMethods", BindingFlags.Instance | BindingFlags.NonPublic);
+
         private static readonly MethodInfo _serializeMethod = typeof(TypeSerializer)
             .GetMethod("Serialize", BindingFlags.Static | BindingFlags.Public);
     }

@@ -15,9 +15,10 @@ namespace RocketLib
         {
             return self.Dye(color.ToHex());
         }
+
         /// <summary>
-		/// Surround string with xml "color" tag
-		/// </summary>
+        /// Surround string with xml "color" tag
+        /// </summary>
         public static string Dye(this string self, string hex)
         {
             StringBuilder stringBuilder = new StringBuilder(COLOR_START)
