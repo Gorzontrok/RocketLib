@@ -72,11 +72,16 @@ public static class Assert
 {
     public static void True(bool condition, string message)
     {
-        if (!condition) throw new Exception(message);
+        if (!condition) Fail(message);
     }
     public static void Equal<T>(T expected, T actual, string message)
     {
-        if (!Object.Equals(expected, actual)) throw new Exception(message + ": expected " + expected + ", got " + actual);
+        if (!Object.Equals(expected, actual)) Fail(message + ": expected " + expected + ", got " + actual);
+    }
+    private static void Fail(string message)
+    {
+        Console.Error.WriteLine("FAIL: " + message);
+        Environment.Exit(1);
     }
 }
 public static class ModNegotiationOffline
@@ -89,7 +94,11 @@ public static class ModNegotiationOffline
         ModNegotiation.OnPlayerManifestReceived += delegate(PID pid, ModManifest[] manifests) { received++; };
         ModNegotiation.OnNegotiationComplete += delegate { completed++; };
         ModNegotiation.OnPlayerLeft += delegate(PID pid) { left++; Assert.True(!ModNegotiation.HasMod(pid, "Peer"), "leave clears before event"); };
-        ModNegotiation.OnSessionEnded += delegate { ended++; clearedBeforeEnded = !ModNegotiation.HasMod(remote, "Peer"); };
+        ModNegotiation.OnSessionEnded += delegate
+        {
+            ended++;
+            clearedBeforeEnded = !ModNegotiation.HasMod(remote, "Peer") && ModNegotiation.HasMod(PID.MyID, "Local");
+        };
 
         ModNegotiation.RegisterMod("Local", "1.0");
         Assert.True(ModNegotiation.HasMod(PID.MyID, "Local"), "local registration");
@@ -161,26 +170,41 @@ public static class ModNegotiationOffline
         ModNegotiation.PlayerLeft(remote);
         Assert.Equal(1, left, "leave once");
         Assert.Equal(2, completed, "peer set change completes");
+        ModNegotiation.AnnounceModListRPC(remote, serialized);
+        Assert.True(ModNegotiation.HasMod(remote, "Peer"), "remote manifest exists before session cleanup");
+        Assert.Equal(3, completed, "reintroduced manifest changes completed set");
         ModNegotiation.SessionEnded();
         Assert.Equal(1, ended, "session ended once");
         Assert.True(clearedBeforeEnded, "session cleared before event");
         ModNegotiation.LevelStarted();
         ModNegotiation.LevelStarted();
-        Assert.Equal(3, completed, "zero-peer completion once next session");
+        Assert.Equal(4, completed, "zero-peer completion once next session");
         ModNegotiation.SessionEnded();
         Connect.Layer.PlayerIDPairs.Add(remote, new IDWrapper());
+        PID silent = new PID(7);
+        Connect.Layer.PlayerIDPairs.Add(silent, new IDWrapper());
         UnityEngine.Time.realtimeSinceStartup = 20;
         ModNegotiation.PeerRegistered(remote);
+        UnityEngine.Time.realtimeSinceStartup = 21;
+        ModNegotiation.PeerRegistered(silent);
         UnityEngine.Time.realtimeSinceStartup = 22.9f;
         ModNegotiation.TickTimeout();
-        Assert.Equal(3, completed, "timeout anchored to first peer");
+        Assert.Equal(4, completed, "timeout anchored to first peer");
         UnityEngine.Time.realtimeSinceStartup = 23;
         ModNegotiation.TickTimeout();
-        Assert.Equal(4, completed, "three-second timeout");
+        Assert.Equal(5, completed, "three-second timeout");
         ModNegotiation.PeerRegistered(remote);
         UnityEngine.Time.realtimeSinceStartup = 40;
         ModNegotiation.TickTimeout();
-        Assert.Equal(4, completed, "duplicate PID cannot restart timeout");
+        Assert.Equal(5, completed, "duplicate PID cannot restart timeout");
+        ModNegotiation.AnnounceModListRPC(remote, serialized);
+        Assert.Equal(6, completed, "late first manifest after timeout completes despite silent peer");
+        ModNegotiation.AnnounceModListRPC(remote, serialized);
+        ModNegotiation.AnnounceModListRPC(remote, changedBytes);
+        Assert.Equal(6, completed, "identical or updated known manifest does not complete again");
+        Connect.Layer.PlayerIDPairs.Remove(remote);
+        ModNegotiation.PlayerLeft(remote);
+        Assert.Equal(7, completed, "manifest holder leaving after timeout completes despite silent peer");
         Console.WriteLine("PASS: manifest/prefab round-trip, queries, events, coalescing, immediate publish, timeout, cleanup");
     }
 }

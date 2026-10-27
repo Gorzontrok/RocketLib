@@ -268,7 +268,11 @@ namespace RocketLib.Network
             playerManifests[sender] = incoming;
             departedPlayers.Remove(sender);
             if (OnPlayerManifestReceived != null) OnPlayerManifestReceived(sender, incoming);
-            if (!existed) TryComplete();
+            if (!existed)
+            {
+                if (completed) FireComplete();
+                else TryComplete();
+            }
         }
 
         [AllowedRPC]
@@ -353,7 +357,7 @@ namespace RocketLib.Network
             registeredPeers.Remove(pid);
             bool hadManifest = playerManifests.Remove(pid);
             if (OnPlayerLeft != null) OnPlayerLeft(pid);
-            if (hadManifest && (NoRemotePeers() || AllRegisteredPeersReported())) FireComplete();
+            if (hadManifest && (completed || NoRemotePeers() || AllRegisteredPeersReported())) FireComplete();
         }
         private static bool AllRegisteredPeersReported()
         {
