@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace RocketLib.Utils
@@ -77,9 +76,8 @@ namespace RocketLib.Utils
             LineRenderer line;
             if (!lines.TryGetValue(ID, out line) || line == null)
             {
-                line = new GameObject("DebugLine", new Type[] { typeof(Transform), typeof(LineRenderer) }).GetComponent<LineRenderer>();
+                line = new GameObject("DebugLine", typeof(LineRenderer)).GetComponent<LineRenderer>();
                 line.material = new Material(Shader.Find("Sprites/Default"));
-                line.positionCount = positionCount;
                 line.gameObject.layer = 28;
                 if (lines.ContainsKey(ID))
                 {
@@ -90,6 +88,8 @@ namespace RocketLib.Utils
                     lines.Add(ID, line);
                 }
             }
+
+            line.positionCount = positionCount;
             return line;
         }
     }

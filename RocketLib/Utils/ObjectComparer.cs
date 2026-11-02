@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace RocketLib.Utils
 {
@@ -62,6 +63,16 @@ namespace RocketLib.Utils
 
             // Other problematic properties
             "Item", "SyncRoot", "IsReadOnly", "IsFixedSize"
+        };
+
+        private static readonly Dictionary<string, Type[]> TypeQualifiedSkipProperties = new Dictionary<string, Type[]>
+        {
+            { "material", new[] { typeof(Renderer), typeof(Collider) } },
+            { "materials", new[] { typeof(Renderer) } },
+            { "sharedMaterial", new[] { typeof(Renderer), typeof(Collider) } },
+            { "sharedMaterials", new[] { typeof(Renderer) } },
+            { "mesh", new[] { typeof(MeshFilter) } },
+            { "sharedMesh", new[] { typeof(MeshFilter) } }
         };
 
         /// <summary>
@@ -240,7 +251,7 @@ namespace RocketLib.Utils
                         }
 
                         // Skip blacklisted properties
-                        if (SkipProperties.Contains(prop.Name))
+                        if (ShouldSkip(prop))
                         {
                             continue;
                         }
@@ -297,7 +308,7 @@ namespace RocketLib.Utils
                 {
                     try
                     {
-                        if (SkipProperties.Contains(field.Name))
+                        if (ShouldSkip(field))
                         {
                             continue;
                         }
@@ -383,6 +394,29 @@ namespace RocketLib.Utils
                 .MakeGenericMethod(type);
 
             return (List<Difference>)method.Invoke(null, new object[] { obj1, obj2, path, depth, visitedPairs });
+        }
+
+        private static bool ShouldSkip(MemberInfo member)
+        {
+            if (SkipProperties.Contains(member.Name))
+            {
+                return true;
+            }
+
+            // Reading material or mesh on these types instantiates a private copy of the asset
+            Type[] declaringBaseTypes;
+            if (TypeQualifiedSkipProperties.TryGetValue(member.Name, out declaringBaseTypes))
+            {
+                foreach (var baseType in declaringBaseTypes)
+                {
+                    if (baseType.IsAssignableFrom(member.DeclaringType))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

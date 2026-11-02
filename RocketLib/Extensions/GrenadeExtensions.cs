@@ -10,9 +10,9 @@ namespace RocketLib.Extensions
         /// <param name="grenade">Object to compare to the default grenade.</param>
         public static void CompareToDefaultGrenade(this Grenade grenade)
         {
-            Grenade defaultGrenade = new GameObject("TemporaryGrenade", typeof(Transform), typeof(MeshFilter), typeof(MeshRenderer), typeof(SpriteSM), typeof(Grenade)).GetComponent<Grenade>();
+            Grenade defaultGrenade = new GameObject("TemporaryGrenade", typeof(MeshFilter), typeof(MeshRenderer), typeof(SpriteSM), typeof(Grenade)).GetComponent<Grenade>();
             defaultGrenade.PrintDifferences(grenade);
-            Object.Destroy(defaultGrenade);
+            Object.Destroy(defaultGrenade.gameObject);
         }
     }
 }
