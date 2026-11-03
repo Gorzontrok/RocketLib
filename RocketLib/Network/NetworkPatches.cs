@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
@@ -10,17 +11,12 @@ namespace RocketLib.Network
 {
     public class NetworkPatches
     {
-        // AOT cache miss fallback: modded types aren't cached, causing silent 0-byte serialization
+        // AOT cache miss fallback: uncached types outside SerializeValueType's list (all modded ones, some vanilla ones like Mook) serialize to 0 bytes, nulls included
         [HarmonyPatch(typeof(TypeSerializer), "SerializeObjectWithType")]
         private static class TypeSerializer_SerializeObjectWithType_Patch
         {
             private static bool Prefix(object obj, Type type, BinaryWriter writer)
             {
-                if (obj == null)
-                {
-                    return true;
-                }
-
                 var instance = TypeSerializer.Instance;
                 if (instance == null)
                 {
@@ -82,11 +78,18 @@ namespace RocketLib.Network
             }
         }
 
-        // InvokeMember can't find private base class methods; also adds exception logging
+        // InvokeMember can't find private base class methods; the game's own catch swallows every failure
         [HarmonyPatch(typeof(NonStaticRPCObject), "Execute")]
         private static class NonStaticRPCObject_Execute_Patch
         {
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+            {
+                var logCaught = AccessTools.Method(typeof(NonStaticRPCObject_Execute_Patch), nameof(LogCaught));
+                return RPCFailureLog.InsertIntoCatchBlock(ReplaceInvokeMember(instructions, generator), logCaught,
+                    nameof(NonStaticRPCObject_Execute_Patch));
+            }
+
+            private static IEnumerable<CodeInstruction> ReplaceInvokeMember(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
             {
                 var invokeMemberCall = AccessTools.Method(typeof(Type), "InvokeMember",
                     new Type[] { typeof(string), typeof(BindingFlags), typeof(Binder), typeof(object), typeof(object[]) });
@@ -120,14 +123,107 @@ namespace RocketLib.Network
                 return codeMatcher.InstructionEnumeration();
             }
 
-            private static Exception Finalizer(Exception __exception, NonStaticRPCObject __instance)
+            // Runs inside the game's catch handler: a throw here escapes Execute into the RPC caller
+            private static void LogCaught(Exception exception, NonStaticRPCObject rpc)
             {
-                if (__exception != null)
+                try
                 {
-                    var targetName = Registry.GetObject(__instance.targetID)?.GetType().Name ?? "NULL";
-                    RocketMain.Logger.Exception($"[RPC] {__instance.methodName} on {targetName}", __exception);
+                    var targetName = Registry.GetObject(rpc.targetID)?.GetType().Name ?? "NULL";
+                    RPCFailureLog.Log($"{rpc.methodName} on {targetName}", exception);
                 }
-                return null;
+                catch (Exception)
+                {
+                }
+            }
+        }
+
+        // The game's own catch swallows every failure
+        [HarmonyPatch(typeof(StaticRPCObject), "Execute")]
+        private static class StaticRPCObject_Execute_Patch
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                var logCaught = AccessTools.Method(typeof(StaticRPCObject_Execute_Patch), nameof(LogCaught));
+                return RPCFailureLog.InsertIntoCatchBlock(instructions, logCaught, nameof(StaticRPCObject_Execute_Patch));
+            }
+
+            // Runs inside the game's catch handler: a throw here escapes Execute into the RPC caller
+            private static void LogCaught(Exception exception, StaticRPCObject rpc)
+            {
+                try
+                {
+                    RPCFailureLog.Log($"{rpc.classType?.FullName ?? "NULL"}.{rpc.methodName}", exception);
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
+        internal static class RPCFailureLog
+        {
+            private const int RepeatIntervalMs = 60000;
+
+            private static readonly Dictionary<string, Repeats> _repeats = new Dictionary<string, Repeats>();
+
+            private class Repeats
+            {
+                public int LastLoggedAt;
+                public int Skipped;
+            }
+
+            // The handler's first instruction carries the catch block; the exception is on the stack when it starts
+            public static IEnumerable<CodeInstruction> InsertIntoCatchBlock(IEnumerable<CodeInstruction> instructions, MethodInfo logCaught, string patchName)
+            {
+                var codes = new List<CodeInstruction>(instructions);
+                var handlerStart = codes.FindIndex(i => i.blocks.Any(b => b.blockType == ExceptionBlockType.BeginCatchBlock));
+                if (handlerStart < 0)
+                {
+                    RocketMain.Logger.Warning(patchName + ": Could not find catch block");
+                    return codes;
+                }
+
+                var duplicate = new CodeInstruction(OpCodes.Dup);
+                codes[handlerStart].MoveBlocksTo(duplicate);
+                codes.InsertRange(handlerStart, new[]
+                {
+                    duplicate,
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Call, logCaught)
+                });
+
+                return codes;
+            }
+
+            public static void Log(string target, Exception exception)
+            {
+                var invocation = exception as TargetInvocationException;
+                if (invocation != null && invocation.InnerException != null)
+                {
+                    exception = invocation.InnerException;
+                }
+
+                var key = target + "|" + exception.GetType().FullName;
+                var now = Environment.TickCount;
+                Repeats repeats;
+                if (_repeats.TryGetValue(key, out repeats))
+                {
+                    if (unchecked(now - repeats.LastLoggedAt) < RepeatIntervalMs)
+                    {
+                        repeats.Skipped++;
+                        return;
+                    }
+                }
+                else
+                {
+                    repeats = new Repeats();
+                    _repeats[key] = repeats;
+                }
+
+                var skipped = repeats.Skipped > 0 ? $" ({repeats.Skipped} repeats since last logged)" : "";
+                repeats.LastLoggedAt = now;
+                repeats.Skipped = 0;
+                RocketMain.Logger.Exception($"[RPC] {target}{skipped}", exception);
             }
         }
 
