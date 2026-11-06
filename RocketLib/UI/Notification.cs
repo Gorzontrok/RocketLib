@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using RocketLib.Menus.Utilities;
+using RocketLib.Utils;
 using UnityEngine;
 
 namespace RocketLib.UI
@@ -85,6 +86,7 @@ namespace RocketLib.UI
                 {
                     var go = new GameObject("RocketLib.Notification");
                     DontDestroyOnLoad(go);
+                    RocketLibUtils.MakeObjectUnpausable(go);
                     _instance = go.AddComponent<NotificationHost>();
                 }
                 return _instance;
