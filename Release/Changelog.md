@@ -1,6 +1,7 @@
 ## v2.4.4 (unreleased)
 - Fixed error in log on startup when Logs directory doesn't exist.
 - Added an in-game notification overlay that mods can use to show messages.
+- Added a warning at startup naming mods that won't work with your versions of RocketLib and BroMaker.
 
 ## v2.4.3:
 - Better handling for levels with custom triggers that aren't installed.

@@ -2,6 +2,7 @@
 using System.Reflection;
 using HarmonyLib;
 using RocketLib.Loggers;
+using RocketLib.Utils;
 using UnityEngine;
 using UnityModManagerNet;
 
@@ -13,6 +14,8 @@ namespace RocketLib.UMM
         public static Harmony harmony;
         public static UnityModManager.ModEntry Mod;
         public static Settings settings;
+
+        private static bool compatibilityChecked;
 
         private static Loggers.ILogger Logger
         {
@@ -173,6 +176,19 @@ namespace RocketLib.UMM
 
         private static void OnUpdate(UnityModManager.ModEntry modEntry, float dt)
         {
+            if (!compatibilityChecked)
+            {
+                compatibilityChecked = true;
+                try
+                {
+                    ModCompatibility.ReportStartup();
+                }
+                catch (Exception ex)
+                {
+                    Mod.Logger.LogException("Error while checking mods for compatibility:", ex);
+                }
+            }
+
             if (!LevelEditorGUI.IsActive)
             {
                 ShowMouseController.ShowMouse = false;
