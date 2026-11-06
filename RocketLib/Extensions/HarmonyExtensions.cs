@@ -138,6 +138,12 @@ public static class HarmonyExtensions
     }
     #endregion
 
+    // Kept for backwards compatibility
+    public static void DynamicFieldsValueSetter(this object obj, Dictionary<string, object> map, string[] skipTheseFields, Action<Traverse, string, object> setter)
+    {
+        obj.DynamicFieldsValueSetter(map, skipTheseFields, setter, null);
+    }
+
     /// <summary>
     /// Set multiple fields on an object from a <see cref="Dictionary{string, object}" />
     /// Can navigate through instances from fields using the separator <see cref="PATH_SEPARATOR" /> in the <see cref="Dictionary{string, object}" /> key.
