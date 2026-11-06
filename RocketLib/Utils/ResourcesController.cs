@@ -92,10 +92,10 @@ namespace RocketLib.Utils
         /// <returns></returns>
         public static Material CreateMaterial(byte[] imageBytes)
         {
-            var tex = CreateTexture(imageBytes);
+            Texture2D tex = CreateTexture(imageBytes);
             if (tex != null)
             {
-                var mat = new Material(Unlit_DepthCutoutColouredImage);
+                Material mat = new Material(Unlit_DepthCutoutColouredImage);
                 mat.mainTexture = tex;
                 return mat;
             }
@@ -112,10 +112,10 @@ namespace RocketLib.Utils
         /// <returns></returns>
         public static Material CreateMaterial(string filePath, Shader shader)
         {
-            var tex = CreateTexture(filePath);
+            Texture2D tex = CreateTexture(filePath);
             if (tex)
             {
-                var mat = new Material(shader);
+                Material mat = new Material(shader);
                 mat.mainTexture = tex;
                 return mat;
             }
@@ -131,10 +131,10 @@ namespace RocketLib.Utils
         /// <returns></returns>
         public static Material CreateMaterial(string filePath, Material source)
         {
-            var tex = CreateTexture(filePath);
+            Texture2D tex = CreateTexture(filePath);
             if (tex != null)
             {
-                var mat = new Material(source);
+                Material mat = new Material(source);
                 mat.mainTexture = tex;
                 return mat;
             }

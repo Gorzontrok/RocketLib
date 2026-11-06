@@ -47,11 +47,11 @@ namespace RocketLib
 
         public static GameObject FindChildOfName(this GameObject gameObject, string name)
         {
-            var transform = gameObject.transform;
-            var childCount = transform.childCount;
+            Transform transform = gameObject.transform;
+            int childCount = transform.childCount;
             for (int i = 0; i < childCount; i++)
             {
-                var child = transform.GetChild(i);
+                Transform child = transform.GetChild(i);
                 if (child.gameObject.name == name)
                 {
                     return child.gameObject;

@@ -27,7 +27,7 @@ namespace RocketLib.Menus.Core
             int priority = 100,
             Func<Menu, bool> isVisible = null)
         {
-            var registration = new MenuRegistration(displayText, targetMenu)
+            MenuRegistration registration = new MenuRegistration(displayText, targetMenu)
             {
                 Kind = MenuKind.Action,
                 OnSelect = onSelect,
@@ -51,7 +51,7 @@ namespace RocketLib.Menus.Core
             int priority = 100,
             Func<Menu, bool> isVisible = null) where T : class, new()
         {
-            var registration = new MenuRegistration(displayText, targetMenu)
+            MenuRegistration registration = new MenuRegistration(displayText, targetMenu)
             {
                 MenuType = typeof(T),
                 Kind = typeof(Vanilla.BaseCustomMenu).IsAssignableFrom(typeof(T)) ? MenuKind.BaseCustom : MenuKind.Flex,
@@ -76,7 +76,7 @@ namespace RocketLib.Menus.Core
             int priority = 100,
             Func<Menu, bool> isVisible = null)
         {
-            var registration = new MenuRegistration(displayText, targetMenu)
+            MenuRegistration registration = new MenuRegistration(displayText, targetMenu)
             {
                 MenuType = menuInstance.GetType(),
                 Position = position,
@@ -127,11 +127,11 @@ namespace RocketLib.Menus.Core
                 return;
             }
 
-            var menuTraverse = Traverse.Create(menu);
-            var masterItems = menuTraverse.Field<MenuBarItem[]>("masterItems").Value ?? new MenuBarItem[0];
+            Traverse menuTraverse = Traverse.Create(menu);
+            MenuBarItem[] masterItems = menuTraverse.Field<MenuBarItem[]>("masterItems").Value ?? new MenuBarItem[0];
 
             // Get items for this target menu
-            var itemsToInject = registeredMenus.Values
+            List<MenuRegistration> itemsToInject = registeredMenus.Values
                 .Where(r => r.TargetMenu == targetType.Value)
                 .Where(r => r.IsVisible == null || r.IsVisible(menu))
                 .Where(r => !masterItems.Any(existing => existing.name == r.DisplayText))
@@ -144,9 +144,9 @@ namespace RocketLib.Menus.Core
                 return;
             }
 
-            var newItems = new List<MenuBarItem>(masterItems);
+            List<MenuBarItem> newItems = new List<MenuBarItem>(masterItems);
 
-            foreach (var registration in itemsToInject)
+            foreach (MenuRegistration registration in itemsToInject)
             {
                 // Get appropriate font size from parent menu
                 float itemSize = 3f; // Default
@@ -155,7 +155,7 @@ namespace RocketLib.Menus.Core
                     itemSize = masterItems[0].size; // Use existing menu's font size
                 }
 
-                var menuItem = new MenuBarItem
+                MenuBarItem menuItem = new MenuBarItem
                 {
                     name = registration.DisplayText,
                     invokeMethod = $"RocketLib_{registration.MenuId}",
@@ -263,7 +263,7 @@ namespace RocketLib.Menus.Core
         /// </summary>
         private static void RegisterMenuAction(Menu menu, string methodName, MenuRegistration registration)
         {
-            var key = $"{menu.GetInstanceID()}_{methodName}";
+            string key = $"{menu.GetInstanceID()}_{methodName}";
             menuActions[key] = (m) => registration.Open(m);
         }
 
@@ -272,8 +272,8 @@ namespace RocketLib.Menus.Core
         /// </summary>
         public static bool InvokeMenuAction(Menu menu, string methodName)
         {
-            var key = $"{menu.GetInstanceID()}_{methodName}";
-            if (menuActions.TryGetValue(key, out var action))
+            string key = $"{menu.GetInstanceID()}_{methodName}";
+            if (menuActions.TryGetValue(key, out Action<Menu> action))
             {
                 action?.Invoke(menu);
                 return true;

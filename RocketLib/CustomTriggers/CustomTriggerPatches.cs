@@ -19,7 +19,7 @@ namespace RocketLib.CustomTriggers
                     return;
                 }
 
-                foreach (var trigger in Map.MapData.TriggerList)
+                foreach (TriggerInfo trigger in Map.MapData.TriggerList)
                 {
                     if (trigger.actions == null)
                     {
@@ -44,7 +44,7 @@ namespace RocketLib.CustomTriggers
                     return;
                 }
 
-                foreach (var trigger in Map.MapData.TriggerList)
+                foreach (TriggerInfo trigger in Map.MapData.TriggerList)
                 {
                     if (trigger.actions == null)
                     {
@@ -53,10 +53,10 @@ namespace RocketLib.CustomTriggers
 
                     for (int i = 0; i < trigger.actions.Count; i++)
                     {
-                        var action = trigger.actions[i];
+                        TriggerActionInfo action = trigger.actions[i];
                         if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                         {
-                            var customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
+                            CustomTriggerActionInfo customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
                             if (customInfo != null)
                             {
                                 trigger.actions[i] = customInfo;
@@ -77,14 +77,14 @@ namespace RocketLib.CustomTriggers
                     return;
                 }
 
-                foreach (var mapData in LevelEditorGUI.campaign.levels)
+                foreach (MapData mapData in LevelEditorGUI.campaign.levels)
                 {
                     if (mapData == null || mapData.TriggerList == null)
                     {
                         continue;
                     }
 
-                    foreach (var trigger in mapData.TriggerList)
+                    foreach (TriggerInfo trigger in mapData.TriggerList)
                     {
                         if (trigger.actions == null)
                         {
@@ -110,14 +110,14 @@ namespace RocketLib.CustomTriggers
                     return;
                 }
 
-                foreach (var mapData in LevelEditorGUI.campaign.levels)
+                foreach (MapData mapData in LevelEditorGUI.campaign.levels)
                 {
                     if (mapData == null || mapData.TriggerList == null)
                     {
                         continue;
                     }
 
-                    foreach (var trigger in mapData.TriggerList)
+                    foreach (TriggerInfo trigger in mapData.TriggerList)
                     {
                         if (trigger.actions == null)
                         {
@@ -126,10 +126,10 @@ namespace RocketLib.CustomTriggers
 
                         for (int i = 0; i < trigger.actions.Count; i++)
                         {
-                            var action = trigger.actions[i];
+                            TriggerActionInfo action = trigger.actions[i];
                             if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                             {
-                                var customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
+                                CustomTriggerActionInfo customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
                                 if (customInfo != null)
                                 {
                                     trigger.actions[i] = customInfo;
@@ -156,7 +156,7 @@ namespace RocketLib.CustomTriggers
                     string triggerType = CustomTriggerManager.GetCustomActionType(info);
                     if (!string.IsNullOrEmpty(triggerType))
                     {
-                        var customTrigger = CustomTriggerManager.CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
+                        CustomTrigger customTrigger = CustomTriggerManager.CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
                         if (customTrigger != null)
                         {
                             TriggerAction action = Activator.CreateInstance(customTrigger.CustomTriggerActionType) as TriggerAction;
@@ -192,7 +192,7 @@ namespace RocketLib.CustomTriggers
                     return;
                 }
 
-                foreach (var trigger in mapData.TriggerList)
+                foreach (TriggerInfo trigger in mapData.TriggerList)
                 {
                     if (trigger.actions == null)
                     {
@@ -217,7 +217,7 @@ namespace RocketLib.CustomTriggers
                     return;
                 }
 
-                foreach (var trigger in mapData.TriggerList)
+                foreach (TriggerInfo trigger in mapData.TriggerList)
                 {
                     if (trigger.actions == null)
                     {
@@ -226,10 +226,10 @@ namespace RocketLib.CustomTriggers
 
                     for (int i = 0; i < trigger.actions.Count; i++)
                     {
-                        var action = trigger.actions[i];
+                        TriggerActionInfo action = trigger.actions[i];
                         if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                         {
-                            var customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
+                            CustomTriggerActionInfo customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
                             if (customInfo != null)
                             {
                                 trigger.actions[i] = customInfo;
@@ -250,7 +250,7 @@ namespace RocketLib.CustomTriggers
                     return;
                 }
 
-                foreach (var mapData in __result.levels)
+                foreach (MapData mapData in __result.levels)
                 {
                     CustomTriggerManager.ConvertAllCustomTriggersInMapData(mapData);
                 }

@@ -36,7 +36,7 @@ namespace RocketLib.Menus.Tests
         {
             base.Start();
 
-            var title = new TextElement("Title")
+            TextElement title = new TextElement("Title")
             {
                 Text = "TRANSITION TEST MENU",
                 TextColor = Color.white,
@@ -47,7 +47,7 @@ namespace RocketLib.Menus.Tests
             };
             rootContainer.AddChild(title);
 
-            var topSpacer = new SpacerElement("TopSpacer")
+            SpacerElement topSpacer = new SpacerElement("TopSpacer")
             {
                 HeightMode = SizeMode.Fixed,
                 Height = 10f
@@ -65,7 +65,7 @@ namespace RocketLib.Menus.Tests
             };
             rootContainer.AddChild(statusText);
 
-            var contentArea = new VerticalLayoutContainer
+            VerticalLayoutContainer contentArea = new VerticalLayoutContainer
             {
                 Name = "ContentArea",
                 WidthMode = SizeMode.Fixed,
@@ -75,21 +75,21 @@ namespace RocketLib.Menus.Tests
                 Spacing = 8f
             };
 
-            var centeringWrapper = new VerticalLayoutContainer
+            VerticalLayoutContainer centeringWrapper = new VerticalLayoutContainer
             {
                 Name = "CenteringWrapper",
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fill
             };
 
-            var contentTopSpacer = new SpacerElement("ContentTopSpacer")
+            SpacerElement contentTopSpacer = new SpacerElement("ContentTopSpacer")
             {
                 HeightMode = SizeMode.Fixed,
                 Height = -20f
             };
             centeringWrapper.AddChild(contentTopSpacer);
 
-            var horizontalCenter = new HorizontalLayoutContainer
+            HorizontalLayoutContainer horizontalCenter = new HorizontalLayoutContainer
             {
                 Name = "HorizontalCenter",
                 WidthMode = SizeMode.Fill,
@@ -97,7 +97,7 @@ namespace RocketLib.Menus.Tests
                 Height = 180f
             };
 
-            var leftSpacer = new SpacerElement("LeftSpacer")
+            SpacerElement leftSpacer = new SpacerElement("LeftSpacer")
             {
                 WidthMode = SizeMode.Fill
             };
@@ -105,7 +105,7 @@ namespace RocketLib.Menus.Tests
 
             horizontalCenter.AddChild(contentArea);
 
-            var rightSpacer = new SpacerElement("RightSpacer")
+            SpacerElement rightSpacer = new SpacerElement("RightSpacer")
             {
                 WidthMode = SizeMode.Fill
             };
@@ -113,7 +113,7 @@ namespace RocketLib.Menus.Tests
 
             centeringWrapper.AddChild(horizontalCenter);
 
-            var contentBottomSpacer = new SpacerElement("ContentBottomSpacer")
+            SpacerElement contentBottomSpacer = new SpacerElement("ContentBottomSpacer")
             {
                 HeightMode = SizeMode.Fill
             };
@@ -121,7 +121,7 @@ namespace RocketLib.Menus.Tests
 
             rootContainer.AddChild(centeringWrapper);
 
-            var btn1 = new ActionButton("TestButton1")
+            ActionButton btn1 = new ActionButton("TestButton1")
             {
                 Text = "TEST OPTION 1",
                 FontSize = 4.5f,
@@ -132,7 +132,7 @@ namespace RocketLib.Menus.Tests
             };
             contentArea.AddChild(btn1);
 
-            var btn2 = new ActionButton("TestButton2")
+            ActionButton btn2 = new ActionButton("TestButton2")
             {
                 Text = "TEST OPTION 2",
                 FontSize = 4.5f,
@@ -143,7 +143,7 @@ namespace RocketLib.Menus.Tests
             };
             contentArea.AddChild(btn2);
 
-            var btn3 = new ActionButton("TestButton3")
+            ActionButton btn3 = new ActionButton("TestButton3")
             {
                 Text = "TEST OPTION 3",
                 FontSize = 4.5f,
@@ -165,7 +165,7 @@ namespace RocketLib.Menus.Tests
             };
             contentArea.AddChild(transitionToggle);
 
-            var backBtn = new ActionButton("BackButton")
+            ActionButton backBtn = new ActionButton("BackButton")
             {
                 Text = "BACK",
                 FontSize = 4.5f,

@@ -34,11 +34,11 @@ namespace RocketLib
 
         public static GameObject FindChildOfName(this Component component, string name)
         {
-            var transform = component.transform;
-            var childCount = transform.childCount;
+            Transform transform = component.transform;
+            int childCount = transform.childCount;
             for (int i = 0; i < childCount; i++)
             {
-                var child = transform.GetChild(i);
+                Transform child = transform.GetChild(i);
                 if (child.gameObject.name == name)
                 {
                     return child.gameObject;
@@ -50,7 +50,7 @@ namespace RocketLib
         public static GameObject[] ToGameObjects<T>(this T[] components) where T : Component
         {
             List<GameObject> list = new List<GameObject>();
-            foreach (var component in components)
+            foreach (T component in components)
             {
                 list.Add(component.gameObject);
             }

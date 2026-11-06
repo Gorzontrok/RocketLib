@@ -33,7 +33,7 @@
             {
                 if (bindings.IsDown(i) && HeroController.PlayerIsAlive(i))
                 {
-                    var character = HeroController.players[i].character;
+                    TestVanDammeAnim character = HeroController.players[i].character;
                     character.SetGestureAnimation(gesture);
                 }
             }

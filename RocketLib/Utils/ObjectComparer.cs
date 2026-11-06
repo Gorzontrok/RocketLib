@@ -28,7 +28,7 @@ namespace RocketLib.Utils
 
             public override bool Equals(object obj)
             {
-                var other = obj as ObjectPair;
+                ObjectPair other = obj as ObjectPair;
                 if (other == null)
                 {
                     return false;
@@ -38,8 +38,8 @@ namespace RocketLib.Utils
 
             public override int GetHashCode()
             {
-                var hash1 = Obj1 != null ? Obj1.GetHashCode() : 0;
-                var hash2 = Obj2 != null ? Obj2.GetHashCode() : 0;
+                int hash1 = Obj1 != null ? Obj1.GetHashCode() : 0;
+                int hash2 = Obj2 != null ? Obj2.GetHashCode() : 0;
                 return hash1 ^ hash2;
             }
         }
@@ -94,7 +94,7 @@ namespace RocketLib.Utils
         /// <returns>A list of all differences found between the two objects</returns>
         public static List<Difference> Compare<T>(T obj1, T obj2)
         {
-            var visitedPairs = new HashSet<ObjectPair>();
+            HashSet<ObjectPair> visitedPairs = new HashSet<ObjectPair>();
             return CompareInternal(obj1, obj2, "", 0, visitedPairs);
         }
 
@@ -103,7 +103,7 @@ namespace RocketLib.Utils
         /// </summary>
         private static List<Difference> CompareInternal<T>(T obj1, T obj2, string path, int depth, HashSet<ObjectPair> visitedPairs)
         {
-            var differences = new List<Difference>();
+            List<Difference> differences = new List<Difference>();
 
             if (depth > MAX_DEPTH)
             {
@@ -128,7 +128,7 @@ namespace RocketLib.Utils
                     return differences;
                 }
 
-                var type = typeof(T);
+                Type type = typeof(T);
 
                 // Handle simple types
                 if (IsSimpleType(type))
@@ -146,7 +146,7 @@ namespace RocketLib.Utils
                 }
 
                 // Check for circular references
-                var pair = new ObjectPair { Obj1 = obj1, Obj2 = obj2 };
+                ObjectPair pair = new ObjectPair { Obj1 = obj1, Obj2 = obj2 };
                 if (!type.IsValueType && visitedPairs.Contains(pair))
                 {
                     return differences;
@@ -160,8 +160,8 @@ namespace RocketLib.Utils
                 // Handle arrays
                 if (type.IsArray)
                 {
-                    var array1 = obj1 as Array;
-                    var array2 = obj2 as Array;
+                    Array array1 = obj1 as Array;
+                    Array array2 = obj2 as Array;
 
                     if (array1.Length != array2.Length)
                     {
@@ -173,10 +173,10 @@ namespace RocketLib.Utils
                         });
                     }
 
-                    var minLength = array1.Length < array2.Length ? array1.Length : array2.Length;
+                    int minLength = array1.Length < array2.Length ? array1.Length : array2.Length;
                     for (int i = 0; i < minLength; i++)
                     {
-                        var itemDiffs = CompareObjectsNonGeneric(
+                        List<Difference> itemDiffs = CompareObjectsNonGeneric(
                             array1.GetValue(i),
                             array2.GetValue(i),
                             $"{path}[{i}]",
@@ -191,17 +191,17 @@ namespace RocketLib.Utils
                 // Handle other collections (but not strings)
                 if (obj1 is IEnumerable && !(obj1 is string))
                 {
-                    var enum1 = obj1 as IEnumerable;
-                    var enum2 = obj2 as IEnumerable;
+                    IEnumerable enum1 = obj1 as IEnumerable;
+                    IEnumerable enum2 = obj2 as IEnumerable;
 
-                    var list1 = new List<object>();
-                    var list2 = new List<object>();
+                    List<object> list1 = new List<object>();
+                    List<object> list2 = new List<object>();
 
-                    foreach (var item in enum1)
+                    foreach (object item in enum1)
                     {
                         list1.Add(item);
                     }
-                    foreach (var item in enum2)
+                    foreach (object item in enum2)
                     {
                         list2.Add(item);
                     }
@@ -216,10 +216,10 @@ namespace RocketLib.Utils
                         });
                     }
 
-                    var minCount = list1.Count < list2.Count ? list1.Count : list2.Count;
+                    int minCount = list1.Count < list2.Count ? list1.Count : list2.Count;
                     for (int i = 0; i < minCount; i++)
                     {
-                        var itemDiffs = CompareObjectsNonGeneric(
+                        List<Difference> itemDiffs = CompareObjectsNonGeneric(
                             list1[i],
                             list2[i],
                             $"{path}[{i}]",
@@ -232,9 +232,9 @@ namespace RocketLib.Utils
                 }
 
                 // Handle regular objects - get all properties
-                var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-                foreach (var prop in properties)
+                foreach (PropertyInfo prop in properties)
                 {
                     try
                     {
@@ -256,9 +256,9 @@ namespace RocketLib.Utils
                             continue;
                         }
 
-                        var value1 = prop.GetValue(obj1, null);
-                        var value2 = prop.GetValue(obj2, null);
-                        var propertyPath = string.IsNullOrEmpty(path) ? prop.Name : $"{path}.{prop.Name}";
+                        object value1 = prop.GetValue(obj1, null);
+                        object value2 = prop.GetValue(obj2, null);
+                        string propertyPath = string.IsNullOrEmpty(path) ? prop.Name : $"{path}.{prop.Name}";
 
                         if (value1 == null && value2 == null)
                         {
@@ -292,7 +292,7 @@ namespace RocketLib.Utils
                         else
                         {
                             // For complex types, recurse
-                            var nestedDiffs = CompareObjectsNonGeneric(value1, value2, propertyPath, depth + 1, visitedPairs);
+                            List<Difference> nestedDiffs = CompareObjectsNonGeneric(value1, value2, propertyPath, depth + 1, visitedPairs);
                             differences.AddRange(nestedDiffs);
                         }
                     }
@@ -303,8 +303,8 @@ namespace RocketLib.Utils
                 }
 
                 // Also check fields if requested
-                var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
-                foreach (var field in fields)
+                FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+                foreach (FieldInfo field in fields)
                 {
                     try
                     {
@@ -313,9 +313,9 @@ namespace RocketLib.Utils
                             continue;
                         }
 
-                        var value1 = field.GetValue(obj1);
-                        var value2 = field.GetValue(obj2);
-                        var fieldPath = string.IsNullOrEmpty(path) ? field.Name : $"{path}.{field.Name}";
+                        object value1 = field.GetValue(obj1);
+                        object value2 = field.GetValue(obj2);
+                        string fieldPath = string.IsNullOrEmpty(path) ? field.Name : $"{path}.{field.Name}";
 
                         if (value1 == null && value2 == null)
                         {
@@ -347,7 +347,7 @@ namespace RocketLib.Utils
                         }
                         else
                         {
-                            var nestedDiffs = CompareObjectsNonGeneric(value1, value2, fieldPath, depth + 1, visitedPairs);
+                            List<Difference> nestedDiffs = CompareObjectsNonGeneric(value1, value2, fieldPath, depth + 1, visitedPairs);
                             differences.AddRange(nestedDiffs);
                         }
                     }
@@ -388,8 +388,8 @@ namespace RocketLib.Utils
                 };
             }
 
-            var type = obj1.GetType();
-            var method = typeof(ObjectComparer)
+            Type type = obj1.GetType();
+            MethodInfo method = typeof(ObjectComparer)
                 .GetMethod(nameof(CompareInternal), BindingFlags.NonPublic | BindingFlags.Static)
                 .MakeGenericMethod(type);
 
@@ -407,7 +407,7 @@ namespace RocketLib.Utils
             Type[] declaringBaseTypes;
             if (TypeQualifiedSkipProperties.TryGetValue(member.Name, out declaringBaseTypes))
             {
-                foreach (var baseType in declaringBaseTypes)
+                foreach (Type baseType in declaringBaseTypes)
                 {
                     if (baseType.IsAssignableFrom(member.DeclaringType))
                     {
@@ -470,7 +470,7 @@ namespace RocketLib.Utils
             // Handle boolean values (with proper casing)
             if (IsBool(value))
             {
-                var boolValue = value.ToLowerInvariant();
+                string boolValue = value.ToLowerInvariant();
                 return $"this.{propertyPath} = {boolValue};";
             }
 
@@ -490,7 +490,7 @@ namespace RocketLib.Utils
 
             // Handle string values
             // Escape quotes in string values
-            var escapedValue = value.Replace("\"", "\\\"");
+            string escapedValue = value.Replace("\"", "\\\"");
             return $"this.{propertyPath} = \"{escapedValue}\";";
         }
 
@@ -509,13 +509,13 @@ namespace RocketLib.Utils
         internal static string GenerateVectorAssignment(string propertyPath, string value)
         {
             // Extract numbers from the vector string
-            var numbers = System.Text.RegularExpressions.Regex.Matches(value, @"-?\d+\.?\d*")
+            List<string> numbers = System.Text.RegularExpressions.Regex.Matches(value, @"-?\d+\.?\d*")
                 .Cast<System.Text.RegularExpressions.Match>()
                 .Select(m => m.Value)
                 .ToList();
 
             // Add 'f' suffix to each number
-            var formattedNumbers = numbers.Select(n => n.Contains(".") ? n + "f" : n + "f").ToList();
+            List<string> formattedNumbers = numbers.Select(n => n.Contains(".") ? n + "f" : n + "f").ToList();
 
             if (formattedNumbers.Count == 2)
             {

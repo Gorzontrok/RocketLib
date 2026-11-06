@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using RocketLib.Menus.Elements;
 using RocketLib.Menus.Layout;
@@ -52,11 +54,11 @@ namespace RocketLib.Menus.Core
         private Shake shakeComponent;
         private bool skipNextTransition = false;
 
-        private System.Collections.IEnumerator TransitionInRoutine()
+        private IEnumerator TransitionInRoutine()
         {
             if (parentGameMenu != null && parentGameMenu.name == "MainMenu" && !hasStoredMainMenuState)
             {
-                var mainMenu = GetMainMenu() as MainMenu;
+                MainMenu mainMenu = GetMainMenu() as MainMenu;
                 if (mainMenu != null)
                 {
                     if (mainMenu.logo != null)
@@ -64,7 +66,7 @@ namespace RocketLib.Menus.Core
                         wasMainMenuLogoVisible = mainMenu.logo.gameObject.activeSelf;
                     }
 
-                    var versionDisplay = FindObjectOfType<DisplayVersionNumber>();
+                    DisplayVersionNumber versionDisplay = FindObjectOfType<DisplayVersionNumber>();
                     if (versionDisplay != null)
                     {
                         versionDisplayObject = versionDisplay.gameObject;
@@ -79,13 +81,13 @@ namespace RocketLib.Menus.Core
             transform.localScale = Vector3.zero;
 
             // Disable ZoomInCamera animation if present - it interferes with FlexMenu transitions
-            var mainCam = Camera.main;
+            Camera mainCam = Camera.main;
             if (mainCam != null)
             {
-                var zoomInCamera = mainCam.GetComponent("ZoomInCamera");
+                Component zoomInCamera = mainCam.GetComponent("ZoomInCamera");
                 if (zoomInCamera != null)
                 {
-                    var enabledProp = zoomInCamera.GetType().GetProperty("enabled");
+                    PropertyInfo enabledProp = zoomInCamera.GetType().GetProperty("enabled");
                     if (enabledProp != null)
                     {
                         enabledProp.SetValue(zoomInCamera, false, null);
@@ -116,7 +118,7 @@ namespace RocketLib.Menus.Core
             // Set highlight position immediately so it's on the correct item from the start
             if (highlight != null && navigationManager?.FocusedElement != null)
             {
-                var bounds = navigationManager.FocusedElement.GetBounds();
+                Rect bounds = navigationManager.FocusedElement.GetBounds();
                 highlight.SetBoundsImmediate(bounds);
             }
 
@@ -127,10 +129,10 @@ namespace RocketLib.Menus.Core
 
             if (parentGameMenu != null && parentGameMenu.name == "MainMenu" && parentGameMenu.gameObject.activeSelf)
             {
-                var mainMenu = parentGameMenu as MainMenu;
+                MainMenu mainMenu = parentGameMenu as MainMenu;
                 if (mainMenu != null)
                 {
-                    var enumerator = Traverse.Create(mainMenu).Method("HideRoutine", true).GetValue<System.Collections.IEnumerator>();
+                    IEnumerator enumerator = Traverse.Create(mainMenu).Method("HideRoutine", true).GetValue<IEnumerator>();
                     if (enumerator != null)
                     {
                         Traverse.Create(mainMenu).Method("ShowHideMenu", enumerator).GetValue();
@@ -216,7 +218,7 @@ namespace RocketLib.Menus.Core
 
         protected virtual void CreateHighlight()
         {
-            var highlightObj = HighlightFactory.CreateGridHighlight(transform, gameObject.layer);
+            GridMenuHighlight highlightObj = HighlightFactory.CreateGridHighlight(transform, gameObject.layer);
             if (highlightObj != null)
             {
                 highlight = highlightObj.GetComponent<GridMenuHighlight>();
@@ -229,7 +231,7 @@ namespace RocketLib.Menus.Core
                     // Set initial position to first focused element if available
                     if (navigationManager != null && navigationManager.FocusedElement != null)
                     {
-                        var bounds = navigationManager.FocusedElement.GetBounds();
+                        Rect bounds = navigationManager.FocusedElement.GetBounds();
                         highlight.SetBoundsImmediate(bounds);
                     }
                 }
@@ -286,7 +288,7 @@ namespace RocketLib.Menus.Core
                 // Set highlight position immediately to avoid animation
                 if (highlight != null && navigationManager?.FocusedElement != null)
                 {
-                    var bounds = navigationManager.FocusedElement.GetBounds();
+                    Rect bounds = navigationManager.FocusedElement.GetBounds();
                     highlight.SetBoundsImmediate(bounds);
                 }
             }
@@ -474,10 +476,10 @@ namespace RocketLib.Menus.Core
                 return;
             }
 
-            var focused = navigationManager.FocusedElement;
+            LayoutElement focused = navigationManager.FocusedElement;
             if (focused != null)
             {
-                var bounds = focused.GetBounds();
+                Rect bounds = focused.GetBounds();
                 highlight.SetTargetBounds(bounds);
 
                 if (!highlight.gameObject.activeSelf)
@@ -509,7 +511,7 @@ namespace RocketLib.Menus.Core
             {
                 if (EnableTransition && parentGameMenu.name == "MainMenu")
                 {
-                    var mainMenu = parentGameMenu as MainMenu;
+                    MainMenu mainMenu = parentGameMenu as MainMenu;
                     if (mainMenu != null && MainMenu.instance != null)
                     {
                         mainMenu.Show();
@@ -525,9 +527,9 @@ namespace RocketLib.Menus.Core
             }
             else
             {
-                var allMenus = FindObjectsOfType<Menu>();
+                Menu[] allMenus = FindObjectsOfType<Menu>();
                 Menu foundMainMenu = null;
-                foreach (var menu in allMenus)
+                foreach (Menu menu in allMenus)
                 {
                     if (menu.name == "MainMenu")
                     {
@@ -540,7 +542,7 @@ namespace RocketLib.Menus.Core
                 {
                     if (EnableTransition)
                     {
-                        var mainMenu = foundMainMenu as MainMenu;
+                        MainMenu mainMenu = foundMainMenu as MainMenu;
                         if (mainMenu != null && MainMenu.instance != null)
                         {
                             mainMenu.Show();
@@ -562,7 +564,7 @@ namespace RocketLib.Menus.Core
             // Only store the state once, the first time we hide
             if (!hasStoredMainMenuState)
             {
-                var mainMenu = GetMainMenu() as MainMenu;
+                MainMenu mainMenu = GetMainMenu() as MainMenu;
                 if (mainMenu == null)
                 {
                     return;
@@ -575,7 +577,7 @@ namespace RocketLib.Menus.Core
                 }
 
                 // Store the original state of the version display
-                var versionDisplay = FindObjectOfType<DisplayVersionNumber>();
+                DisplayVersionNumber versionDisplay = FindObjectOfType<DisplayVersionNumber>();
                 if (versionDisplay != null)
                 {
                     versionDisplayObject = versionDisplay.gameObject; // Store reference
@@ -586,13 +588,13 @@ namespace RocketLib.Menus.Core
             }
 
             // Always hide the elements (even if we already stored the state)
-            var menu = GetMainMenu() as MainMenu;
+            MainMenu menu = GetMainMenu() as MainMenu;
             if (menu != null && menu.logo != null)
             {
                 menu.logo.gameObject.SetActive(false);
             }
 
-            var version = FindObjectOfType<DisplayVersionNumber>();
+            DisplayVersionNumber version = FindObjectOfType<DisplayVersionNumber>();
             if (version != null)
             {
                 version.gameObject.SetActive(false);
@@ -601,7 +603,7 @@ namespace RocketLib.Menus.Core
 
         protected virtual void RestoreMainMenuElements()
         {
-            var mainMenu = GetMainMenu() as MainMenu;
+            MainMenu mainMenu = GetMainMenu() as MainMenu;
             if (mainMenu == null)
             {
                 return;
@@ -621,7 +623,7 @@ namespace RocketLib.Menus.Core
             else
             {
                 // Fallback to finding it if we don't have the reference
-                var versionDisplay = FindObjectOfType<DisplayVersionNumber>();
+                DisplayVersionNumber versionDisplay = FindObjectOfType<DisplayVersionNumber>();
                 if (versionDisplay != null)
                 {
                     versionDisplay.gameObject.SetActive(wasVersionTextVisible);
@@ -639,10 +641,10 @@ namespace RocketLib.Menus.Core
                     return current;
                 }
 
-                var customMenu = current as BaseCustomMenu;
+                BaseCustomMenu customMenu = current as BaseCustomMenu;
                 if (customMenu != null)
                 {
-                    var parentField = typeof(BaseCustomMenu).GetField("parentMenu", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    FieldInfo parentField = typeof(BaseCustomMenu).GetField("parentMenu", BindingFlags.NonPublic | BindingFlags.Instance);
                     if (parentField != null)
                     {
                         current = parentField.GetValue(customMenu) as Menu;
@@ -658,8 +660,8 @@ namespace RocketLib.Menus.Core
                 }
             }
 
-            var allMenus = FindObjectsOfType<Menu>();
-            foreach (var menu in allMenus)
+            Menu[] allMenus = FindObjectsOfType<Menu>();
+            foreach (Menu menu in allMenus)
             {
                 if (menu.name == "MainMenu")
                 {
@@ -756,9 +758,9 @@ namespace RocketLib.Menus.Core
             }
 
             string goName = instanceId == "default" ? menuType.Name : $"{menuType.Name}_{instanceId}";
-            var go = new GameObject(goName);
+            GameObject go = new GameObject(goName);
             go.SetActive(false);
-            var newMenu = go.AddComponent(menuType) as FlexMenu;
+            FlexMenu newMenu = go.AddComponent(menuType) as FlexMenu;
 
             newMenu.InstanceId = instanceId;
             instances[key] = newMenu;

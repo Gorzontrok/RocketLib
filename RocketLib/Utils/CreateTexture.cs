@@ -8,7 +8,7 @@ namespace RocketLib.Utils
     {
         public static Texture WithColor(Color color)
         {
-            var tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+            Texture2D tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
             Color[] colors = new Color[tex.width * tex.height];
             for (int i = 0; i < colors.Length; i++)
             {
@@ -74,7 +74,7 @@ namespace RocketLib.Utils
             {
                 if (File.Exists(ImagePath))
                 {
-                    var tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+                    Texture2D tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
 
                     tex.LoadImage(File.ReadAllBytes(ImagePath));
                     tex.wrapMode = TextureWrapMode.Clamp;

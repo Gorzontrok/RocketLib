@@ -99,15 +99,15 @@ namespace RocketLib.Settings
         public static void Save<T>(T data, UnityModManager.ModEntry modEntry) where T : JsonModSettings, new()
         {
             Directory.CreateDirectory(modEntry.ConfigPath);
-            var filepath = data.GetPath(modEntry);
+            string filepath = data.GetPath(modEntry);
             try
             {
-                var settings = new JsonSerializerSettings
+                JsonSerializerSettings settings = new JsonSerializerSettings
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     Formatting = Formatting.Indented
                 };
-                var json = JsonConvert.SerializeObject(data, settings);
+                string json = JsonConvert.SerializeObject(data, settings);
                 File.WriteAllText(filepath, json);
             }
             catch (Exception e)
@@ -130,8 +130,8 @@ namespace RocketLib.Settings
         /// </remarks>
         public static T Load<T>(UnityModManager.ModEntry modEntry) where T : JsonModSettings, new()
         {
-            var t = new T();
-            var filepath = t.GetPath(modEntry);
+            T t = new T();
+            string filepath = t.GetPath(modEntry);
 
             if (!File.Exists(filepath))
             {
@@ -140,10 +140,10 @@ namespace RocketLib.Settings
 
             try
             {
-                var json = File.ReadAllText(filepath);
-                var jObject = JObject.Parse(json);
+                string json = File.ReadAllText(filepath);
+                JObject jObject = JObject.Parse(json);
 
-                var fileVersion = jObject["SettingsVersion"]?.Value<int>() ?? 0;
+                int fileVersion = jObject["SettingsVersion"]?.Value<int>() ?? 0;
 
                 if (fileVersion < t.CurrentVersion)
                 {
@@ -159,7 +159,7 @@ namespace RocketLib.Settings
                         modEntry.Logger.Error($"Migration failed: {migrationEx.Message}");
                         modEntry.Logger.LogException(migrationEx);
 
-                        var backupPath = filepath + ".bak";
+                        string backupPath = filepath + ".bak";
                         File.Copy(filepath, backupPath, true);
                         modEntry.Logger.Log($"Backed up old settings to {backupPath}");
 
@@ -167,7 +167,7 @@ namespace RocketLib.Settings
                     }
                 }
 
-                var result = jObject.ToObject<T>();
+                T result = jObject.ToObject<T>();
 
                 if (fileVersion < t.CurrentVersion && result != null)
                 {

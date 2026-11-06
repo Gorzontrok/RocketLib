@@ -193,7 +193,7 @@ namespace RocketLib.Menus.Elements
 
         public virtual List<LayoutElement> GetFocusableElements()
         {
-            var elements = new List<LayoutElement>();
+            List<LayoutElement> elements = new List<LayoutElement>();
 
             if (!IsEnabled)
             {
@@ -248,12 +248,12 @@ namespace RocketLib.Menus.Elements
                 return this;
             }
 
-            var container = this as LayoutContainer;
+            LayoutContainer container = this as LayoutContainer;
             if (container != null)
             {
-                foreach (var child in container.Children)
+                foreach (LayoutElement child in container.Children)
                 {
-                    var found = child.FindById(id);
+                    LayoutElement found = child.FindById(id);
                     if (found != null)
                     {
                         return found;
@@ -271,12 +271,12 @@ namespace RocketLib.Menus.Elements
                 return this;
             }
 
-            var container = this as LayoutContainer;
+            LayoutContainer container = this as LayoutContainer;
             if (container != null)
             {
-                foreach (var child in container.Children)
+                foreach (LayoutElement child in container.Children)
                 {
-                    var found = child.FindByName(name);
+                    LayoutElement found = child.FindByName(name);
                     if (found != null)
                     {
                         return found;
@@ -294,12 +294,12 @@ namespace RocketLib.Menus.Elements
                 return (T)this;
             }
 
-            var container = this as LayoutContainer;
+            LayoutContainer container = this as LayoutContainer;
             if (container != null)
             {
-                foreach (var child in container.Children)
+                foreach (LayoutElement child in container.Children)
                 {
-                    var found = child.FindByType<T>();
+                    T found = child.FindByType<T>();
                     if (found != null)
                     {
                         return found;
@@ -312,17 +312,17 @@ namespace RocketLib.Menus.Elements
 
         public List<T> FindAllByType<T>() where T : LayoutElement
         {
-            var results = new List<T>();
+            List<T> results = new List<T>();
 
             if (this is T)
             {
                 results.Add((T)this);
             }
 
-            var container = this as LayoutContainer;
+            LayoutContainer container = this as LayoutContainer;
             if (container != null)
             {
-                foreach (var child in container.Children)
+                foreach (LayoutElement child in container.Children)
                 {
                     results.AddRange(child.FindAllByType<T>());
                 }

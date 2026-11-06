@@ -128,13 +128,13 @@ namespace RocketLib
         /// <returns></returns>
         public static int Tab(string[] Strings, int Number, int Space, int TabWidth, bool scaleWithWindow = false)
         {
-            var TabStyle = new GUIStyle("button");
-            var ActiveTabStyle = new GUIStyle("button");
+            GUIStyle TabStyle = new GUIStyle("button");
+            GUIStyle ActiveTabStyle = new GUIStyle("button");
             ActiveTabStyle.normal.background = ActiveTabStyle.hover.background;
             GUILayout.BeginHorizontal();
             for (int i = 0; i < Strings.Length; i++)
             {
-                var widthOption = scaleWithWindow ? UMM.WindowScaling.ScaledWidth(TabWidth) : GUILayout.Width(TabWidth);
+                GUILayoutOption widthOption = scaleWithWindow ? UMM.WindowScaling.ScaledWidth(TabWidth) : GUILayout.Width(TabWidth);
                 if (GUILayout.Button(Strings[i], i == Number ? ActiveTabStyle : TabStyle, widthOption))
                 {
                     return i;

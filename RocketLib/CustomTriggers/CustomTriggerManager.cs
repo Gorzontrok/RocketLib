@@ -73,7 +73,7 @@ namespace RocketLib.CustomTriggers
             GUILayout.Space(7);
 
             string currentTag = null;
-            foreach (var customTrigger in CustomTriggers)
+            foreach (CustomTrigger customTrigger in CustomTriggers)
             {
                 if (currentTag != customTrigger.Tag)
                 {
@@ -101,7 +101,7 @@ namespace RocketLib.CustomTriggers
                 return currentActionName;
             }
 
-            foreach (var customTrigger in CustomTriggers)
+            foreach (CustomTrigger customTrigger in CustomTriggers)
             {
                 if (actionInfo.GetType() == customTrigger.CustomTriggerActionInfoType)
                 {
@@ -137,7 +137,7 @@ namespace RocketLib.CustomTriggers
                     throw new Exception("TriggerType not found in JSON");
                 }
 
-                var customTrigger = CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
+                CustomTrigger customTrigger = CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
                 if (customTrigger == null)
                 {
                     throw new Exception($"Unknown custom trigger type: {triggerType}");
@@ -229,7 +229,7 @@ namespace RocketLib.CustomTriggers
                     throw new Exception("TriggerType not found in JSON");
                 }
 
-                var customTrigger = CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
+                CustomTrigger customTrigger = CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
                 if (customTrigger == null)
                 {
                     throw new Exception($"Unknown custom trigger type: {triggerType}");
@@ -262,7 +262,7 @@ namespace RocketLib.CustomTriggers
                 return;
             }
 
-            foreach (var trigger in mapData.TriggerList)
+            foreach (TriggerInfo trigger in mapData.TriggerList)
             {
                 if (trigger.actions == null)
                 {
@@ -271,10 +271,10 @@ namespace RocketLib.CustomTriggers
 
                 for (int i = 0; i < trigger.actions.Count; i++)
                 {
-                    var action = trigger.actions[i];
+                    TriggerActionInfo action = trigger.actions[i];
                     if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
                     {
-                        var customInfo = ConvertToCustomInfo(weatherAction);
+                        CustomTriggerActionInfo customInfo = ConvertToCustomInfo(weatherAction);
                         if (customInfo != null)
                         {
                             trigger.actions[i] = customInfo;

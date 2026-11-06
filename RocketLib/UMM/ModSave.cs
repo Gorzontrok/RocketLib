@@ -47,8 +47,8 @@ namespace RocketLib.UMM
 
         public void Save()
         {
-            var json = AllModKeyBindings.ConvertToJson();
-            var filepath = GetPath(Main.Mod);
+            string json = AllModKeyBindings.ConvertToJson();
+            string filepath = GetPath(Main.Mod);
             Directory.CreateDirectory(Main.Mod.ConfigPath);
             File.WriteAllText(filepath, json);
         }
@@ -57,8 +57,8 @@ namespace RocketLib.UMM
         {
             try
             {
-                var modsave = new ModSave();
-                var filepath = modsave.GetPath(Main.Mod);
+                ModSave modsave = new ModSave();
+                string filepath = modsave.GetPath(Main.Mod);
                 if (File.Exists(filepath))
                 {
                     AllModKeyBindings.ReadFromJson(File.ReadAllText(filepath));

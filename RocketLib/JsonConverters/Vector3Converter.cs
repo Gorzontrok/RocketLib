@@ -17,8 +17,8 @@ namespace RocketLib.JsonConverters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var t = serializer.Deserialize(reader);
-            var iv = JsonConvert.DeserializeObject<Vector3>(t.ToString());
+            object t = serializer.Deserialize(reader);
+            Vector3 iv = JsonConvert.DeserializeObject<Vector3>(t.ToString());
             return iv;
         }
 

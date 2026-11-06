@@ -34,7 +34,7 @@ namespace RocketLib.UMM
             try
             {
                 harmony = new Harmony(modEntry.Info.Id);
-                var assembly = Assembly.GetExecutingAssembly();
+                Assembly assembly = Assembly.GetExecutingAssembly();
                 harmony.PatchAll(assembly);
             }
             catch (Exception ex)

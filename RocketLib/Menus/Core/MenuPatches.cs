@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using HarmonyLib;
 using Localisation;
 
@@ -103,11 +104,11 @@ namespace RocketLib.Menus.Core
 
                 for (int i = 0; i < ___masterItems.Length && i < ___items.Length; i++)
                 {
-                    var masterItem = ___masterItems[i];
+                    MenuBarItem masterItem = ___masterItems[i];
 
                     if (!string.IsNullOrEmpty(masterItem.invokeMethod) && masterItem.invokeMethod.StartsWith("RocketLib_"))
                     {
-                        var itemUI = ___items[i];
+                        MenuBarItemUI itemUI = ___items[i];
                         if (itemUI != null)
                         {
                             itemUI.text = masterItem.name;
@@ -141,15 +142,15 @@ namespace RocketLib.Menus.Core
                     return true;
                 }
 
-                var masterItems = ___masterItems;
-                var highlightIndex = ___highlightIndex;
+                MenuBarItem[] masterItems = ___masterItems;
+                int highlightIndex = ___highlightIndex;
 
                 if (masterItems == null || highlightIndex < 0 || highlightIndex >= masterItems.Length)
                 {
                     return true;
                 }
 
-                var currentItem = masterItems[highlightIndex];
+                MenuBarItem currentItem = masterItems[highlightIndex];
 
                 if (!string.IsNullOrEmpty(currentItem.invokeMethod) && currentItem.invokeMethod.StartsWith("RocketLib_"))
                 {
@@ -157,7 +158,7 @@ namespace RocketLib.Menus.Core
 
                     if (handled)
                     {
-                        var playDrumSound = AccessTools.Method(typeof(Menu), "PlayDrumSound");
+                        MethodInfo playDrumSound = AccessTools.Method(typeof(Menu), "PlayDrumSound");
                         if (playDrumSound != null)
                         {
                             playDrumSound.Invoke(__instance, new object[] { 1 });
@@ -183,7 +184,7 @@ namespace RocketLib.Menus.Core
             {
                 if (FlexMenu.HasReturnTargetOverride())
                 {
-                    var targetMenu = FlexMenu.GetReturnTarget();
+                    FlexMenu targetMenu = FlexMenu.GetReturnTarget();
 
                     FlexMenu.ClearReturnTarget();
 

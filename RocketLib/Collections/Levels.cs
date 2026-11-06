@@ -12,7 +12,7 @@ namespace RocketLib.Collections
             {
                 if (_all.IsNullOrEmpty())
                 {
-                    var temp = new List<string>();
+                    List<string> temp = new List<string>();
                     temp.AddRange(WorldMap.All);
                     temp.AddRange(Challenges.All);
                     temp.AddRange(MuscleTemples.All);
@@ -83,7 +83,7 @@ namespace RocketLib.Collections
                     if (_all.IsNullOrEmpty())
                     {
                         _all = new string[] { INTRO, MISSION_1, MISSION_2, VILLAGE, WHITEHOUSE };
-                        var temp = new List<string>(_all);
+                        List<string> temp = new List<string>(_all);
                         temp.AddRange(Aliens.All);
                         temp.AddRange(Bombardements.All);
                         temp.AddRange(City.All);

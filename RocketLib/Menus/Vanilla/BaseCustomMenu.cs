@@ -160,19 +160,19 @@ namespace RocketLib.Menus.Vanilla
         /// <returns>The parent menu if found, null otherwise</returns>
         protected virtual Menu FindParentMenuInScene()
         {
-            var mainMenu = FindObjectOfType<MainMenu>();
+            MainMenu mainMenu = FindObjectOfType<MainMenu>();
             if (mainMenu != null)
             {
                 return mainMenu;
             }
 
-            var pauseMenu = FindObjectOfType<PauseMenu>();
+            PauseMenu pauseMenu = FindObjectOfType<PauseMenu>();
             if (pauseMenu != null)
             {
                 return pauseMenu;
             }
 
-            var optionsMenu = FindObjectOfType<OptionsMenu>();
+            OptionsMenu optionsMenu = FindObjectOfType<OptionsMenu>();
             if (optionsMenu != null)
             {
                 return optionsMenu;
@@ -195,7 +195,7 @@ namespace RocketLib.Menus.Vanilla
             {
                 // Try to get size from parent's first item
                 Traverse parentTraverse = Traverse.Create(PrevMenu);
-                var parentItems = parentTraverse.Field<MenuBarItem[]>("masterItems").Value;
+                MenuBarItem[] parentItems = parentTraverse.Field<MenuBarItem[]>("masterItems").Value;
                 if (parentItems != null && parentItems.Length > 0)
                 {
                     itemSize = parentItems[0].size;
@@ -206,7 +206,7 @@ namespace RocketLib.Menus.Vanilla
                 itemSize = 6f; // MainMenu typically uses larger size
             }
 
-            var item = new MenuBarItem
+            MenuBarItem item = new MenuBarItem
             {
                 name = displayText,
                 invokeMethod = methodName,
@@ -225,7 +225,7 @@ namespace RocketLib.Menus.Vanilla
             }
             else
             {
-                var list = new List<MenuBarItem>(masterItems);
+                List<MenuBarItem> list = new List<MenuBarItem>(masterItems);
                 list.Add(item);
                 masterItems = list.ToArray();
             }

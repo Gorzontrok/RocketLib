@@ -42,7 +42,7 @@ namespace RocketLib.Menus.Layout
                 return;
             }
 
-            var childrenToPosition = GetChildrenToPosition();
+            List<LayoutElement> childrenToPosition = GetChildrenToPosition();
             if (childrenToPosition.Count == 0)
             {
                 return;
@@ -51,7 +51,7 @@ namespace RocketLib.Menus.Layout
             float availableWidth = ActualSize.x - (Padding * 2);
             float availableHeight = ActualSize.y - (Padding * 2);
 
-            foreach (var child in childrenToPosition)
+            foreach (LayoutElement child in childrenToPosition)
             {
                 // Get absolute position if set, otherwise use (0, 0)
                 Vector2 relativePos = Vector2.zero;
@@ -139,7 +139,7 @@ namespace RocketLib.Menus.Layout
             List<string> offScreenElements = new List<string>();
             List<string> containerOverflow = new List<string>();
 
-            foreach (var child in childrenToPosition)
+            foreach (LayoutElement child in childrenToPosition)
             {
                 float childLeft = child.ActualPosition.x - (child.ActualSize.x / 2);
                 float childRight = child.ActualPosition.x + (child.ActualSize.x / 2);

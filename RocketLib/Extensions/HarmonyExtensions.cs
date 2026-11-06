@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using RocketLib;
 
@@ -167,7 +168,7 @@ public static class HarmonyExtensions
         }
 
         Traverse traverse = obj.GetTraverse();
-        var field = traverse;
+        Traverse field = traverse;
         foreach (KeyValuePair<string, object> kvp in map)
         {
             try
@@ -208,7 +209,7 @@ public static class HarmonyExtensions
         Type current = type;
         while (current != null && current != typeof(object))
         {
-            foreach (var f in current.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.DeclaredOnly))
+            foreach (FieldInfo f in current.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly))
             {
                 string fieldLower = f.Name.ToLower();
                 if (fieldLower == nameLower)
@@ -310,7 +311,7 @@ public static class HarmonyExtensions
     /// <returns></returns>
     public static Traverse FindFieldWithPath(this Traverse traverse, string fieldPath)
     {
-        var field = traverse;
+        Traverse field = traverse;
         string[] path = fieldPath.Split(PATH_SEPARATOR);
         foreach (string variable in path)
         {

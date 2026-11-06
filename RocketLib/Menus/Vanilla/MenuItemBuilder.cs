@@ -103,7 +103,7 @@ namespace RocketLib.Menus.Vanilla
         /// <returns>The constructed MenuBarItem</returns>
         public MenuBarItem Build()
         {
-            var item = new MenuBarItem
+            MenuBarItem item = new MenuBarItem
             {
                 name = text,
                 size = size,
@@ -145,7 +145,7 @@ namespace RocketLib.Menus.Vanilla
         /// <returns>The constructed MenuBarItem</returns>
         public MenuBarItem BuildForSimpleSubmenu()
         {
-            var item = new MenuBarItem
+            MenuBarItem item = new MenuBarItem
             {
                 name = text,
                 size = size,

@@ -29,7 +29,7 @@ namespace RocketLib.Menus.Tests
         {
             base.Start();
 
-            var title = new TextElement("Title")
+            TextElement title = new TextElement("Title")
             {
                 Name = "GridTitle",
                 Text = "SELECT AN OPTION",
@@ -40,7 +40,7 @@ namespace RocketLib.Menus.Tests
             };
             rootContainer.AddChild(title);
 
-            var gridContainer = new GridLayoutContainer("GridContainer")
+            GridLayoutContainer gridContainer = new GridLayoutContainer("GridContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fill,
@@ -67,7 +67,7 @@ namespace RocketLib.Menus.Tests
                 });
             }
 
-            var buttonContainer = new VerticalLayoutContainer("ButtonContainer")
+            VerticalLayoutContainer buttonContainer = new VerticalLayoutContainer("ButtonContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fixed,

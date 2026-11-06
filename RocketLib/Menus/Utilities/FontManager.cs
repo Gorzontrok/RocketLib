@@ -66,7 +66,7 @@ namespace RocketLib.Menus.Utilities
         private static void LoadFonts()
         {
             Font[] allFonts = Resources.FindObjectsOfTypeAll<Font>();
-            foreach (var font in allFonts)
+            foreach (Font font in allFonts)
             {
                 if (font != null && !string.IsNullOrEmpty(font.name) && !fontCache.ContainsKey(font.name))
                 {
@@ -87,7 +87,7 @@ namespace RocketLib.Menus.Utilities
             {
                 textMesh.font = unityFont;
 
-                var renderer = textMesh.GetComponent<MeshRenderer>();
+                MeshRenderer renderer = textMesh.GetComponent<MeshRenderer>();
                 if (renderer != null && unityFont.material != null)
                 {
                     renderer.sharedMaterial = unityFont.material;

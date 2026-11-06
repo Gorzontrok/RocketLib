@@ -54,7 +54,7 @@ namespace RocketLib.UMM
                 return;
             }
 
-            var buffer = bufferField.GetValue(null) as List<string>;
+            List<string> buffer = bufferField.GetValue(null) as List<string>;
             if (buffer == null || buffer.Count == 0)
             {
                 return;

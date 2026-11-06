@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RocketLib.Menus.Core;
 using RocketLib.Menus.Elements;
 using UnityEngine;
 
@@ -53,7 +54,7 @@ namespace RocketLib.Menus.Layout
 
         public void ClearChildren()
         {
-            foreach (var child in Children)
+            foreach (LayoutElement child in Children)
             {
                 child.Parent = null;
                 child.Cleanup();
@@ -83,14 +84,14 @@ namespace RocketLib.Menus.Layout
             // Pass menu Transform to all children if we have it
             if (menuTransform != null)
             {
-                foreach (var child in Children)
+                foreach (LayoutElement child in Children)
                 {
                     child.SetMenuTransform(menuTransform);
                 }
             }
 
             // Update all children recursively
-            foreach (var child in Children)
+            foreach (LayoutElement child in Children)
             {
                 if (child.IsVisible)
                 {
@@ -138,7 +139,7 @@ namespace RocketLib.Menus.Layout
             bool isVertical)
         {
             // Only run debug output if the active menu has debug enabled
-            var activeMenu = Core.FlexMenu.activeMenu;
+            FlexMenu activeMenu = FlexMenu.activeMenu;
             if (activeMenu == null || !activeMenu.EnableDebugOutput)
             {
                 return;
@@ -168,7 +169,7 @@ namespace RocketLib.Menus.Layout
 
             for (int i = 0; i < children.Count; i++)
             {
-                var child = children[i];
+                LayoutElement child = children[i];
                 string childName = string.IsNullOrEmpty(child.Name) ? child.GetType().Name : child.Name;
                 SizeMode sizeMode = isVertical ? child.HeightMode : child.WidthMode;
                 float childSize = isVertical ? child.ActualSize.y : child.ActualSize.x;
@@ -225,7 +226,7 @@ namespace RocketLib.Menus.Layout
 
             // Check for off-screen elements
             List<string> offScreenElements = new List<string>();
-            foreach (var child in children)
+            foreach (LayoutElement child in children)
             {
                 if (isVertical)
                 {
@@ -292,7 +293,7 @@ namespace RocketLib.Menus.Layout
 
         public override void Render()
         {
-            foreach (var child in Children)
+            foreach (LayoutElement child in Children)
             {
                 child.Render();
             }
@@ -304,7 +305,7 @@ namespace RocketLib.Menus.Layout
             {
                 return;
             }
-            foreach (var child in Children)
+            foreach (LayoutElement child in Children)
             {
                 child.IsVisible = IsVisible;
             }
@@ -316,7 +317,7 @@ namespace RocketLib.Menus.Layout
             {
                 return;
             }
-            foreach (var child in Children)
+            foreach (LayoutElement child in Children)
             {
                 child.IsVisible = IsVisible;
             }
@@ -338,7 +339,7 @@ namespace RocketLib.Menus.Layout
             // Check children first (reverse order for top-most)
             for (int i = Children.Count - 1; i >= 0; i--)
             {
-                var found = Children[i].GetElementAt(position);
+                LayoutElement found = Children[i].GetElementAt(position);
                 if (found != null)
                 {
                     return found;
@@ -351,7 +352,7 @@ namespace RocketLib.Menus.Layout
 
         public override List<LayoutElement> GetFocusableElements()
         {
-            var elements = new List<LayoutElement>();
+            List<LayoutElement> elements = new List<LayoutElement>();
 
             // Note: We check IsEnabled but NOT IsVisible
             // This allows containers with invisible children (e.g., ScrollContainer) to return focusable elements
@@ -360,7 +361,7 @@ namespace RocketLib.Menus.Layout
                 return elements;
             }
 
-            foreach (var child in Children)
+            foreach (LayoutElement child in Children)
             {
                 elements.AddRange(child.GetFocusableElements());
             }

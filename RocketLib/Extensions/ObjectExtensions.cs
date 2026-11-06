@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using RocketLib;
 using RocketLib.Utils;
 
@@ -65,9 +66,9 @@ public static class ObjectExtensions
     /// <exception cref="Exception"></exception>
     public static T InvokeBaseMethod<T>(this object obj, Type baseType, string methodName) where T : class
     {
-        var type = obj.GetType();
+        Type type = obj.GetType();
 
-        var method = baseType.GetMethod(methodName);
+        MethodInfo method = baseType.GetMethod(methodName);
         if (method == null)
         {
             throw new MissingMethodException(methodName);
@@ -81,8 +82,8 @@ public static class ObjectExtensions
             throw new Exception($"{type} is not a subclass of {baseType}");
         }
 
-        var ptr = method.MethodHandle.GetFunctionPointer();
-        var baseMethod = (Func<T>)Activator.CreateInstance(typeof(Func<T>), obj, ptr);
+        IntPtr ptr = method.MethodHandle.GetFunctionPointer();
+        Func<T> baseMethod = (Func<T>)Activator.CreateInstance(typeof(Func<T>), obj, ptr);
         return baseMethod.Invoke() as T;
     }
 
@@ -97,7 +98,7 @@ public static class ObjectExtensions
         try
         {
             RocketMain.Logger.Log($"Starting comparison of type {typeof(T).Name}");
-            var differences = ObjectComparer.Compare(obj1, obj2);
+            List<Difference> differences = ObjectComparer.Compare(obj1, obj2);
 
             if (!differences.Any())
             {
@@ -111,9 +112,9 @@ public static class ObjectExtensions
             int maxPathLength = differences.Max(d => d.PropertyPath.Length);
 
             // Print each difference with aligned values
-            foreach (var diff in differences)
+            foreach (Difference diff in differences)
             {
-                var paddedPath = diff.PropertyPath.PadRight(maxPathLength);
+                string paddedPath = diff.PropertyPath.PadRight(maxPathLength);
                 RocketMain.Logger.Log($"  {paddedPath} : '{diff.Value1}' → '{diff.Value2}'");
             }
         }
@@ -135,7 +136,7 @@ public static class ObjectExtensions
         try
         {
             RocketMain.Logger.Log($"Generating matching code for type {typeof(T).Name}");
-            var differences = ObjectComparer.Compare(obj2, obj1);
+            List<Difference> differences = ObjectComparer.Compare(obj2, obj1);
 
             if (!differences.Any())
             {
@@ -147,11 +148,11 @@ public static class ObjectExtensions
             RocketMain.Logger.Log("// Copy and paste the following code inside the target class:");
             RocketMain.Logger.Log("");
 
-            var generatedCode = new List<string>();
+            List<string> generatedCode = new List<string>();
 
-            foreach (var diff in differences)
+            foreach (Difference diff in differences)
             {
-                var matchingCode = ObjectComparer.GenerateMatchingStatement(diff.PropertyPath, diff.Value1);
+                string matchingCode = ObjectComparer.GenerateMatchingStatement(diff.PropertyPath, diff.Value1);
                 if (!string.IsNullOrEmpty(matchingCode))
                 {
                     generatedCode.Add(matchingCode);
@@ -160,7 +161,7 @@ public static class ObjectExtensions
 
             if (generatedCode.Any())
             {
-                foreach (var code in generatedCode)
+                foreach (string code in generatedCode)
                 {
                     RocketMain.Logger.Log(code);
                 }

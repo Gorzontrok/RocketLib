@@ -138,7 +138,7 @@ namespace RocketLib.Menus.Elements
                 gameObject.transform.SetParent(menuTransform, false);
             }
 
-            var meshRenderer = gameObject.AddComponent<MeshRenderer>();
+            MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
             textMesh = gameObject.AddComponent<TextMesh>();
 
             // Basic text setup

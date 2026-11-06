@@ -30,7 +30,7 @@ namespace RocketLib.Menus.Tests
         {
             base.Start();
 
-            var title = new TextElement("Title")
+            TextElement title = new TextElement("Title")
             {
                 Name = "MenuTitle",
                 Text = "FLEX MENU EXAMPLE",
@@ -41,7 +41,7 @@ namespace RocketLib.Menus.Tests
             };
             rootContainer.AddChild(title);
 
-            var contentContainer = new VerticalLayoutContainer("ContentContainer")
+            VerticalLayoutContainer contentContainer = new VerticalLayoutContainer("ContentContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fill,
@@ -66,7 +66,7 @@ namespace RocketLib.Menus.Tests
                 });
             }
 
-            var buttonContainer = new VerticalLayoutContainer("ButtonContainer")
+            VerticalLayoutContainer buttonContainer = new VerticalLayoutContainer("ButtonContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fixed,

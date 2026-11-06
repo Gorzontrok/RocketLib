@@ -341,7 +341,7 @@ namespace RocketLib
                 return null;
             }
 
-            var player = ReInput.players.GetPlayer(rewiredPlayerId);
+            Rewired.Player player = ReInput.players.GetPlayer(rewiredPlayerId);
             if (player == null || player.controllers.joystickCount == 0)
             {
                 return null;
@@ -359,7 +359,7 @@ namespace RocketLib
             // Rewired controller path
             if (IsRewiredBinding)
             {
-                var joystick = GetRewiredJoystick();
+                Joystick joystick = GetRewiredJoystick();
                 if (joystick == null)
                 {
                     return false;
@@ -442,7 +442,7 @@ namespace RocketLib
         {
             if (IsRewiredBinding && rewiredIsAxis)
             {
-                var joystick = GetRewiredJoystick();
+                Joystick joystick = GetRewiredJoystick();
                 if (joystick == null)
                 {
                     return 0f;
@@ -545,14 +545,14 @@ namespace RocketLib
 
             for (int p = 0; p < 4; p++)
             {
-                var player = ReInput.players.GetPlayer(p);
+                Rewired.Player player = ReInput.players.GetPlayer(p);
                 if (player == null || player.controllers.joystickCount == 0)
                 {
                     continue;
                 }
 
-                var joystick = player.controllers.Joysticks[0];
-                foreach (var element in joystick.ElementIdentifiers)
+                Joystick joystick = player.controllers.Joysticks[0];
+                foreach (ControllerElementIdentifier element in joystick.ElementIdentifiers)
                 {
                     if (element.elementType != ControllerElementType.Button)
                     {
@@ -581,13 +581,13 @@ namespace RocketLib
             _bindingPrevAxisValues.Clear();
             for (int p = 0; p < 4; p++)
             {
-                var player = ReInput.players.GetPlayer(p);
+                Rewired.Player player = ReInput.players.GetPlayer(p);
                 if (player == null || player.controllers.joystickCount == 0)
                 {
                     continue;
                 }
 
-                var joystick = player.controllers.Joysticks[0];
+                Joystick joystick = player.controllers.Joysticks[0];
 
                 // Track axes
                 for (int i = 0; i < 10; i++)
@@ -603,13 +603,13 @@ namespace RocketLib
         {
             for (int p = 0; p < 4; p++)
             {
-                var player = ReInput.players.GetPlayer(p);
+                Rewired.Player player = ReInput.players.GetPlayer(p);
                 if (player == null || player.controllers.joystickCount == 0)
                 {
                     continue;
                 }
 
-                var joystick = player.controllers.Joysticks[0];
+                Joystick joystick = player.controllers.Joysticks[0];
 
                 // Update axes
                 for (int i = 0; i < 10; i++)
@@ -635,13 +635,13 @@ namespace RocketLib
 
             for (int p = 0; p < 4; p++)
             {
-                var player = ReInput.players.GetPlayer(p);
+                Rewired.Player player = ReInput.players.GetPlayer(p);
                 if (player == null || player.controllers.joystickCount == 0)
                 {
                     continue;
                 }
 
-                var joystick = player.controllers.Joysticks[0];
+                Joystick joystick = player.controllers.Joysticks[0];
                 for (int i = 0; i < 10; i++)
                 {
                     float value = joystick.GetAxis(i);
@@ -661,7 +661,7 @@ namespace RocketLib
 
                         // Detect generic template by checking if button IDs are in 32+ range
                         bool isGenericTemplate = false;
-                        foreach (var elem in joystick.ElementIdentifiers)
+                        foreach (ControllerElementIdentifier elem in joystick.ElementIdentifiers)
                         {
                             if (elem.elementType == ControllerElementType.Button && elem.id >= 32)
                             {

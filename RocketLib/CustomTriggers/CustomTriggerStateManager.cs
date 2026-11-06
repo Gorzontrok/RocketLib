@@ -125,7 +125,7 @@ namespace RocketLib.CustomTriggers
         /// </summary>
         internal static void OnLevelStart()
         {
-            foreach (var callback in onLevelEndCallbacks)
+            foreach (Action callback in onLevelEndCallbacks)
             {
                 try
                 {
@@ -139,13 +139,13 @@ namespace RocketLib.CustomTriggers
             onLevelEndCallbacks.Clear();
 
             currentState.Clear();
-            foreach (var kvp in stagingState)
+            foreach (KeyValuePair<string, object> kvp in stagingState)
             {
                 currentState[kvp.Key] = kvp.Value;
             }
             stagingState.Clear();
 
-            foreach (var callback in onLevelStartCallbacks)
+            foreach (Action callback in onLevelStartCallbacks)
             {
                 try
                 {

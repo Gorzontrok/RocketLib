@@ -218,19 +218,19 @@ namespace RocketLib.Menus.Core
                 return true;
             }
 
-            var currentPos = focusedElement.ActualPosition;
+            Vector2 currentPos = focusedElement.ActualPosition;
             LayoutElement bestCandidate = null;
             float bestScore = float.MaxValue;
 
-            foreach (var element in focusableElements)
+            foreach (LayoutElement element in focusableElements)
             {
                 if (element == focusedElement)
                 {
                     continue;
                 }
 
-                var elementPos = element.ActualPosition;
-                var toElement = elementPos - currentPos;
+                Vector2 elementPos = element.ActualPosition;
+                Vector2 toElement = elementPos - currentPos;
 
                 float dot = Vector2.Dot(toElement.normalized, direction);
                 if (dot <= 0.2f)
@@ -272,19 +272,19 @@ namespace RocketLib.Menus.Core
 
             // Score candidates in the opposite direction, preferring elements
             // that are far away and well-aligned — the "other end" of navigation
-            var oppositeDirection = -direction;
-            var currentPos = focusedElement.ActualPosition;
+            Vector2 oppositeDirection = -direction;
+            Vector2 currentPos = focusedElement.ActualPosition;
             LayoutElement bestCandidate = null;
             float bestScore = float.MaxValue;
 
-            foreach (var element in focusableElements)
+            foreach (LayoutElement element in focusableElements)
             {
                 if (element == focusedElement)
                 {
                     continue;
                 }
 
-                var toElement = element.ActualPosition - currentPos;
+                Vector2 toElement = element.ActualPosition - currentPos;
                 float dot = Vector2.Dot(toElement.normalized, oppositeDirection);
                 if (dot <= 0.2f)
                 {

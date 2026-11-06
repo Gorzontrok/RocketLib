@@ -29,7 +29,7 @@ namespace RocketLib.Collections
             {
                 if (_playables == null || _playables.Length <= 0)
                 {
-                    var temp = All.ToList();
+                    List<HeroType> temp = All.ToList();
                     temp.Remove(HeroType.None);
                     temp.Remove(HeroType.Random);
                     temp.Remove(HeroType.TankBroTank);
@@ -51,7 +51,7 @@ namespace RocketLib.Collections
             {
                 if (_campaignBro == null || _campaignBro.Length <= 0)
                 {
-                    var temp = Playables.ToList();
+                    List<HeroType> temp = Playables.ToList();
                     temp.RemoveAll(item => Expendabros.Contains(item) || Unused.Contains(item));
                     _campaignBro = temp.ToArray();
                 }

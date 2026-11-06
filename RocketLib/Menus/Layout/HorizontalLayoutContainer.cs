@@ -23,7 +23,7 @@ namespace RocketLib.Menus.Layout
                 return;
             }
 
-            var childrenToPosition = GetChildrenToPosition();
+            List<LayoutElement> childrenToPosition = GetChildrenToPosition();
             if (childrenToPosition.Count == 0)
             {
                 return;
@@ -41,7 +41,7 @@ namespace RocketLib.Menus.Layout
 
             for (int i = 0; i < childrenToPosition.Count; i++)
             {
-                var child = childrenToPosition[i];
+                LayoutElement child = childrenToPosition[i];
                 float width = 0;
 
                 switch (child.WidthMode)
@@ -97,7 +97,7 @@ namespace RocketLib.Menus.Layout
 
             for (int i = 0; i < childrenToPosition.Count; i++)
             {
-                var child = childrenToPosition[i];
+                LayoutElement child = childrenToPosition[i];
                 float width = childWidths[i];
 
                 // Apply width constraints

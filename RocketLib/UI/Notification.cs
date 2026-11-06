@@ -84,7 +84,7 @@ namespace RocketLib.UI
             {
                 if (_instance == null)
                 {
-                    var go = new GameObject("RocketLib.Notification");
+                    GameObject go = new GameObject("RocketLib.Notification");
                     DontDestroyOnLoad(go);
                     RocketLibUtils.MakeObjectUnpausable(go);
                     _instance = go.AddComponent<NotificationHost>();
@@ -136,7 +136,7 @@ namespace RocketLib.UI
             float lifetime = Mathf.Max(0.5f, duration);
             source = string.IsNullOrEmpty(source) ? null : source;
 
-            var duplicate = FindDuplicate(text, severity, source);
+            ActiveNotification duplicate = FindDuplicate(text, severity, source);
             if (duplicate != null)
             {
                 duplicate.Count++;
@@ -144,7 +144,7 @@ namespace RocketLib.UI
                 return;
             }
 
-            var entry = new ActiveNotification
+            ActiveNotification entry = new ActiveNotification
             {
                 Message = text,
                 Severity = severity,
@@ -172,7 +172,7 @@ namespace RocketLib.UI
                     return _active[i];
                 }
             }
-            foreach (var queued in _pending)
+            foreach (ActiveNotification queued in _pending)
             {
                 if (IsSameContent(queued, message, severity, source))
                 {
@@ -262,7 +262,7 @@ namespace RocketLib.UI
 
             for (int i = _active.Count - 1; i >= 0; i--)
             {
-                var n = _active[i];
+                ActiveNotification n = _active[i];
                 if (n.State == NotificationState.Entering)
                 {
                     n.EnterT += dt / SlideInDuration;
@@ -306,7 +306,7 @@ namespace RocketLib.UI
             // Index 0 is nearest the anchor, so the newest entry always lands there.
             while (_pending.Count > 0 && CountLive() < Mathf.Max(1, Notification.MaxVisible))
             {
-                var next = _pending.Dequeue();
+                ActiveNotification next = _pending.Dequeue();
                 if (next == _overflowSummary)
                 {
                     _overflowSummary = null;
@@ -419,7 +419,7 @@ namespace RocketLib.UI
 
             for (int i = 0; i < _active.Count; i++)
             {
-                var n = _active[i];
+                ActiveNotification n = _active[i];
 
                 float slideEase = 1f - Mathf.Pow(1f - Mathf.Clamp01(n.EnterT), 3f);
                 float slideOffsetX = (1f - slideEase) * (isLeft ? -Width - 32f : isCenter ? 0f : Width + 32f);

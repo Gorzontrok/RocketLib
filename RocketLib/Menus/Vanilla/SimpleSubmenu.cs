@@ -80,12 +80,12 @@ namespace RocketLib.Menus.Vanilla
                 return;
             }
 
-            var itemList = new List<MenuBarItem>();
+            List<MenuBarItem> itemList = new List<MenuBarItem>();
             int index = 0;
 
-            foreach (var kvp in itemActionMap)
+            foreach (KeyValuePair<string, Action> kvp in itemActionMap)
             {
-                var item = new MenuBarItem
+                MenuBarItem item = new MenuBarItem
                 {
                     name = kvp.Key,
                     size = GetParentFontSize(),
@@ -98,7 +98,7 @@ namespace RocketLib.Menus.Vanilla
             }
 
             bool hasBackItem = false;
-            foreach (var kvp in itemActionMap)
+            foreach (KeyValuePair<string, Action> kvp in itemActionMap)
             {
                 if (kvp.Key.Equals("Back", StringComparison.OrdinalIgnoreCase) ||
                     kvp.Key.Equals("Return", StringComparison.OrdinalIgnoreCase))
@@ -110,7 +110,7 @@ namespace RocketLib.Menus.Vanilla
 
             if (!hasBackItem)
             {
-                var backItem = new MenuBarItem
+                MenuBarItem backItem = new MenuBarItem
                 {
                     name = "BACK",
                     invokeMethod = "GoBack",
@@ -134,7 +134,7 @@ namespace RocketLib.Menus.Vanilla
             {
                 // Try to get size from parent's first item
                 Traverse parentTraverse = Traverse.Create(PrevMenu);
-                var parentItems = parentTraverse.Field<MenuBarItem[]>("masterItems").Value;
+                MenuBarItem[] parentItems = parentTraverse.Field<MenuBarItem[]>("masterItems").Value;
                 if (parentItems != null && parentItems.Length > 0)
                 {
                     itemSize = parentItems[0].size;
@@ -230,7 +230,7 @@ namespace RocketLib.Menus.Vanilla
                     if (int.TryParse(indexStr, out actionIndex))
                     {
                         int currentIndex = 0;
-                        foreach (var kvp in itemActionMap)
+                        foreach (KeyValuePair<string, Action> kvp in itemActionMap)
                         {
                             if (currentIndex == actionIndex)
                             {
@@ -261,7 +261,7 @@ namespace RocketLib.Menus.Vanilla
             }
             if (!activatedThisFrame && (left || right) && masterItems[highlightIndex].invokeMethod != string.Empty && masterItems[highlightIndex].invokeMethod.Contains("Toggle"))
             {
-                var traverse = Traverse.Create(this);
+                Traverse traverse = Traverse.Create(this);
                 float toggleTimer = traverse.Field<float>("toggleTimer").Value;
 
                 if (Time.time - toggleTimer > toggleDelay)

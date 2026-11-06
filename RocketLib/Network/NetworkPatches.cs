@@ -17,13 +17,13 @@ namespace RocketLib.Network
         {
             private static bool Prefix(object obj, Type type, BinaryWriter writer)
             {
-                var instance = TypeSerializer.Instance;
+                TypeSerializer instance = TypeSerializer.Instance;
                 if (instance == null)
                 {
                     return true;
                 }
 
-                var cache = _cacheField != null
+                Dictionary<Type, MethodInfo> cache = _cacheField != null
                     ? _cacheField.GetValue(instance) as Dictionary<Type, MethodInfo>
                     : null;
                 if (cache == null)
@@ -57,12 +57,12 @@ namespace RocketLib.Network
         {
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                var getMethodCall = AccessTools.Method(typeof(Type), "GetMethod",
+                MethodInfo getMethodCall = AccessTools.Method(typeof(Type), "GetMethod",
                     new Type[] { typeof(string), typeof(BindingFlags) });
-                var replacement = AccessTools.Method(typeof(RPCInheritanceHelper),
+                MethodInfo replacement = AccessTools.Method(typeof(RPCInheritanceHelper),
                     nameof(RPCInheritanceHelper.FindMethodIncludingBasePrivate));
 
-                var codeMatcher = new CodeMatcher(instructions);
+                CodeMatcher codeMatcher = new CodeMatcher(instructions);
                 codeMatcher.MatchStartForward(new CodeMatch(i => i.Calls(getMethodCall)));
                 if (!codeMatcher.IsValid)
                 {
@@ -84,20 +84,20 @@ namespace RocketLib.Network
         {
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
             {
-                var logCaught = AccessTools.Method(typeof(NonStaticRPCObject_Execute_Patch), nameof(LogCaught));
+                MethodInfo logCaught = AccessTools.Method(typeof(NonStaticRPCObject_Execute_Patch), nameof(LogCaught));
                 return RPCFailureLog.InsertIntoCatchBlock(ReplaceInvokeMember(instructions, generator), logCaught,
                     nameof(NonStaticRPCObject_Execute_Patch));
             }
 
             private static IEnumerable<CodeInstruction> ReplaceInvokeMember(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
             {
-                var invokeMemberCall = AccessTools.Method(typeof(Type), "InvokeMember",
+                MethodInfo invokeMemberCall = AccessTools.Method(typeof(Type), "InvokeMember",
                     new Type[] { typeof(string), typeof(BindingFlags), typeof(Binder), typeof(object), typeof(object[]) });
-                var replacement = AccessTools.Method(typeof(RPCInheritanceHelper),
+                MethodInfo replacement = AccessTools.Method(typeof(RPCInheritanceHelper),
                     nameof(RPCInheritanceHelper.FindAndInvoke));
-                var getTypeCall = AccessTools.Method(typeof(object), "GetType");
+                MethodInfo getTypeCall = AccessTools.Method(typeof(object), "GetType");
 
-                var codeMatcher = new CodeMatcher(instructions, generator);
+                CodeMatcher codeMatcher = new CodeMatcher(instructions, generator);
                 codeMatcher.MatchStartForward(new CodeMatch(i => i.Calls(invokeMemberCall)));
                 if (!codeMatcher.IsValid)
                 {
@@ -128,7 +128,7 @@ namespace RocketLib.Network
             {
                 try
                 {
-                    var targetName = Registry.GetObject(rpc.targetID)?.GetType().Name ?? "NULL";
+                    string targetName = Registry.GetObject(rpc.targetID)?.GetType().Name ?? "NULL";
                     RPCFailureLog.Log($"{rpc.methodName} on {targetName}", exception);
                 }
                 catch (Exception)
@@ -143,7 +143,7 @@ namespace RocketLib.Network
         {
             private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
             {
-                var logCaught = AccessTools.Method(typeof(StaticRPCObject_Execute_Patch), nameof(LogCaught));
+                MethodInfo logCaught = AccessTools.Method(typeof(StaticRPCObject_Execute_Patch), nameof(LogCaught));
                 return RPCFailureLog.InsertIntoCatchBlock(instructions, logCaught, nameof(StaticRPCObject_Execute_Patch));
             }
 
@@ -175,15 +175,15 @@ namespace RocketLib.Network
             // The handler's first instruction carries the catch block; the exception is on the stack when it starts
             public static IEnumerable<CodeInstruction> InsertIntoCatchBlock(IEnumerable<CodeInstruction> instructions, MethodInfo logCaught, string patchName)
             {
-                var codes = new List<CodeInstruction>(instructions);
-                var handlerStart = codes.FindIndex(i => i.blocks.Any(b => b.blockType == ExceptionBlockType.BeginCatchBlock));
+                List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+                int handlerStart = codes.FindIndex(i => i.blocks.Any(b => b.blockType == ExceptionBlockType.BeginCatchBlock));
                 if (handlerStart < 0)
                 {
                     RocketMain.Logger.Warning(patchName + ": Could not find catch block");
                     return codes;
                 }
 
-                var duplicate = new CodeInstruction(OpCodes.Dup);
+                CodeInstruction duplicate = new CodeInstruction(OpCodes.Dup);
                 codes[handlerStart].MoveBlocksTo(duplicate);
                 codes.InsertRange(handlerStart, new[]
                 {
@@ -197,14 +197,14 @@ namespace RocketLib.Network
 
             public static void Log(string target, Exception exception)
             {
-                var invocation = exception as TargetInvocationException;
+                TargetInvocationException invocation = exception as TargetInvocationException;
                 if (invocation != null && invocation.InnerException != null)
                 {
                     exception = invocation.InnerException;
                 }
 
-                var key = target + "|" + exception.GetType().FullName;
-                var now = Environment.TickCount;
+                string key = target + "|" + exception.GetType().FullName;
+                int now = Environment.TickCount;
                 Repeats repeats;
                 if (_repeats.TryGetValue(key, out repeats))
                 {
@@ -220,7 +220,7 @@ namespace RocketLib.Network
                     _repeats[key] = repeats;
                 }
 
-                var skipped = repeats.Skipped > 0 ? $" ({repeats.Skipped} repeats since last logged)" : "";
+                string skipped = repeats.Skipped > 0 ? $" ({repeats.Skipped} repeats since last logged)" : "";
                 repeats.LastLoggedAt = now;
                 repeats.Skipped = 0;
                 RocketMain.Logger.Exception($"[RPC] {target}{skipped}", exception);
@@ -240,7 +240,7 @@ namespace RocketLib.Network
                 {
                     try
                     {
-                        var method = current.GetMethod(methodName, AllDeclared);
+                        MethodInfo method = current.GetMethod(methodName, AllDeclared);
                         if (method != null)
                         {
                             return method;
@@ -248,7 +248,7 @@ namespace RocketLib.Network
                     }
                     catch (AmbiguousMatchException)
                     {
-                        foreach (var m in current.GetMethods(AllDeclared))
+                        foreach (MethodInfo m in current.GetMethods(AllDeclared))
                         {
                             if (m.Name == methodName)
                             {
@@ -263,7 +263,7 @@ namespace RocketLib.Network
 
             public static void FindAndInvoke(object target, string methodName, object[] parameters)
             {
-                var method = FindMethodIncludingBasePrivate(target.GetType(), methodName);
+                MethodInfo method = FindMethodIncludingBasePrivate(target.GetType(), methodName);
                 if (method != null)
                 {
                     method.Invoke(target, parameters);

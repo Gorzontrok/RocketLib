@@ -33,7 +33,7 @@ namespace RocketLib.Menus.Tests
         {
             base.Start();
 
-            var title = new TextElement("Title")
+            TextElement title = new TextElement("Title")
             {
                 Name = "PaginatedTitle",
                 Text = "SELECT AN ITEM",
@@ -58,7 +58,7 @@ namespace RocketLib.Menus.Tests
             paginatedGrid.SetParentMenu(this);
             rootContainer.AddChild(paginatedGrid);
 
-            var previousButton = new ActionButton("PrevButton")
+            ActionButton previousButton = new ActionButton("PrevButton")
             {
                 Name = "PreviousButton",
                 Text = "<",
@@ -69,7 +69,7 @@ namespace RocketLib.Menus.Tests
                 FontSize = 5f
             };
 
-            var nextButton = new ActionButton("NextButton")
+            ActionButton nextButton = new ActionButton("NextButton")
             {
                 Name = "NextButton",
                 Text = ">",
@@ -82,11 +82,11 @@ namespace RocketLib.Menus.Tests
 
             paginatedGrid.SetNavigationButtons(previousButton, nextButton);
 
-            var items = new List<LayoutElement>();
+            List<LayoutElement> items = new List<LayoutElement>();
             for (int i = 1; i <= 25; i++)
             {
                 int index = i;
-                var button = new ActionButton($"Item{i}")
+                ActionButton button = new ActionButton($"Item{i}")
                 {
                     Name = $"Item{i}",
                     Text = $"ITEM {i}",
@@ -120,7 +120,7 @@ namespace RocketLib.Menus.Tests
                 RocketMain.Logger.Log($"Changed to page {page + 1}");
             };
 
-            var backButton = new ActionButton("BackButton")
+            ActionButton backButton = new ActionButton("BackButton")
             {
                 Name = "BackButton",
                 Text = "BACK",
@@ -135,7 +135,7 @@ namespace RocketLib.Menus.Tests
                 }
             };
 
-            var buttonContainer = new VerticalLayoutContainer("ButtonContainer")
+            VerticalLayoutContainer buttonContainer = new VerticalLayoutContainer("ButtonContainer")
             {
                 WidthMode = SizeMode.Fill,
                 HeightMode = SizeMode.Fixed,

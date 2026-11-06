@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -58,22 +59,22 @@ namespace RocketLib.Settings
                 return defaultSettings ?? new T();
             }
 
-            var result = defaultSettings ?? new T();
+            T result = defaultSettings ?? new T();
 
             try
             {
-                var doc = new XmlDocument();
+                XmlDocument doc = new XmlDocument();
                 doc.Load(xmlPath);
 
-                var root = doc.DocumentElement;
+                XmlElement root = doc.DocumentElement;
                 if (root == null)
                 {
                     return result;
                 }
 
-                var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-                foreach (var prop in properties)
+                foreach (PropertyInfo prop in properties)
                 {
                     if (!prop.CanWrite)
                     {
@@ -83,9 +84,9 @@ namespace RocketLib.Settings
                     RecoverProperty(root, prop, result);
                 }
 
-                var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+                FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
 
-                foreach (var field in fields)
+                foreach (FieldInfo field in fields)
                 {
                     RecoverField(root, field, result);
                 }
@@ -104,26 +105,26 @@ namespace RocketLib.Settings
             {
                 // Check for XML attributes that might rename the element
                 string elementName = prop.Name;
-                var xmlArrayAttr = prop.GetCustomAttributes(typeof(XmlArrayAttribute), false).FirstOrDefault() as XmlArrayAttribute;
+                XmlArrayAttribute xmlArrayAttr = prop.GetCustomAttributes(typeof(XmlArrayAttribute), false).FirstOrDefault() as XmlArrayAttribute;
                 if (xmlArrayAttr != null && !string.IsNullOrEmpty(xmlArrayAttr.ElementName))
                 {
                     elementName = xmlArrayAttr.ElementName;
                 }
 
-                var xmlElementAttr = prop.GetCustomAttributes(typeof(XmlElementAttribute), false).FirstOrDefault() as XmlElementAttribute;
+                XmlElementAttribute xmlElementAttr = prop.GetCustomAttributes(typeof(XmlElementAttribute), false).FirstOrDefault() as XmlElementAttribute;
                 if (xmlElementAttr != null && !string.IsNullOrEmpty(xmlElementAttr.ElementName))
                 {
                     elementName = xmlElementAttr.ElementName;
                 }
 
-                var element = root[elementName];
+                XmlElement element = root[elementName];
                 if (element == null)
                 {
                     return;
                 }
 
                 // Try to deserialize the property - complex types will be handled by XmlSerializer
-                var value = DeserializeValue(element, prop.PropertyType);
+                object value = DeserializeValue(element, prop.PropertyType);
                 if (value != null)
                 {
                     prop.SetValue(target, value, null);
@@ -141,26 +142,26 @@ namespace RocketLib.Settings
             {
                 // Check for XML attributes that might rename the element
                 string elementName = field.Name;
-                var xmlArrayAttr = field.GetCustomAttributes(typeof(XmlArrayAttribute), false).FirstOrDefault() as XmlArrayAttribute;
+                XmlArrayAttribute xmlArrayAttr = field.GetCustomAttributes(typeof(XmlArrayAttribute), false).FirstOrDefault() as XmlArrayAttribute;
                 if (xmlArrayAttr != null && !string.IsNullOrEmpty(xmlArrayAttr.ElementName))
                 {
                     elementName = xmlArrayAttr.ElementName;
                 }
 
-                var xmlElementAttr = field.GetCustomAttributes(typeof(XmlElementAttribute), false).FirstOrDefault() as XmlElementAttribute;
+                XmlElementAttribute xmlElementAttr = field.GetCustomAttributes(typeof(XmlElementAttribute), false).FirstOrDefault() as XmlElementAttribute;
                 if (xmlElementAttr != null && !string.IsNullOrEmpty(xmlElementAttr.ElementName))
                 {
                     elementName = xmlElementAttr.ElementName;
                 }
 
-                var element = root[elementName];
+                XmlElement element = root[elementName];
                 if (element == null)
                 {
                     return;
                 }
 
                 // Try to deserialize the field - complex types will be handled by XmlSerializer
-                var value = DeserializeValue(element, field.FieldType);
+                object value = DeserializeValue(element, field.FieldType);
                 if (value != null)
                 {
                     field.SetValue(target, value);
@@ -234,15 +235,15 @@ namespace RocketLib.Settings
                     // Special handling for arrays - XmlSerializer expects the array elements directly
                     if (targetType.IsArray)
                     {
-                        var elementType = targetType.GetElementType();
-                        var items = new System.Collections.ArrayList();
+                        Type elementType = targetType.GetElementType();
+                        ArrayList items = new ArrayList();
 
                         foreach (XmlNode child in element.ChildNodes)
                         {
                             if (child.NodeType == XmlNodeType.Element)
                             {
-                                var childElement = child as XmlElement;
-                                var item = DeserializeValue(childElement, elementType);
+                                XmlElement childElement = child as XmlElement;
+                                object item = DeserializeValue(childElement, elementType);
                                 if (item != null)
                                 {
                                     items.Add(item);
@@ -250,7 +251,7 @@ namespace RocketLib.Settings
                             }
                         }
 
-                        var array = Array.CreateInstance(elementType, items.Count);
+                        Array array = Array.CreateInstance(elementType, items.Count);
                         items.CopyTo(array, 0);
                         return array;
                     }
@@ -258,17 +259,17 @@ namespace RocketLib.Settings
                     // Special handling for generic lists
                     if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.List<>))
                     {
-                        var elementType = targetType.GetGenericArguments()[0];
-                        var listType = typeof(System.Collections.Generic.List<>).MakeGenericType(elementType);
-                        var list = Activator.CreateInstance(listType);
-                        var addMethod = listType.GetMethod("Add");
+                        Type elementType = targetType.GetGenericArguments()[0];
+                        Type listType = typeof(System.Collections.Generic.List<>).MakeGenericType(elementType);
+                        object list = Activator.CreateInstance(listType);
+                        MethodInfo addMethod = listType.GetMethod("Add");
 
                         foreach (XmlNode child in element.ChildNodes)
                         {
                             if (child.NodeType == XmlNodeType.Element)
                             {
-                                var childElement = child as XmlElement;
-                                var item = DeserializeValue(childElement, elementType);
+                                XmlElement childElement = child as XmlElement;
+                                object item = DeserializeValue(childElement, elementType);
                                 if (item != null)
                                 {
                                     addMethod.Invoke(list, new object[] { item });
@@ -281,7 +282,7 @@ namespace RocketLib.Settings
 
                     // For non-array types, use standard XmlSerializer
                     // Check if the type expects a different root element name
-                    var xmlRootAttr = targetType.GetCustomAttributes(typeof(XmlRootAttribute), false).FirstOrDefault() as XmlRootAttribute;
+                    XmlRootAttribute xmlRootAttr = targetType.GetCustomAttributes(typeof(XmlRootAttribute), false).FirstOrDefault() as XmlRootAttribute;
                     XmlSerializer serializer;
 
                     if (xmlRootAttr != null && !string.IsNullOrEmpty(xmlRootAttr.ElementName))
@@ -306,7 +307,7 @@ namespace RocketLib.Settings
                         serializer = new XmlSerializer(targetType);
                     }
 
-                    using (var reader = new StringReader(element.OuterXml))
+                    using (StringReader reader = new StringReader(element.OuterXml))
                     {
                         return serializer.Deserialize(reader);
                     }

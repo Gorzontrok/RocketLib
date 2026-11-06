@@ -40,11 +40,11 @@ namespace RocketLib.Settings
         /// <returns>The loaded settings, or recovered/default settings if loading failed</returns>
         public static new T Load<T>(UnityModManager.ModEntry modEntry) where T : XmlModSettings, new()
         {
-            var settings = UnityModManager.ModSettings.Load<T>(modEntry);
+            T settings = UnityModManager.ModSettings.Load<T>(modEntry);
 
             if (settings.SettingsVersion == 0)
             {
-                var settingsPath = settings.GetPath(modEntry);
+                string settingsPath = settings.GetPath(modEntry);
                 settings = SettingsRecovery.TryRecoverSettings<T>(settingsPath, settings);
 
                 if (settings.SettingsVersion == 0)

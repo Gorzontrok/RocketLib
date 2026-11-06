@@ -69,7 +69,7 @@ namespace RocketLib.Menus.Layout
         public void SetItems(List<LayoutElement> items)
         {
             // Clear existing pages
-            foreach (var grid in gridPages)
+            foreach (GridLayoutContainer grid in gridPages)
             {
                 grid.Cleanup();
             }
@@ -84,7 +84,7 @@ namespace RocketLib.Menus.Layout
             // Create grid pages
             for (int pageIndex = 0; pageIndex < TotalPages; pageIndex++)
             {
-                var grid = CreateGridPage(pageIndex, itemsPerPage);
+                GridLayoutContainer grid = CreateGridPage(pageIndex, itemsPerPage);
                 gridPages.Add(grid);
             }
 
@@ -95,7 +95,7 @@ namespace RocketLib.Menus.Layout
 
         private GridLayoutContainer CreateGridPage(int pageIndex, int itemsPerPage)
         {
-            var grid = new GridLayoutContainer
+            GridLayoutContainer grid = new GridLayoutContainer
             {
                 Name = $"GridPage_{pageIndex}",
                 Columns = Columns,
@@ -151,7 +151,7 @@ namespace RocketLib.Menus.Layout
             // Position grids
             for (int i = 0; i < gridPages.Count; i++)
             {
-                var grid = gridPages[i];
+                GridLayoutContainer grid = gridPages[i];
 
                 // Base position
                 Vector2 basePosition = new Vector2(gridCenterX, ActualPosition.y);
@@ -308,7 +308,7 @@ namespace RocketLib.Menus.Layout
             for (int i = 0; i < gridPages.Count; i++)
             {
                 bool isCurrentPage = i == CurrentPage;
-                var grid = gridPages[i];
+                GridLayoutContainer grid = gridPages[i];
 
                 // Set visibility
                 grid.IsVisible = isCurrentPage;
@@ -317,7 +317,7 @@ namespace RocketLib.Menus.Layout
                 grid.IsFocusable = false;
 
                 // Set focusability for all children
-                foreach (var child in grid.Children)
+                foreach (LayoutElement child in grid.Children)
                 {
                     child.IsFocusable = isCurrentPage && (child is BroCard || child is ActionButton);
                 }
@@ -364,7 +364,7 @@ namespace RocketLib.Menus.Layout
 
         public override List<LayoutElement> GetFocusableElements()
         {
-            var elements = new List<LayoutElement>();
+            List<LayoutElement> elements = new List<LayoutElement>();
 
             if (!IsEnabled)
             {
@@ -374,7 +374,7 @@ namespace RocketLib.Menus.Layout
             // Only get focusable elements from the CURRENT page's grid
             if (CurrentPage >= 0 && CurrentPage < gridPages.Count)
             {
-                var currentGrid = gridPages[CurrentPage];
+                GridLayoutContainer currentGrid = gridPages[CurrentPage];
                 elements.AddRange(currentGrid.GetFocusableElements());
             }
 
@@ -393,7 +393,7 @@ namespace RocketLib.Menus.Layout
 
         public override void Cleanup()
         {
-            foreach (var grid in gridPages)
+            foreach (GridLayoutContainer grid in gridPages)
             {
                 grid.Cleanup();
             }
@@ -410,8 +410,8 @@ namespace RocketLib.Menus.Layout
         {
             if (CurrentPage >= 0 && CurrentPage < gridPages.Count)
             {
-                var currentGrid = gridPages[CurrentPage];
-                foreach (var child in currentGrid.Children)
+                GridLayoutContainer currentGrid = gridPages[CurrentPage];
+                foreach (LayoutElement child in currentGrid.Children)
                 {
                     if (child.IsFocused)
                     {
@@ -429,8 +429,8 @@ namespace RocketLib.Menus.Layout
         {
             if (CurrentPage >= 0 && CurrentPage < gridPages.Count)
             {
-                var currentGrid = gridPages[CurrentPage];
-                foreach (var child in currentGrid.Children)
+                GridLayoutContainer currentGrid = gridPages[CurrentPage];
+                foreach (LayoutElement child in currentGrid.Children)
                 {
                     if (child.IsFocusable)
                     {

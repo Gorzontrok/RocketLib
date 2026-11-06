@@ -195,7 +195,7 @@ namespace RocketLib.Loggers
             if (Main.settings.ShowLogOnScreen && LogsOnScreen.Count > 0)
             {
                 GUILayout.BeginVertical("box");
-                var LogStyle = new GUIStyle();
+                GUIStyle LogStyle = new GUIStyle();
                 foreach (string log in LogsOnScreen)
                 {
                     LogStyle.normal.textColor = WhichColor(log);
@@ -240,7 +240,7 @@ namespace RocketLib.Loggers
             {
                 if (Main.settings.ShowManagerLog)
                 {
-                    for (var str = UMM_NumberOfLogs; str < ummLog.Count; str++)
+                    for (int str = UMM_NumberOfLogs; str < ummLog.Count; str++)
                     {
                         string dateTimeNow = DateTime.Now.ToString("HH:mm:ss");
                         LogsOnScreen.Add("\n[" + dateTimeNow + "] " + ummLog[str]);
@@ -277,7 +277,7 @@ namespace RocketLib.Loggers
                 {
                     using (StreamWriter writer = File.AppendText(FilePathToday))
                     {
-                        foreach (var str in LogsForTXT)
+                        foreach (string str in LogsForTXT)
                         {
                             writer.WriteLine(str);
                         }

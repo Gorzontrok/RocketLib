@@ -188,7 +188,7 @@ namespace RocketLib.Menus.Elements
                 float nameY = -(ActualSize.y * 0.38f);
                 nameGO.transform.SetParentAndResetScale(gameObject.transform, new Vector3(0, nameY, 0.1f));
 
-                var meshRenderer = nameGO.AddComponent<MeshRenderer>();
+                MeshRenderer meshRenderer = nameGO.AddComponent<MeshRenderer>();
                 nameText = nameGO.AddComponent<TextMesh>();
 
                 nameText.text = BroName.ToUpper();

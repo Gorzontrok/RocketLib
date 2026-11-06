@@ -29,7 +29,7 @@ namespace RocketLib.Menus.Layout
                 return;
             }
 
-            var childrenToPosition = GetChildrenToPosition();
+            List<LayoutElement> childrenToPosition = GetChildrenToPosition();
             if (childrenToPosition.Count == 0)
             {
                 return;
@@ -57,7 +57,7 @@ namespace RocketLib.Menus.Layout
 
             for (int i = 0; i < childrenToPosition.Count; i++)
             {
-                var child = childrenToPosition[i];
+                LayoutElement child = childrenToPosition[i];
 
                 int column = i % actualColumns;
                 int row = i / actualColumns;
@@ -167,7 +167,7 @@ namespace RocketLib.Menus.Layout
             int maxIndex = Mathf.Min(childrenToPosition.Count, totalCells);
             for (int i = 0; i < maxIndex; i++)
             {
-                var child = childrenToPosition[i];
+                LayoutElement child = childrenToPosition[i];
                 float childTop = child.ActualPosition.y + (child.ActualSize.y / 2);
                 float childBottom = child.ActualPosition.y - (child.ActualSize.y / 2);
 
@@ -213,7 +213,7 @@ namespace RocketLib.Menus.Layout
                 List<string> overflowChildren = new List<string>();
                 for (int i = totalCells; i < childrenToPosition.Count; i++)
                 {
-                    var child = childrenToPosition[i];
+                    LayoutElement child = childrenToPosition[i];
                     string childName = string.IsNullOrEmpty(child.Name) ? child.GetType().Name : child.Name;
                     overflowChildren.Add($"{child.GetType().Name} '{childName}'");
                 }

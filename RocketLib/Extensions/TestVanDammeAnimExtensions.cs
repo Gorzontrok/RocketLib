@@ -26,7 +26,7 @@ public static class TestVanDammeAnimExtensions
 
     public static void SetSpriteLowerLeftPixel(this TestVanDammeAnim self, int x, int y)
     {
-        var size = self.GetSpriteSize();
+        Vector2 size = self.GetSpriteSize();
         self.Sprite().SetLowerLeftPixel(x * size.x, y * size.y);
     }
 

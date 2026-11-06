@@ -1,28 +1,29 @@
 using System;
 using System.Collections.Generic;
+using RocketLib.Menus.Vanilla;
 using UnityEngine;
 
 namespace RocketLib.Menus.Core
 {
     internal static class MenuInstanceCache
     {
-        private static readonly Dictionary<string, Vanilla.BaseCustomMenu> instances = new Dictionary<string, Vanilla.BaseCustomMenu>();
+        private static readonly Dictionary<string, BaseCustomMenu> instances = new Dictionary<string, BaseCustomMenu>();
 
-        public static Vanilla.BaseCustomMenu GetOrCreate(string menuId, Type menuType, Menu parentMenu)
+        public static BaseCustomMenu GetOrCreate(string menuId, Type menuType, Menu parentMenu)
         {
-            if (instances.TryGetValue(menuId, out Vanilla.BaseCustomMenu existing) && existing != null)
+            if (instances.TryGetValue(menuId, out BaseCustomMenu existing) && existing != null)
             {
                 existing.Initialize(parentMenu);
                 existing.gameObject.SetActive(true);
                 return existing;
             }
 
-            var menuGO = new GameObject($"RocketLib_Menu_{menuId}");
+            GameObject menuGO = new GameObject($"RocketLib_Menu_{menuId}");
             menuGO.transform.SetParent(parentMenu.transform.parent);
             menuGO.transform.position = parentMenu.transform.position;
             menuGO.SetActive(false);
 
-            var menu = menuGO.AddComponent(menuType) as Vanilla.BaseCustomMenu;
+            BaseCustomMenu menu = menuGO.AddComponent(menuType) as BaseCustomMenu;
             if (menu != null)
             {
                 menu.InstanceId = menuId;
@@ -105,7 +106,7 @@ namespace RocketLib.Menus.Core
         public Type MenuType { get; set; }
 
         // Instance storage (only for BaseCustomMenu)
-        public Vanilla.BaseCustomMenu CustomInstance { get; set; }
+        public BaseCustomMenu CustomInstance { get; set; }
 
         // Action support (only for Action kind)
         public Action<Menu> OnSelect { get; set; }
@@ -140,7 +141,7 @@ namespace RocketLib.Menus.Core
 
         private void OpenCustomMenu(Menu parentMenu)
         {
-            Vanilla.BaseCustomMenu menuToOpen = null;
+            BaseCustomMenu menuToOpen = null;
 
             if (CustomInstance != null)
             {
@@ -148,12 +149,12 @@ namespace RocketLib.Menus.Core
 
                 if (menuToOpen.gameObject == null)
                 {
-                    var menuGO = new GameObject($"RocketLib_Menu_{MenuId}");
+                    GameObject menuGO = new GameObject($"RocketLib_Menu_{MenuId}");
                     menuGO.transform.SetParent(parentMenu.transform.parent);
                     menuGO.transform.position = parentMenu.transform.position;
                     menuGO.SetActive(false);
 
-                    menuToOpen = menuGO.AddComponent(MenuType) as Vanilla.BaseCustomMenu;
+                    menuToOpen = menuGO.AddComponent(MenuType) as BaseCustomMenu;
                 }
             }
             else if (MenuType != null)

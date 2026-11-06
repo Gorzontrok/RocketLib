@@ -364,7 +364,7 @@ namespace RocketLib
                 {
                     GUILayout.BeginVertical(GUILayout.ExpandHeight(false), GUILayout.Width(200));
                     RGUI.LabelCenteredHorizontally(new GUIContent("Player " + (i + 1)), GUI.skin.label, RGUI.Unexpanded);
-                    var temp = this[i].OnGUI(displayToolTip);
+                    bool temp = this[i].OnGUI(displayToolTip);
                     if (i == 0)
                     {
                         toolTipPos = KeyBinding.toolTipRect;
@@ -430,7 +430,7 @@ namespace RocketLib
                             GUILayout.BeginVertical(GUILayout.ExpandHeight(false));
                         }
                         RGUI.LabelCenteredHorizontally(new GUIContent("Player " + (i + 1)), GUI.skin.label, RGUI.Unexpanded);
-                        var temp = this[i].OnGUI(includeToolTip, false, !separateKeyName);
+                        bool temp = this[i].OnGUI(includeToolTip, false, !separateKeyName);
                         if (i == 0)
                         {
                             toolTipPos = KeyBinding.toolTipRect;
@@ -456,7 +456,7 @@ namespace RocketLib
                     {
                         GUILayout.BeginVertical(GUILayout.ExpandHeight(false));
                     }
-                    var temp = this[playerToDisplay].OnGUI(includeToolTip, false, !separateKeyName);
+                    bool temp = this[playerToDisplay].OnGUI(includeToolTip, false, !separateKeyName);
                     toolTipPos = KeyBinding.toolTipRect;
                     toolTipPos.y += 17;
                     GUILayout.EndVertical();

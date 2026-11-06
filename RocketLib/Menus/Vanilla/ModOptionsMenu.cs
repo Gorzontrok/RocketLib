@@ -51,7 +51,7 @@ namespace RocketLib.Menus.Vanilla
         /// </summary>
         private static bool HasRegisteredModOptions()
         {
-            var modMenus = MenuRegistry.GetMenusForTarget(TargetMenu.ModOptions);
+            IEnumerable<MenuRegistration> modMenus = MenuRegistry.GetMenusForTarget(TargetMenu.ModOptions);
             return modMenus != null && modMenus.Any();
         }
 
@@ -60,18 +60,18 @@ namespace RocketLib.Menus.Vanilla
         /// </summary>
         protected override void SetupMenuItems()
         {
-            var itemList = new List<MenuBarItem>();
+            List<MenuBarItem> itemList = new List<MenuBarItem>();
 
             // Query all items registered with ModOptions target
-            var modMenus = MenuRegistry.GetMenusForTarget(TargetMenu.ModOptions)
+            List<MenuRegistration> modMenus = MenuRegistry.GetMenusForTarget(TargetMenu.ModOptions)
                 .OrderBy(m => m.Priority)
                 .ThenBy(m => m.DisplayText)
                 .ToList();
 
-            foreach (var registration in modMenus)
+            foreach (MenuRegistration registration in modMenus)
             {
                 // Create menu item for this mod
-                var item = new MenuBarItem
+                MenuBarItem item = new MenuBarItem
                 {
                     name = registration.DisplayText.ToUpper(),
                     size = GetParentFontSize(),
@@ -82,7 +82,7 @@ namespace RocketLib.Menus.Vanilla
                 itemList.Add(item);
 
                 // Register the action for this menu item
-                var capturedReg = registration; // Capture for closure
+                MenuRegistration capturedReg = registration; // Capture for closure
                 RegisterMenuAction(item.invokeMethod, () => capturedReg.Open(this));
             }
 
@@ -108,7 +108,7 @@ namespace RocketLib.Menus.Vanilla
             {
                 // Try to get size from parent's first item
                 Traverse parentTraverse = Traverse.Create(PrevMenu);
-                var parentItems = parentTraverse.Field<MenuBarItem[]>("masterItems").Value;
+                MenuBarItem[] parentItems = parentTraverse.Field<MenuBarItem[]>("masterItems").Value;
                 if (parentItems != null && parentItems.Length > 0)
                 {
                     itemSize = parentItems[0].size;
@@ -146,7 +146,7 @@ namespace RocketLib.Menus.Vanilla
                 && masterItems[highlightIndex].invokeMethod.StartsWith("OpenMod_"))
             {
                 string methodName = masterItems[highlightIndex].invokeMethod;
-                if (menuActions.TryGetValue(this, out var actions) && actions.TryGetValue(methodName, out var action))
+                if (menuActions.TryGetValue(this, out Dictionary<string, Action> actions) && actions.TryGetValue(methodName, out Action action))
                 {
                     action?.Invoke();
                     PlayDrumSound(1);

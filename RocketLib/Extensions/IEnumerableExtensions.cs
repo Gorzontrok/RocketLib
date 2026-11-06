@@ -37,7 +37,7 @@ public static class IEnumerableExtensions
 
     public static T[] Append<T>(this T[] array, T obj)
     {
-        var temp = array.ToList();
+        List<T> temp = array.ToList();
         temp.Add(obj);
         array = temp.ToArray();
         return array;
