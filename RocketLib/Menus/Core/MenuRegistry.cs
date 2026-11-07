@@ -111,6 +111,16 @@ namespace RocketLib.Menus.Core
             return registeredMenus.Values.Where(r => r.TargetMenu == targetMenu);
         }
 
+        internal static List<MenuRegistration> GetVisibleUniqueMenus(TargetMenu targetMenu, Menu menu, IEnumerable<string> takenTexts = null)
+        {
+            HashSet<string> usedTexts = new HashSet<string>(takenTexts ?? Enumerable.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+            return registeredMenus.Values
+                .Where(r => r.TargetMenu == targetMenu)
+                .Where(r => r.IsVisible == null || r.IsVisible(menu))
+                .Where(r => usedTexts.Add(r.DisplayText))
+                .ToList();
+        }
+
         /// <summary>
         /// Inject registered items into a game menu
         /// </summary>
@@ -131,10 +141,7 @@ namespace RocketLib.Menus.Core
             MenuBarItem[] masterItems = menuTraverse.Field<MenuBarItem[]>("masterItems").Value ?? new MenuBarItem[0];
 
             // Get items for this target menu
-            List<MenuRegistration> itemsToInject = registeredMenus.Values
-                .Where(r => r.TargetMenu == targetType.Value)
-                .Where(r => r.IsVisible == null || r.IsVisible(menu))
-                .Where(r => !masterItems.Any(existing => existing.name == r.DisplayText))
+            List<MenuRegistration> itemsToInject = GetVisibleUniqueMenus(targetType.Value, menu, masterItems.Select(existing => existing.name))
                 .OrderBy(r => r.Priority)
                 .ThenBy(r => r.Position == PositionMode.End ? int.MaxValue : 0)
                 .ToList();

@@ -11,7 +11,7 @@ namespace RocketLib.Menus.Layout
         Fixed,
 
         /// <summary>
-        /// Width/Height value is percentage (0.0 to 1.0) of parent container
+        /// Width/Height value is percentage (0 to 100) of parent container
         /// </summary>
         Percentage,
 

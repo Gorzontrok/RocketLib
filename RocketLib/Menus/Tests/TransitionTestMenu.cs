@@ -30,11 +30,6 @@ namespace RocketLib.Menus.Tests
                 Spacing = 15f,
                 Padding = 10f
             };
-        }
-
-        protected override void Start()
-        {
-            base.Start();
 
             TextElement title = new TextElement("Title")
             {
@@ -175,8 +170,6 @@ namespace RocketLib.Menus.Tests
                 OnClick = () => GoBack()
             };
             contentArea.AddChild(backBtn);
-
-            RefreshLayout();
         }
 
         private void TestAction(string option)

@@ -3,6 +3,7 @@
 - Added an in-game notification overlay that mods can use to show messages.
 - Added a warning at startup naming mods that won't work with your versions of RocketLib and BroMaker.
 - Fixed several bugs with mod settings.
+- Fixed several menu bugs.
 
 ## v2.4.3:
 - Better handling for levels with custom triggers that aren't installed.

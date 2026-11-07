@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 using Localisation;
+using UnityEngine;
 
 namespace RocketLib.Menus.Core
 {
@@ -126,52 +129,50 @@ namespace RocketLib.Menus.Core
     [HarmonyPatch(typeof(Menu), "RunInput")]
     internal static class Menu_RunInput_Patch
     {
-        private static bool Prefix(Menu __instance, ref bool ___accept, ref bool ___activatedThisFrame, ref MenuBarItem[] ___masterItems, ref int ___highlightIndex)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            try
+            MethodInfo sendMessage = AccessTools.Method(typeof(Component), nameof(Component.SendMessage), new Type[] { typeof(string), typeof(object) });
+            MethodInfo replacement = AccessTools.Method(typeof(Menu_RunInput_Patch), nameof(SendMenuMessage));
+
+            List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+            bool found = false;
+            foreach (CodeInstruction code in codes)
             {
-                if (!___accept)
+                if (code.Calls(sendMessage))
                 {
-                    return true;
+                    code.opcode = OpCodes.Call;
+                    code.operand = replacement;
+                    found = true;
                 }
+            }
 
-                bool acceptPrev = (bool)AccessTools.Field(typeof(Menu), "acceptPrev").GetValue(null);
+            if (!found)
+            {
+                RocketMain.Logger.Warning("Menu_RunInput_Patch: Could not find Component.SendMessage call");
+            }
+            return codes;
+        }
 
-                if (___activatedThisFrame || acceptPrev)
+        private static void SendMenuMessage(Component component, string methodName, object value)
+        {
+            Menu menu = component as Menu;
+            if (menu != null && methodName != null && methodName.StartsWith("RocketLib_"))
+            {
+                try
                 {
-                    return true;
-                }
-
-                MenuBarItem[] masterItems = ___masterItems;
-                int highlightIndex = ___highlightIndex;
-
-                if (masterItems == null || highlightIndex < 0 || highlightIndex >= masterItems.Length)
-                {
-                    return true;
-                }
-
-                MenuBarItem currentItem = masterItems[highlightIndex];
-
-                if (!string.IsNullOrEmpty(currentItem.invokeMethod) && currentItem.invokeMethod.StartsWith("RocketLib_"))
-                {
-                    bool handled = MenuRegistry.InvokeMenuAction(__instance, currentItem.invokeMethod);
-
-                    if (handled)
+                    if (MenuRegistry.InvokeMenuAction(menu, methodName))
                     {
-                        MethodInfo playDrumSound = AccessTools.Method(typeof(Menu), "PlayDrumSound");
-                        if (playDrumSound != null)
-                        {
-                            playDrumSound.Invoke(__instance, new object[] { 1 });
-                        }
+                        return;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                RocketMain.Logger.Error($"Error in Menu_RunInput_Prefix: {ex}");
+                catch (Exception ex)
+                {
+                    RocketMain.Logger.Error($"Error running menu action {methodName}: {ex}");
+                    return;
+                }
             }
 
-            return true;
+            component.SendMessage(methodName, value);
         }
     }
 

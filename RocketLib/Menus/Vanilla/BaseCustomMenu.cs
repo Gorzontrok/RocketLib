@@ -238,18 +238,9 @@ namespace RocketLib.Menus.Vanilla
         {
         }
 
-        /// <summary>
-        /// Override Update to handle Escape key like OptionsMenu does
-        /// </summary>
-        protected override void Update()
+        protected override void GoBack()
         {
-            base.Update();
-
-            if (menuActive && !activatedThisFrame &&
-                (Input.GetKeyDown(KeyCode.Escape) || InputReader.GetControllerPressingCancel() > -1))
-            {
-                OnMenuClosed();
-            }
+            OnMenuClosed();
         }
 
         /// <summary>

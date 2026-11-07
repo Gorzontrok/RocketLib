@@ -30,7 +30,7 @@ namespace RocketLib.Menus.Vanilla
                     targetMenu: TargetMenu.MainMenu,
                     position: PositionMode.After,
                     positionReference: "OPTIONS",
-                    isVisible: (menu) => HasRegisteredModOptions()
+                    isVisible: (menu) => HasRegisteredModOptions(menu)
                 );
 
                 // Register in pause menu with visibility check
@@ -39,7 +39,7 @@ namespace RocketLib.Menus.Vanilla
                     targetMenu: TargetMenu.PauseMenu,
                     position: PositionMode.After,
                     positionReference: "OPTIONS",
-                    isVisible: (menu) => HasRegisteredModOptions()
+                    isVisible: (menu) => HasRegisteredModOptions(menu)
                 );
 
                 isRegistered = true;
@@ -47,12 +47,11 @@ namespace RocketLib.Menus.Vanilla
         }
 
         /// <summary>
-        /// Check if any mods have registered options
+        /// Check if any mods have registered options visible from the given menu
         /// </summary>
-        private static bool HasRegisteredModOptions()
+        private static bool HasRegisteredModOptions(Menu parentMenu)
         {
-            IEnumerable<MenuRegistration> modMenus = MenuRegistry.GetMenusForTarget(TargetMenu.ModOptions);
-            return modMenus != null && modMenus.Any();
+            return MenuRegistry.GetVisibleUniqueMenus(TargetMenu.ModOptions, parentMenu).Count > 0;
         }
 
         /// <summary>
@@ -63,7 +62,7 @@ namespace RocketLib.Menus.Vanilla
             List<MenuBarItem> itemList = new List<MenuBarItem>();
 
             // Query all items registered with ModOptions target
-            List<MenuRegistration> modMenus = MenuRegistry.GetMenusForTarget(TargetMenu.ModOptions)
+            List<MenuRegistration> modMenus = MenuRegistry.GetVisibleUniqueMenus(TargetMenu.ModOptions, PrevMenu)
                 .OrderBy(m => m.Priority)
                 .ThenBy(m => m.DisplayText)
                 .ToList();
