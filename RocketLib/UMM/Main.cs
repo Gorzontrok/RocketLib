@@ -2,6 +2,7 @@
 using System.Reflection;
 using HarmonyLib;
 using RocketLib.Loggers;
+using RocketLib.Network;
 using UnityEngine;
 using UnityModManagerNet;
 
@@ -22,6 +23,7 @@ namespace RocketLib.UMM
         private static bool Load(UnityModManager.ModEntry modEntry)
         {
             Mod = modEntry;
+            ModNegotiation.RegisterMod("RocketLib", RocketLib.Constants.VERSION);
 
             modEntry.OnToggle = OnToggle;
             modEntry.OnGUI = ModUI.OnGui;
@@ -36,6 +38,7 @@ namespace RocketLib.UMM
                 harmony = new Harmony(modEntry.Info.Id);
                 var assembly = Assembly.GetExecutingAssembly();
                 harmony.PatchAll(assembly);
+                ShortInputSync.Initialize();
             }
             catch (Exception ex)
             {
