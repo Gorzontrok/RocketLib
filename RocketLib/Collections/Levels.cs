@@ -99,7 +99,7 @@ namespace RocketLib.Collections
             public const string HELL = "WM_Hell";
             public const string INTRO = "WM_Intro(mouse)";
             public const string MISSION_1 = "WM_Mission1(mouse)";
-            public const string MISSION_2 = "WM_Mission2(mouse)";
+            public const string MISSION_2 = "WM_Mission2 (mouse)";
             public const string VILLAGE = "WM_Village1(mouse)";
             public const string WHITEHOUSE = "WM_Whitehouse";
 
@@ -234,7 +234,7 @@ namespace RocketLib.Collections
 
         public static class Defaults
         {
-            public const string BRODOWN = "DefaultBrowdown";
+            public const string BRODOWN = "DefaultBrodown";
             public const string DEATHMATCH = "DefaultDeathmatch";
             public const string RACE = "DefaultRace";
 
