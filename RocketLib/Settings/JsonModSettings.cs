@@ -42,9 +42,17 @@ namespace RocketLib.Settings
     public class JsonModSettings
     {
         /// <summary>
+        /// Creates settings with default values at the current schema version.
+        /// </summary>
+        public JsonModSettings()
+        {
+            SettingsVersion = CurrentVersion;
+        }
+
+        /// <summary>
         /// Version number stored in the settings file. Used to detect when migration is needed.
         /// </summary>
-        public virtual int SettingsVersion { get; set; } = 1;
+        public virtual int SettingsVersion { get; set; }
 
         /// <summary>
         /// The current schema version expected by the code. Override to increment when making breaking changes.
@@ -131,6 +139,7 @@ namespace RocketLib.Settings
         public static T Load<T>(UnityModManager.ModEntry modEntry) where T : JsonModSettings, new()
         {
             T t = new T();
+            t.SettingsVersion = t.CurrentVersion;
             string filepath = t.GetPath(modEntry);
 
             if (!File.Exists(filepath))

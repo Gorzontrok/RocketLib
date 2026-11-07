@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Xml.Serialization;
 using UnityModManagerNet;
 
 namespace RocketLib.Settings
@@ -21,14 +24,13 @@ namespace RocketLib.Settings
     /// </example>
     /// <remarks>
     /// Settings are saved to the mod's ConfigPath directory (persists across Thunderstore updates).
-    /// When SettingsVersion is 0 after loading, it indicates deserialization failed and recovery is attempted
+    /// When the settings file exists but can't be deserialized, recovery is attempted
     /// using <see cref="SettingsRecovery.TryRecoverSettings{T}" />.
     /// </remarks>
     public abstract class XmlModSettings : UnityModManager.ModSettings
     {
         /// <summary>
         /// Version number for tracking settings schema changes.
-        /// A value of 0 after loading indicates deserialization failed.
         /// </summary>
         public virtual int SettingsVersion { get; set; } = 1;
 
@@ -40,20 +42,26 @@ namespace RocketLib.Settings
         /// <returns>The loaded settings, or recovered/default settings if loading failed</returns>
         public static new T Load<T>(UnityModManager.ModEntry modEntry) where T : XmlModSettings, new()
         {
-            T settings = UnityModManager.ModSettings.Load<T>(modEntry);
-
-            if (settings.SettingsVersion == 0)
+            T settings = new T();
+            string settingsPath = settings.GetPath(modEntry);
+            if (!File.Exists(settingsPath))
             {
-                string settingsPath = settings.GetPath(modEntry);
-                settings = SettingsRecovery.TryRecoverSettings<T>(settingsPath, settings);
-
-                if (settings.SettingsVersion == 0)
-                {
-                    settings.SettingsVersion = 1;
-                }
+                return settings;
             }
 
-            return settings;
+            try
+            {
+                using (FileStream stream = File.OpenRead(settingsPath))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(T));
+                    return (T)serializer.Deserialize(stream);
+                }
+            }
+            catch (Exception ex)
+            {
+                RocketMain.Logger.Warning($"Couldn't read {settingsPath} ({ex.Message}), recovering what it still holds and using defaults for the rest.");
+                return SettingsRecovery.TryRecoverSettings<T>(settingsPath, settings);
+            }
         }
     }
 }

@@ -16,23 +16,11 @@ namespace RocketLib.Settings
     /// </summary>
     /// <example>
     ///     <code>
-    /// // Settings.cs
-    /// public int SettingsVersion = 0;
+    /// // XmlModSettings.Load recovers on its own:
+    /// settings = XmlModSettings.Load&lt;Settings&gt;(modEntry);
     /// 
-    /// public override void Save(UnityModManager.ModEntry modEntry)
-    /// {
-    ///     if (SettingsVersion == 0) SettingsVersion = 1;
-    ///     Save(this, modEntry);
-    /// }
-    /// 
-    /// // Main.cs Load method
-    /// settings = Settings.Load&lt;Settings&gt;(modEntry);
-    /// if (settings.SettingsVersion == 0)
-    /// {
-    ///     var settingsPath = Path.Combine(modEntry.Path, "Settings.xml");
-    ///     settings = SettingsRecovery.TryRecoverSettings&lt;Settings&gt;(settingsPath, settings);
-    /// }
-    /// if (settings.SettingsVersion == 0) settings.SettingsVersion = 1;
+    /// // Manual recovery for other ModSettings classes:
+    /// settings = SettingsRecovery.TryRecoverSettings&lt;Settings&gt;(settings.GetPath(modEntry), settings);
     /// </code>
     /// </example>
     public static class SettingsRecovery
