@@ -90,7 +90,7 @@ namespace RocketLib.Collections
         {
             get
             {
-                return new HeroType[] { HeroType.Desperabro, HeroType.Xebro, HeroType.DemolitionBro, HeroType.DemolitionBro, HeroType.Broffy, HeroType.BrondleFly, HeroType.BroGummer };
+                return new HeroType[] { HeroType.Desperabro, HeroType.Xebro, HeroType.DemolitionBro, HeroType.Broffy, HeroType.BrondleFly, HeroType.BroGummer };
             }
         }
 

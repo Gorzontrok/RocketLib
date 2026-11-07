@@ -21,13 +21,16 @@ namespace RocketLib
         /// </summary>
         public static string Dye(this string self, string hex)
         {
-            StringBuilder stringBuilder = new StringBuilder(COLOR_START)
-                .Append(hex)
-                .Append(self)
+            StringBuilder stringBuilder = new StringBuilder(COLOR_START);
+            if (!hex.StartsWith("#"))
+            {
+                stringBuilder.Append('#');
+            }
+            return stringBuilder.Append(hex)
                 .Append('>')
-                .Append(COLOR_END);
-            self = stringBuilder.ToString();
-            return self;
+                .Append(self)
+                .Append(COLOR_END)
+                .ToString();
         }
     }
 }

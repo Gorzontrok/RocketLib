@@ -32,7 +32,7 @@ namespace RocketLib.Collections
         {
             public const string PHEROMONES = "Challenge_Alien";
             public const string AMMO = "Challenge_Ammo";
-            public const string STEROIDS = "Challenge_Ammo";
+            public const string DASH = "Challenge_Dash";
             public const string RC_CAR = "Challenge_MacBrover";
             public const string MECH_DROP = "Challenge_Mech1";
             public const string TIME_WATCH = "Challenge_TimeBro";
@@ -43,7 +43,7 @@ namespace RocketLib.Collections
                 {
                     if (_all.IsNullOrEmpty())
                     {
-                        _all = new string[] { AMMO, MECH_DROP, PHEROMONES, RC_CAR, STEROIDS, TIME_WATCH };
+                        _all = new string[] { AMMO, DASH, MECH_DROP, PHEROMONES, RC_CAR, TIME_WATCH };
                     }
                     return _all;
                 }
@@ -82,7 +82,7 @@ namespace RocketLib.Collections
                 {
                     if (_all.IsNullOrEmpty())
                     {
-                        _all = new string[] { INTRO, MISSION_1, MISSION_2, VILLAGE, WHITEHOUSE };
+                        _all = new string[] { INTRO, MISSION_1, MISSION_2, VILLAGE, WHITEHOUSE, HELL };
                         List<string> temp = new List<string>(_all);
                         temp.AddRange(Aliens.All);
                         temp.AddRange(Bombardements.All);
@@ -189,7 +189,7 @@ namespace RocketLib.Collections
         public static class WWB
         {
             public const string ELEVATOR_ACTION = "WWB2ElevatorAction";
-            public const string MOUNT_BROLYMPUS = "WWB2ElevatorAction";
+            public const string MOUNT_BROLYMPUS = "WWB3MountBrolympus";
             public const string SEVEN = "WWB7";
             public const string HEIGHT = "WWB8";
 
@@ -262,7 +262,7 @@ namespace RocketLib.Collections
             GameState.Instance.gameMode = gameMode;
             GameState.Instance.sceneToLoad = LevelSelectionController.CampaignScene;
             GameState.Instance.sessionID = Connect.GetIncrementedSessionID().AsByte;
-            //GameState.Instance.arcadeHardMode
+            GameState.Instance.arcadeHardMode = hard;
             LevelSelectionController.CurrentLevelNum = levelNumber;
             HeroUnlockController.Initialize();
 

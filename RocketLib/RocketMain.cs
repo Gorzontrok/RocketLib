@@ -23,7 +23,7 @@ namespace RocketLib
         /// </summary>
         public static UMM.Settings settings => Main.settings;
 
-        internal static ILogger Logger;
+        internal static ILogger Logger = new Logger();
 
         public static void Load(UnityModManager.ModEntry _mod)
         {
@@ -32,7 +32,6 @@ namespace RocketLib
                 Logger.Log("Cancel Load, already Started.");
                 return;
             }
-            Logger = new Logger();
 
             // Load Newtonsoft
             try

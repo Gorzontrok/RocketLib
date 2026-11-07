@@ -169,13 +169,15 @@ public static class HarmonyExtensions
 
         Traverse traverse = obj.GetTraverse();
         Traverse field = traverse;
+        List<KeyValuePair<Traverse, object>> parents = new List<KeyValuePair<Traverse, object>>();
         foreach (KeyValuePair<string, object> kvp in map)
         {
             try
             {
                 if (!skipTheseFields.Contains(kvp.Key))
                 {
-                    field = traverse.FindFieldWithPath(kvp.Key);
+                    parents.Clear();
+                    field = WalkFieldPath(traverse, kvp.Key, parents);
                     if (field.GetValueType() == null)
                     {
                         string ctx = context != null ? $" ({context})" : "";
@@ -191,6 +193,7 @@ public static class HarmonyExtensions
                         continue;
                     }
                     setter(field, kvp.Key, kvp.Value);
+                    WriteBackValueTypes(parents);
                 }
             }
             catch (Exception e)
@@ -311,12 +314,40 @@ public static class HarmonyExtensions
     /// <returns></returns>
     public static Traverse FindFieldWithPath(this Traverse traverse, string fieldPath)
     {
+        return WalkFieldPath(traverse, fieldPath, null);
+    }
+
+    private static Traverse WalkFieldPath(Traverse traverse, string fieldPath, List<KeyValuePair<Traverse, object>> parents)
+    {
         Traverse field = traverse;
         string[] path = fieldPath.Split(PATH_SEPARATOR);
-        foreach (string variable in path)
+        for (int i = 0; i < path.Length; i++)
         {
-            field = field.Field(variable);
+            if (i > 0)
+            {
+                // A struct value is a boxed copy: the next segment must write into this same box so it can be stored back.
+                object value = field.GetValue();
+                if (parents != null)
+                {
+                    parents.Add(new KeyValuePair<Traverse, object>(field, value));
+                }
+                field = Traverse.Create(value);
+            }
+            field = field.Field(path[i]);
         }
         return field;
+    }
+
+    private static void WriteBackValueTypes(List<KeyValuePair<Traverse, object>> parents)
+    {
+        for (int i = parents.Count - 1; i >= 0; i--)
+        {
+            object value = parents[i].Value;
+            if (value == null || !value.GetType().IsValueType)
+            {
+                return;
+            }
+            parents[i].Key.SetValue(value);
+        }
     }
 }

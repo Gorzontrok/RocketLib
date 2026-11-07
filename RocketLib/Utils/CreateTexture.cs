@@ -15,6 +15,7 @@ namespace RocketLib.Utils
                 colors[i] = color;
             }
             tex.SetPixels(colors);
+            tex.Apply();
             return tex;
         }
 

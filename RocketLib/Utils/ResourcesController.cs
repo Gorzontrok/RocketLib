@@ -59,7 +59,7 @@ namespace RocketLib.Utils
         public static Material GetMaterial(string filePath)
         {
             Material result;
-            if (_materials.TryGetValue(filePath, out Material material))
+            if (_materials.TryGetValue(filePath, out Material material) && material)
             {
                 return material;
             }
@@ -79,7 +79,7 @@ namespace RocketLib.Utils
 
             if (result != null)
             {
-                _materials.Add(filePath, result);
+                _materials[filePath] = result;
             }
             return result;
         }
@@ -190,7 +190,7 @@ namespace RocketLib.Utils
 
             if (tex)
             {
-                _textures.Add(filePath, tex);
+                _textures[filePath] = tex;
             }
             return tex;
         }
@@ -263,7 +263,7 @@ namespace RocketLib.Utils
         public static AudioClip GetAudioClip(string filePath)
         {
             AudioClip result;
-            if (_audioClips.TryGetValue(filePath, out AudioClip clip))
+            if (_audioClips.TryGetValue(filePath, out AudioClip clip) && clip)
             {
                 return clip;
             }
@@ -283,7 +283,7 @@ namespace RocketLib.Utils
 
             if (result)
             {
-                _audioClips.Add(filePath, result);
+                _audioClips[filePath] = result;
             }
             return result;
         }

@@ -2,9 +2,10 @@
 - Fixed error in log on startup when Logs directory doesn't exist.
 - Added an in-game notification overlay that mods can use to show messages.
 - Added a warning at startup naming mods that won't work with your versions of RocketLib and BroMaker.
-- Fixed several bugs with mod settings.
-- Fixed several menu bugs.
+- Fixed mod settings resetting to defaults when their file can't be fully read.
+- Fixed duplicate entries and double sounds in mod menus.
 - Fixed custom campaigns with mod triggers failing to load or save.
+- Fixed gesture keys for player 4 and on-screen log lines staying up during slow motion.
 
 ## v2.4.3:
 - Better handling for levels with custom triggers that aren't installed.

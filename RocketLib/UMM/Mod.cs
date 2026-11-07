@@ -29,9 +29,9 @@
         // Free lives made an error so 'shhh' and 'sing' are swap
         private static void CheckGesture(KeyBindingForPlayers bindings, GestureElement.Gestures gesture)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
-                if (bindings.IsDown(i) && HeroController.PlayerIsAlive(i))
+                if (bindings.IsDown(i) && HeroController.PlayerIsAlive(i) && HeroController.players[i].character != null)
                 {
                     TestVanDammeAnim character = HeroController.players[i].character;
                     character.SetGestureAnimation(gesture);

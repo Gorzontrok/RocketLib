@@ -137,6 +137,7 @@ namespace RocketLib
                 GUILayoutOption widthOption = scaleWithWindow ? UMM.WindowScaling.ScaledWidth(TabWidth) : GUILayout.Width(TabWidth);
                 if (GUILayout.Button(Strings[i], i == Number ? ActiveTabStyle : TabStyle, widthOption))
                 {
+                    GUILayout.EndHorizontal();
                     return i;
                 }
                 GUILayout.Space(Space);

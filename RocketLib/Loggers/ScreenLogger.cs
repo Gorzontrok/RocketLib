@@ -98,9 +98,9 @@ namespace RocketLib.Loggers
             string FileNameToday = DateTime.UtcNow.Date.ToString("yyyy'-'MM'-'dd") + ".txt";
             foreach (string file in Directory.GetFiles(LogFilePath))
             {
-                if (file != FileNameToday)
+                if (Path.GetFileName(file) != FileNameToday)
                 {
-                    File.Delete(Path.Combine(LogFilePath, file));
+                    File.Delete(file);
                 }
             }
         }
@@ -174,7 +174,7 @@ namespace RocketLib.Loggers
             {
                 if (TimeRemaining > 0)
                 {
-                    TimeRemaining -= Time.deltaTime;
+                    TimeRemaining -= Time.unscaledDeltaTime;
                 }
                 else
                 {
