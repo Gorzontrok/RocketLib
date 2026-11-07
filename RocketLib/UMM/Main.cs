@@ -38,6 +38,7 @@ namespace RocketLib.UMM
                 harmony = new Harmony(modEntry.Info.Id);
                 var assembly = Assembly.GetExecutingAssembly();
                 harmony.PatchAll(assembly);
+                ShortInputSync.Initialize();
             }
             catch (Exception ex)
             {

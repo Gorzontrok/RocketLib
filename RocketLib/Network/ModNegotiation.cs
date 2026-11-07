@@ -248,6 +248,22 @@ namespace RocketLib.Network
                 foreach (PID pid in Connect.Layer.PlayerIDPairs.Keys) players.Add(pid);
             return players.ToArray();
         }
+
+        internal static string[] GetManifestModIds(PID player)
+        {
+            if (player == null) return null;
+
+            ModManifest[] manifests;
+            if (player == PID.MyID)
+                manifests = new List<ModManifest>(localManifests.Values).ToArray();
+            else if (!playerManifests.TryGetValue(player, out manifests))
+                return null;
+
+            string[] ids = new string[manifests.Length];
+            for (int i = 0; i < manifests.Length; i++) ids[i] = manifests[i].ModId;
+            return ids;
+        }
+
         public static bool AllPlayersHaveMod(string modId)
         {
             foreach (PID pid in GetAllPlayers())

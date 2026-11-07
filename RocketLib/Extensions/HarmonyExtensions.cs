@@ -131,6 +131,12 @@ public static class HarmonyExtensions
     }
     #endregion
 
+    // Preserve the four-argument signature used by the BroMaker 2.6.2 binary.
+    public static void DynamicFieldsValueSetter(this object obj, Dictionary<string, object> map, string[] skipTheseFields, Action<Traverse, string, object> setter)
+    {
+        DynamicFieldsValueSetter(obj, map, skipTheseFields, setter, null);
+    }
+
     /// <summary>
     /// Set multiple fields on an object from a <see cref="Dictionary{string, object}"/>
     /// Can navigate through instances from fields using the separator <see cref="PATH_SEPARATOR"/> in the <see cref="Dictionary{string, object}"/> key.
