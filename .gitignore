@@ -402,6 +402,7 @@ FodyWeavers.xsd
 
 LocalBroforcePath.props
 RocketLib/**/RocketLib.dll
+RocketLib/_ModContent/RocketLib.xml
 
 # Claude
 CLAUDE*.md
