@@ -10,17 +10,21 @@ namespace RocketLib.CustomTriggers
     public class CustomTriggerPatches
     {
         [HarmonyPatch(typeof(LevelEditorGUI), "SaveLevel")]
-        static class LevelEditorGUI_SaveLevel_Patch
+        private static class LevelEditorGUI_SaveLevel_Patch
         {
-            static void Prefix()
+            private static void Prefix()
             {
                 if (Map.MapData == null || Map.MapData.TriggerList == null)
+                {
                     return;
+                }
 
                 foreach (var trigger in Map.MapData.TriggerList)
                 {
                     if (trigger.actions == null)
+                    {
                         continue;
+                    }
 
                     for (int i = 0; i < trigger.actions.Count; i++)
                     {
@@ -33,15 +37,19 @@ namespace RocketLib.CustomTriggers
                 }
             }
 
-            static void Postfix()
+            private static void Postfix()
             {
                 if (Map.MapData == null || Map.MapData.TriggerList == null)
+                {
                     return;
+                }
 
                 foreach (var trigger in Map.MapData.TriggerList)
                 {
                     if (trigger.actions == null)
+                    {
                         continue;
+                    }
 
                     for (int i = 0; i < trigger.actions.Count; i++)
                     {
@@ -60,22 +68,28 @@ namespace RocketLib.CustomTriggers
         }
 
         [HarmonyPatch(typeof(LevelEditorGUI), "SaveCampaign")]
-        static class LevelEditorGUI_SaveCampaign_Patch
+        private static class LevelEditorGUI_SaveCampaign_Patch
         {
-            static void Prefix()
+            private static void Prefix()
             {
                 if (LevelEditorGUI.campaign == null || LevelEditorGUI.campaign.levels == null)
+                {
                     return;
+                }
 
                 foreach (var mapData in LevelEditorGUI.campaign.levels)
                 {
                     if (mapData == null || mapData.TriggerList == null)
+                    {
                         continue;
+                    }
 
                     foreach (var trigger in mapData.TriggerList)
                     {
                         if (trigger.actions == null)
+                        {
                             continue;
+                        }
 
                         for (int i = 0; i < trigger.actions.Count; i++)
                         {
@@ -89,20 +103,26 @@ namespace RocketLib.CustomTriggers
                 }
             }
 
-            static void Postfix()
+            private static void Postfix()
             {
                 if (LevelEditorGUI.campaign == null || LevelEditorGUI.campaign.levels == null)
+                {
                     return;
+                }
 
                 foreach (var mapData in LevelEditorGUI.campaign.levels)
                 {
                     if (mapData == null || mapData.TriggerList == null)
+                    {
                         continue;
+                    }
 
                     foreach (var trigger in mapData.TriggerList)
                     {
                         if (trigger.actions == null)
+                        {
                             continue;
+                        }
 
                         for (int i = 0; i < trigger.actions.Count; i++)
                         {
@@ -122,12 +142,14 @@ namespace RocketLib.CustomTriggers
         }
 
         [HarmonyPatch(typeof(TriggerFactory), "CreateAction", typeof(TriggerActionInfo))]
-        static class TriggerFactory_CreateAction_Patch
+        private static class TriggerFactory_CreateAction_Patch
         {
-            static bool Prefix(TriggerActionInfo info, ref TriggerAction __result)
+            private static bool Prefix(TriggerActionInfo info, ref TriggerAction __result)
             {
                 if (info == null)
+                {
                     return true;
+                }
 
                 if (info is CustomTriggerActionInfo)
                 {
@@ -161,17 +183,21 @@ namespace RocketLib.CustomTriggers
         }
 
         [HarmonyPatch(typeof(FileIO), "SaveToBFL", typeof(MapData), typeof(string), typeof(bool), typeof(bool))]
-        static class FileIO_SaveToBFL_Patch
+        private static class FileIO_SaveToBFL_Patch
         {
-            static void Prefix(MapData mapData)
+            private static void Prefix(MapData mapData)
             {
                 if (mapData == null || mapData.TriggerList == null)
+                {
                     return;
+                }
 
                 foreach (var trigger in mapData.TriggerList)
                 {
                     if (trigger.actions == null)
+                    {
                         continue;
+                    }
 
                     for (int i = 0; i < trigger.actions.Count; i++)
                     {
@@ -184,15 +210,19 @@ namespace RocketLib.CustomTriggers
                 }
             }
 
-            static void Postfix(MapData mapData)
+            private static void Postfix(MapData mapData)
             {
                 if (mapData == null || mapData.TriggerList == null)
+                {
                     return;
+                }
 
                 foreach (var trigger in mapData.TriggerList)
                 {
                     if (trigger.actions == null)
+                    {
                         continue;
+                    }
 
                     for (int i = 0; i < trigger.actions.Count; i++)
                     {
@@ -211,12 +241,14 @@ namespace RocketLib.CustomTriggers
         }
 
         [HarmonyPatch(typeof(FileIO), "LoadCampaignBytes")]
-        static class FileIO_LoadCampaignBytes_Patch
+        private static class FileIO_LoadCampaignBytes_Patch
         {
-            static void Postfix(Campaign __result)
+            private static void Postfix(Campaign __result)
             {
                 if (__result == null || __result.levels == null || CustomTriggerManager.CustomTriggers.Count == 0)
+                {
                     return;
+                }
 
                 foreach (var mapData in __result.levels)
                 {
@@ -227,12 +259,14 @@ namespace RocketLib.CustomTriggers
 
         [HarmonyPatch(typeof(FileIO), "LoadLevelBytes", MethodType.Normal)]
         [HarmonyPatch(new Type[] { typeof(byte[]) })]
-        static class FileIO_LoadLevelBytes_Patch
+        private static class FileIO_LoadLevelBytes_Patch
         {
-            static void Postfix(MapData __result)
+            private static void Postfix(MapData __result)
             {
                 if (__result == null || CustomTriggerManager.CustomTriggers.Count == 0)
+                {
                     return;
+                }
 
                 CustomTriggerManager.ConvertAllCustomTriggersInMapData(__result);
             }
@@ -245,7 +279,7 @@ namespace RocketLib.CustomTriggers
             {
                 if (__instance != null && __instance.clickSound != null)
                 {
-                    Sound.GetInstance().PlaySoundEffect(__instance.clickSound, 0.3f, 0.9f + global::UnityEngine.Random.value * 0.2f);
+                    Sound.GetInstance().PlaySoundEffect(__instance.clickSound, 0.3f, 0.9f + (UnityEngine.Random.value * 0.2f));
                 }
             }
 
@@ -341,14 +375,14 @@ namespace RocketLib.CustomTriggers
                             }
                             GUILayout.Label(string.Concat(new object[]
                             {
-                        "Area: ",
-                        ___selectedTrigger.bottomLeft.collumn,
-                        ", ",
-                        ___selectedTrigger.bottomLeft.row,
-                        " -> ",
-                        ___selectedTrigger.upperRight.collumn,
-                        ", ",
-                        ___selectedTrigger.upperRight.row
+                                "Area: ",
+                                ___selectedTrigger.bottomLeft.collumn,
+                                ", ",
+                                ___selectedTrigger.bottomLeft.row,
+                                " -> ",
+                                ___selectedTrigger.upperRight.collumn,
+                                ", ",
+                                ___selectedTrigger.upperRight.row
                             }), new GUILayoutOption[0]);
                             GUILayout.Label("Hold LEFT SHIFT and drag to select area", new GUILayoutOption[0]);
                         }
@@ -411,7 +445,7 @@ namespace RocketLib.CustomTriggers
                             BombardmentActionInfo bombardmentActionInfo = ___selectedTrigger.actions[i] as BombardmentActionInfo;
                             if (bombardmentActionInfo != null && bombardmentActionInfo.targetPoint.row > 0 && bombardmentActionInfo.targetPoint.collumn > 0)
                             {
-                                ___targetSelectionIndicatorOthers[i].HighlightSquare(bombardmentActionInfo.targetPoint.row, bombardmentActionInfo.targetPoint.row, bombardmentActionInfo.targetPoint.collumn, bombardmentActionInfo.targetPoint.collumn, (___selectedAction != ___selectedTrigger.actions[i]) ? Color.blue : Color.red, false);
+                                ___targetSelectionIndicatorOthers[i].HighlightSquare(bombardmentActionInfo.targetPoint.row, bombardmentActionInfo.targetPoint.row, bombardmentActionInfo.targetPoint.collumn, bombardmentActionInfo.targetPoint.collumn, ___selectedAction != ___selectedTrigger.actions[i] ? Color.blue : Color.red, false);
                             }
                         }
                         else
@@ -684,16 +718,16 @@ namespace RocketLib.CustomTriggers
         }
 
         [HarmonyPatch(typeof(GameModeController), "Start")]
-        static class GameModeController_Start_Patch
+        private static class GameModeController_Start_Patch
         {
-            static void Prefix()
+            private static void Prefix()
             {
                 CustomTriggerStateManager.OnLevelStart();
             }
         }
 
         [HarmonyPatch(typeof(LevelEditorGUI), "TogglePlayMode")]
-        static class LevelEditorGUI_TogglePlayMode_Patch
+        private static class LevelEditorGUI_TogglePlayMode_Patch
         {
             public static void Postfix(LevelEditorGUI __instance)
             {

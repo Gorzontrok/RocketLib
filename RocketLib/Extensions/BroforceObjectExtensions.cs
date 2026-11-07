@@ -19,25 +19,28 @@ namespace RocketLib
         {
             Map.HurtWildLife(unit.X, unit.Y, range);
         }
+
         #region Attract
         public static void AttractAliens<T>(this T unit, Vector2 range) where T : NetworkedUnit
         {
             AttractAliens(unit, range.x, range.y);
         }
+
         public static void AttractAliens<T>(this T unit, float xRange, float yRange) where T : NetworkedUnit
         {
             Map.AttractAliens(unit.X, unit.Y, xRange, yRange);
         }
+
         public static void AttractMooks<T>(this T unit, Vector2 range) where T : NetworkedUnit
         {
             AttractMooks(unit, range.x, range.y);
         }
+
         public static void AttractMooks<T>(this T unit, float xRange, float yRange) where T : NetworkedUnit
         {
             Map.AttractMooks(unit.X, unit.Y, xRange, yRange);
         }
         #endregion
-
         #endregion
     }
 }

@@ -163,18 +163,21 @@ namespace RocketLib
             get { return player0; }
             set { player0 = value; }
         }
+
         [XmlIgnore]
         public KeyBinding Player1
         {
             get { return player1; }
             set { player1 = value; }
         }
+
         [XmlIgnore]
         public KeyBinding Player2
         {
             get { return player2; }
             set { player2 = value; }
         }
+
         [XmlIgnore]
         public KeyBinding Player3
         {
@@ -240,7 +243,8 @@ namespace RocketLib
         /// <summary>
         /// Create a Keybinding for all 4 players
         /// </summary>
-        /// /// <param name="modId">Name of the mod that is adding the keybinding</param>
+        /// ///
+        /// <param name="modId">Name of the mod that is adding the keybinding</param>
         /// <param name="name">Name of the key</param>
         public KeyBindingForPlayers(string modId, string name)
         {

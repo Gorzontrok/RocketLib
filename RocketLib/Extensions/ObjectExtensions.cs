@@ -52,6 +52,7 @@ public static class ObjectExtensions
     {
         obj.InvokeBaseMethod<object>(baseType, methodName);
     }
+
     /// <summary>
     /// Not great
     /// </summary>
@@ -68,13 +69,17 @@ public static class ObjectExtensions
 
         var method = baseType.GetMethod(methodName);
         if (method == null)
+        {
             throw new MissingMethodException(methodName);
+        }
         if (type == baseType)
         {
             return method.Invoke(obj, null) as T;
         }
         if (!type.IsSubclassOf(baseType))
+        {
             throw new Exception($"{type} is not a subclass of {baseType}");
+        }
 
         var ptr = method.MethodHandle.GetFunctionPointer();
         var baseMethod = (Func<T>)Activator.CreateInstance(typeof(Func<T>), obj, ptr);

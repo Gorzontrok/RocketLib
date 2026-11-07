@@ -6,9 +6,9 @@ namespace RocketLib.Menus.Utilities
     public enum BroforceFont
     {
         // Primary UI Fonts
-        Hudson,              // HUDSONNY_BROFORCE (default)
-        HudsonIcons,        // HUDSONNY_BROFORCE_ICONS
-        HudsonOutline,      // HudsonOutline
+        Hudson, // HUDSONNY_BROFORCE (default)
+        HudsonIcons, // HUDSONNY_BROFORCE_ICONS
+        HudsonOutline, // HudsonOutline
 
         // Akzidenz-Grotesk Family
         AkzidenzBoldCondensed,
@@ -35,6 +35,7 @@ namespace RocketLib.Menus.Utilities
         private const int DYNAMIC_BASE_SIZE = 256;
 
         private static readonly Dictionary<string, Font> fontCache = new Dictionary<string, Font>();
+
         private static readonly Dictionary<BroforceFont, string> fontNameMap = new Dictionary<BroforceFont, string>
         {
             { BroforceFont.Hudson, "HUDSONNY_BROFORCE" },
@@ -76,7 +77,10 @@ namespace RocketLib.Menus.Utilities
 
         public static void ApplyFont(TextMesh textMesh, BroforceFont font, float size)
         {
-            if (textMesh == null) return;
+            if (textMesh == null)
+            {
+                return;
+            }
 
             Font unityFont = GetFont(font);
             if (unityFont != null)
@@ -112,7 +116,10 @@ namespace RocketLib.Menus.Utilities
 
         public static float CalculateTextWidth(BroforceFont font, string text, float size)
         {
-            if (string.IsNullOrEmpty(text)) return 0;
+            if (string.IsNullOrEmpty(text))
+            {
+                return 0;
+            }
 
             Font unityFont = GetFont(font);
             if (unityFont == null)
@@ -177,7 +184,10 @@ namespace RocketLib.Menus.Utilities
             {
                 foreach (char c in text)
                 {
-                    if (c == '\n') lineCount++;
+                    if (c == '\n')
+                    {
+                        lineCount++;
+                    }
                 }
             }
 
@@ -280,7 +290,8 @@ namespace RocketLib.Menus.Utilities
             }
         }
 
-        private static Font GetFont(BroforceFont font)
+        /// <summary>Gets the Broforce-bundled `Font` resource for the given enum, or null if not loaded.</summary>
+        public static Font GetFont(BroforceFont font)
         {
             if (!fontNameMap.ContainsKey(font))
             {
@@ -289,17 +300,57 @@ namespace RocketLib.Menus.Utilities
             }
 
             string fontName = fontNameMap[font];
-            if (!fontCache.ContainsKey(fontName))
+            Font cached;
+            if (TryGetCachedFont(fontName, out cached))
             {
-                LoadFonts();
-                if (!fontCache.ContainsKey(fontName))
-                {
-                    RocketMain.Logger.Error($"[FontManager] Font '{fontName}' not found in Resources");
-                    return null;
-                }
+                return cached;
             }
 
-            return fontCache[fontName];
+            LoadFonts();
+            if (!TryGetCachedFont(fontName, out cached))
+            {
+                RocketMain.Logger.Error($"[FontManager] Font '{fontName}' not found in Resources");
+                return null;
+            }
+
+            return cached;
+        }
+
+        /// <summary>Gets the Broforce-bundled `Font` resource for the given enum, or null if not loaded. Unlike <see cref="GetFont" />, a miss is silent — use this when the font may legitimately not be loaded yet.</summary>
+        public static Font TryGetFont(BroforceFont font)
+        {
+            if (!fontNameMap.ContainsKey(font))
+            {
+                return null;
+            }
+
+            string fontName = fontNameMap[font];
+            Font cached;
+            if (TryGetCachedFont(fontName, out cached))
+            {
+                return cached;
+            }
+
+            LoadFonts();
+            return TryGetCachedFont(fontName, out cached) ? cached : null;
+        }
+
+        // A cached Font destroyed on a scene unload compares equal to null but still sits in the dictionary.
+        private static bool TryGetCachedFont(string fontName, out Font font)
+        {
+            if (!fontCache.TryGetValue(fontName, out font))
+            {
+                return false;
+            }
+
+            if (font != null)
+            {
+                return true;
+            }
+
+            fontCache.Remove(fontName);
+            font = null;
+            return false;
         }
 
         private static bool IsDynamicFont(Font font)

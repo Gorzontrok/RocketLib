@@ -11,15 +11,15 @@ namespace RocketLib.Settings
     /// Provides automatic versioning, migration, and backup on failure.
     /// </summary>
     /// <example>
-    /// <code>
+    ///     <code>
     /// public class Settings : JsonModSettings
     /// {
     ///     protected override int CurrentVersion => 2;
     ///     protected override string FileName => "MyModSettings.json";
-    ///
+    /// 
     ///     public bool MyOption = true;
     ///     public string NewField = "default";
-    ///
+    /// 
     ///     protected override void MigrateJson(JObject json, int fromVersion)
     ///     {
     ///         if (fromVersion &lt; 2)
@@ -28,7 +28,7 @@ namespace RocketLib.Settings
     ///         }
     ///     }
     /// }
-    ///
+    /// 
     /// // In your mod's Load method:
     /// settings = JsonModSettings.Load&lt;Settings&gt;(modEntry);
     /// </code>
@@ -102,7 +102,7 @@ namespace RocketLib.Settings
             var filepath = data.GetPath(modEntry);
             try
             {
-                var settings = new JsonSerializerSettings()
+                var settings = new JsonSerializerSettings
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     Formatting = Formatting.Indented
@@ -134,7 +134,9 @@ namespace RocketLib.Settings
             var filepath = t.GetPath(modEntry);
 
             if (!File.Exists(filepath))
+            {
                 return t;
+            }
 
             try
             {

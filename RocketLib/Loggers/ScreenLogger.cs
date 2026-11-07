@@ -24,9 +24,13 @@ namespace RocketLib.Loggers
             get
             {
                 if (!RocketMain.Loaded)
+                {
                     return null;
+                }
                 if (!IsLoaded && RocketMain.Loaded)
+                {
                     Load();
+                }
                 return instance;
             }
         }
@@ -50,7 +54,9 @@ namespace RocketLib.Loggers
         public static bool Load()
         {
             if (IsLoaded)
+            {
                 return true;
+            }
 
             try
             {
@@ -85,7 +91,9 @@ namespace RocketLib.Loggers
         private void ClearTXTFiles()
         {
             if (!Directory.Exists(LogFilePath))
+            {
                 return;
+            }
 
             string FileNameToday = DateTime.UtcNow.Date.ToString("yyyy'-'MM'-'dd") + ".txt";
             foreach (string file in Directory.GetFiles(LogFilePath))
@@ -112,6 +120,7 @@ namespace RocketLib.Loggers
         {
             Log(exception.ToString(), RLogType.Exception);
         }
+
         public void ExceptionLog(object message, Exception exception)
         {
             Log(message + "\n" + exception.ToString(), RLogType.Exception);
@@ -157,7 +166,9 @@ namespace RocketLib.Loggers
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.F7))
+            {
                 Clear();
+            }
 
             if (LogsOnScreen.Count > 0)
             {
@@ -172,7 +183,9 @@ namespace RocketLib.Loggers
                 }
             }
             if (LogsOnScreen.Count > 30)
+            {
                 LogsOnScreen.Remove(LogsOnScreen.First());
+            }
             CheckUMMLog();
             WriteLogTXT();
         }
@@ -242,7 +255,9 @@ namespace RocketLib.Loggers
             try
             {
                 if (string.IsNullOrEmpty(LogFilePath))
+                {
                     LogFilePath = Path.Combine(Main.Mod.Path, "Logs");
+                }
                 if (!Directory.Exists(LogFilePath))
                 {
                     Directory.CreateDirectory(LogFilePath); // Ignore warning.
@@ -253,7 +268,10 @@ namespace RocketLib.Loggers
 
                 if (!File.Exists(FilePathToday))
                 {
-                    using (File.Create(FilePathToday)) ; // Ignore warning.
+                    using (File.Create(FilePathToday))
+                    {
+                        ; // Ignore warning.
+                    }
                 }
                 if (LogsForTXT.Count > 0)
                 {
@@ -284,18 +302,22 @@ public enum RLogType
     /// White
     /// </summary>
     Log,
+
     /// <summary>
     /// Yellow
     /// </summary>
     Warning,
+
     /// <summary>
     /// Red
     /// </summary>
     Error,
+
     /// <summary>
     /// Red
     /// </summary>
     Exception,
+
     /// <summary>
     /// Blue
     /// </summary>

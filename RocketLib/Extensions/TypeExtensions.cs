@@ -6,7 +6,7 @@ namespace RocketLib
     {
         public static bool CanBeNull(this Type type)
         {
-            return !type.IsValueType || (Nullable.GetUnderlyingType(type) != null);
+            return !type.IsValueType || Nullable.GetUnderlyingType(type) != null;
         }
     }
 }

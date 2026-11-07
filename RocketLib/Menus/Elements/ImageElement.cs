@@ -23,6 +23,7 @@ namespace RocketLib.Menus.Elements
         private bool _needsUpdate = true;
 
         private Material _imageMaterial;
+
         public Material ImageMaterial
         {
             get => _imageMaterial;
@@ -38,6 +39,7 @@ namespace RocketLib.Menus.Elements
         }
 
         private Texture2D _texture;
+
         public Texture2D Texture
         {
             get => _texture;
@@ -55,6 +57,7 @@ namespace RocketLib.Menus.Elements
         public ImageScaleMode ScaleMode { get; set; } = ImageScaleMode.Fit;
 
         private Color _tint = Color.white;
+
         public Color Tint
         {
             get => _tint;
@@ -108,7 +111,8 @@ namespace RocketLib.Menus.Elements
                         try
                         {
                             // Create GameObject with proper components following HighlightFactory pattern
-                            spriteGO = new GameObject("SpriteSM", new Type[] {
+                            spriteGO = new GameObject("SpriteSM", new Type[]
+                            {
                                 typeof(MeshRenderer),
                                 typeof(MeshFilter),
                                 typeof(SpriteSM)
@@ -136,7 +140,7 @@ namespace RocketLib.Menus.Elements
                                 UpdateSpriteSM();
                             }
                         }
-                        catch (System.Exception)
+                        catch (Exception)
                         {
                         }
                     }
@@ -145,14 +149,17 @@ namespace RocketLib.Menus.Elements
                     gameObject.SetActive(true);
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
             }
         }
 
         private void UpdateSpriteSM()
         {
-            if (spriteSM == null || meshRenderer == null) return;
+            if (spriteSM == null || meshRenderer == null)
+            {
+                return;
+            }
 
             // Set material
             if (_imageMaterial != null)
@@ -175,9 +182,13 @@ namespace RocketLib.Menus.Elements
                     // Use default shader for sprites
                     Shader shader = Shader.Find("Sprites/Default");
                     if (shader == null)
+                    {
                         shader = Shader.Find("Unlit/Texture");
+                    }
                     if (shader == null)
+                    {
                         shader = meshRenderer.sharedMaterial?.shader;
+                    }
 
                     if (shader != null)
                     {
@@ -199,7 +210,10 @@ namespace RocketLib.Menus.Elements
 
         private void SetupSpriteFromTexture(Texture2D texture)
         {
-            if (spriteSM == null || texture == null) return;
+            if (spriteSM == null || texture == null)
+            {
+                return;
+            }
 
             // Set pixel coordinates to show entire texture or specified region
             // Use custom LowerLeftPixel if provided, otherwise default to bottom-left corner
@@ -239,17 +253,26 @@ namespace RocketLib.Menus.Elements
 
         private void ApplyScaling()
         {
-            if (spriteSM == null || (_texture == null && _imageMaterial?.mainTexture == null)) return;
+            if (spriteSM == null || (_texture == null && _imageMaterial?.mainTexture == null))
+            {
+                return;
+            }
 
-            Texture2D tex = _texture ?? (_imageMaterial.mainTexture as Texture2D);
-            if (tex == null) return;
+            Texture2D tex = _texture ?? _imageMaterial.mainTexture as Texture2D;
+            if (tex == null)
+            {
+                return;
+            }
 
             // Use actual pixel dimensions (may be a single frame) for scaling
             Vector2 actualPixelDimensions = PixelDimensions ?? new Vector2(tex.width, tex.height);
             float textureWidth = actualPixelDimensions.x / (float)PixelsPerUnit;
             float textureHeight = actualPixelDimensions.y / (float)PixelsPerUnit;
 
-            if (textureWidth <= 0 || textureHeight <= 0) return;
+            if (textureWidth <= 0 || textureHeight <= 0)
+            {
+                return;
+            }
 
             float targetWidth = ActualSize.x;
             float targetHeight = ActualSize.y;
@@ -295,7 +318,6 @@ namespace RocketLib.Menus.Elements
                 ApplyScaling();
             }
         }
-
 
 
         public override void Cleanup()

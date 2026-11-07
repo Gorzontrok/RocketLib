@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using RocketLib;
+
 #pragma warning disable CS1584
 #pragma warning disable CS1658
 #pragma warning disable CS1711
@@ -9,18 +10,21 @@ using RocketLib;
 public static class HarmonyExtensions
 {
     public const char PATH_SEPARATOR = '.';
+
     public static Traverse GetTraverse(this object obj)
     {
         if (obj as Traverse != null)
+        {
             return (Traverse)obj;
+        }
         return Traverse.Create(obj);
     }
 
     #region Fields
     /// <summary>
-    /// Get the value of a field as <typeparamref name="T"/>
+    /// Get the value of a field as <typeparamref name="T" />
     /// </summary>
-    /// <seealso cref="HarmonyLib.Traverse.Field(string).GetValue{T}()"/>
+    /// <seealso cref="HarmonyLib.Traverse.Field(string).GetValue{T}()" />
     /// <typeparam name="T"></typeparam>
     /// <param name="obj"></param>
     /// <param name="fieldName"></param>
@@ -33,7 +37,7 @@ public static class HarmonyExtensions
     /// <summary>
     /// Get the value of a field
     /// </summary>
-    /// <seealso cref="HarmonyLib.Traverse.Field(string).GetValue()"/>
+    /// <seealso cref="HarmonyLib.Traverse.Field(string).GetValue()" />
     /// <typeparam name="T"></typeparam>
     /// <param name="obj"></param>
     /// <param name="fieldName"></param>
@@ -44,7 +48,7 @@ public static class HarmonyExtensions
     }
 
     /// <summary>
-    /// Set the value of the field <paramref name="fieldName"/> with <paramref name="value"/>
+    /// Set the value of the field <paramref name="fieldName" /> with <paramref name="value" />
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="fieldName"></param>
@@ -55,7 +59,7 @@ public static class HarmonyExtensions
     }
 
     /// <summary>
-    /// Set the value of the field <paramref name="fieldName"/> with <paramref name="value"/>
+    /// Set the value of the field <paramref name="fieldName" /> with <paramref name="value" />
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="fieldName"></param>
@@ -68,9 +72,9 @@ public static class HarmonyExtensions
 
     #region Methods
     /// <summary>
-    /// Call a method then return value as <typeparamref name="T"/>
+    /// Call a method then return value as <typeparamref name="T" />
     /// </summary>
-    /// <seealso cref="HarmonyLib.Traverse.Method(string, object[]).GetValue{T}()"/>
+    /// <seealso cref="HarmonyLib.Traverse.Method(string, object[]).GetValue{T}()" />
     /// <typeparam name="T"></typeparam>
     /// <param name="obj"></param>
     /// <param name="methodName"></param>
@@ -80,10 +84,11 @@ public static class HarmonyExtensions
     {
         return obj.GetTraverse().Method(methodName, arguments).GetValue<T>();
     }
+
     /// <summary>
     /// Call a method then return value
     /// </summary>
-    /// <seealso cref="HarmonyLib.Traverse.Method(string, object[]).GetValue()"/>
+    /// <seealso cref="HarmonyLib.Traverse.Method(string, object[]).GetValue()" />
     /// <typeparam name="T"></typeparam>
     /// <param name="obj"></param>
     /// <param name="methodName"></param>
@@ -99,7 +104,7 @@ public static class HarmonyExtensions
     /// <summary>
     /// Get bool field value
     /// </summary>
-    /// <seealso cref="GetFieldValue{bool}(object, string)"/>
+    /// <seealso cref="GetFieldValue{bool}(object, string)" />
     /// <param name="obj"></param>
     /// <param name="fieldName"></param>
     /// <returns></returns>
@@ -107,10 +112,11 @@ public static class HarmonyExtensions
     {
         return obj.GetFieldValue<bool>(fieldName);
     }
+
     /// <summary>
     /// Get float field value
     /// </summary>
-    /// <seealso cref="GetFieldValue{float}(object, string)"/>
+    /// <seealso cref="GetFieldValue{float}(object, string)" />
     /// <param name="obj"></param>
     /// <param name="fieldName"></param>
     /// <returns></returns>
@@ -118,10 +124,11 @@ public static class HarmonyExtensions
     {
         return obj.GetFieldValue<float>(fieldName);
     }
+
     /// <summary>
     /// Get int field value
     /// </summary>
-    /// <seealso cref="GetFieldValue{float}(object, string)"/>
+    /// <seealso cref="GetFieldValue{float}(object, string)" />
     /// <param name="obj"></param>
     /// <param name="fieldName"></param>
     /// <returns></returns>
@@ -138,9 +145,9 @@ public static class HarmonyExtensions
     }
 
     /// <summary>
-    /// Set multiple fields on an object from a <see cref="Dictionary{string, object}"/>
-    /// Can navigate through instances from fields using the separator <see cref="PATH_SEPARATOR"/> in the <see cref="Dictionary{string, object}"/> key.
-    /// <seealso cref="FindFieldWithPath(object, string)"/>
+    /// Set multiple fields on an object from a <see cref="Dictionary{string, object}" />
+    /// Can navigate through instances from fields using the separator <see cref="PATH_SEPARATOR" /> in the <see cref="Dictionary{string, object}" /> key.
+    /// <seealso cref="FindFieldWithPath(object, string)" />
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="map">Key: Field Name | Value: the value to give to the field</param>
@@ -173,9 +180,13 @@ public static class HarmonyExtensions
                         string ctx = context != null ? $" ({context})" : "";
                         string suggestion = FindSimilarField(obj.GetType(), kvp.Key);
                         if (suggestion != null)
+                        {
                             RocketMain.Logger.Warning($"Field '{kvp.Key}' not found on {obj.GetType().Name}{ctx}. Did you mean '{suggestion}'?");
+                        }
                         else
+                        {
                             RocketMain.Logger.Warning($"Field '{kvp.Key}' not found on {obj.GetType().Name}{ctx}");
+                        }
                         continue;
                     }
                     setter(field, kvp.Key, kvp.Value);
@@ -201,7 +212,9 @@ public static class HarmonyExtensions
             {
                 string fieldLower = f.Name.ToLower();
                 if (fieldLower == nameLower)
+                {
                     return f.Name;
+                }
 
                 int dist = LevenshteinDistance(nameLower, fieldLower);
                 if (dist < bestDistance && dist <= 3)
@@ -217,29 +230,41 @@ public static class HarmonyExtensions
 
     private static int LevenshteinDistance(string a, string b)
     {
-        if (a.Length == 0) return b.Length;
-        if (b.Length == 0) return a.Length;
+        if (a.Length == 0)
+        {
+            return b.Length;
+        }
+        if (b.Length == 0)
+        {
+            return a.Length;
+        }
 
         int[,] d = new int[a.Length + 1, b.Length + 1];
-        for (int i = 0; i <= a.Length; i++) d[i, 0] = i;
-        for (int j = 0; j <= b.Length; j++) d[0, j] = j;
+        for (int i = 0; i <= a.Length; i++)
+        {
+            d[i, 0] = i;
+        }
+        for (int j = 0; j <= b.Length; j++)
+        {
+            d[0, j] = j;
+        }
 
         for (int i = 1; i <= a.Length; i++)
         {
             for (int j = 1; j <= b.Length; j++)
             {
-                int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
+                int cost = a[i - 1] == b[j - 1] ? 0 : 1;
                 int del = d[i - 1, j] + 1;
                 int ins = d[i, j - 1] + 1;
                 int sub = d[i - 1, j - 1] + cost;
-                d[i, j] = del < ins ? (del < sub ? del : sub) : (ins < sub ? ins : sub);
+                d[i, j] = del < ins ? del < sub ? del : sub : ins < sub ? ins : sub;
             }
         }
         return d[a.Length, b.Length];
     }
 
     /// <summary>
-    /// Use <see cref="PATH_SEPARATOR"/> to navigate through the objects.
+    /// Use <see cref="PATH_SEPARATOR" /> to navigate through the objects.
     /// </summary>
     /// <example>
     /// We have 2 classes
@@ -253,7 +278,7 @@ public static class HarmonyExtensions
     ///     int number = 8;
     /// }
     /// </code>
-    /// If we want to get 'B.Number' from A, <paramref name="fieldPath"/> should be 'b.number'
+    /// If we want to get 'B.Number' from A, <paramref name="fieldPath" /> should be 'b.number'
     /// </example>
     /// <param name="obj"></param>
     /// <param name="fieldPath"></param>
@@ -264,7 +289,7 @@ public static class HarmonyExtensions
     }
 
     /// <summary>
-    /// Use <see cref="PATH_SEPARATOR"/> to navigate through the objects.
+    /// Use <see cref="PATH_SEPARATOR" /> to navigate through the objects.
     /// </summary>
     /// <example>
     /// We have 2 classes
@@ -278,7 +303,7 @@ public static class HarmonyExtensions
     ///     int number = 8;
     /// }
     /// </code>
-    /// If we want to get 'B.Number' from A, <paramref name="fieldPath"/> should be 'b.number'
+    /// If we want to get 'B.Number' from A, <paramref name="fieldPath" /> should be 'b.number'
     /// </example>
     /// <param name="traverse"></param>
     /// <param name="fieldPath"></param>

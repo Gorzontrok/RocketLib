@@ -1,5 +1,4 @@
-﻿
-namespace RocketLib.Collections
+﻿namespace RocketLib.Collections
 {
     public static class Nums
     {

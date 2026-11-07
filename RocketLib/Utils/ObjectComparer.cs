@@ -28,7 +28,10 @@ namespace RocketLib.Utils
             public override bool Equals(object obj)
             {
                 var other = obj as ObjectPair;
-                if (other == null) return false;
+                if (other == null)
+                {
+                    return false;
+                }
                 return ReferenceEquals(Obj1, other.Obj1) && ReferenceEquals(Obj2, other.Obj2);
             }
 
@@ -52,11 +55,11 @@ namespace RocketLib.Utils
             "UnderlyingSystemType", "BaseType", "StructLayoutAttribute",
             "GenericTypeArguments", "GenericParameterAttributes", "GenericParameterPosition",
             "DeclaringMethod", "TypeId",
-            
+
             // Unity circular reference properties
             "gameObject", "transform", "parent", "root",
             "normalized", "right", "up", "forward",
-            
+
             // Other problematic properties
             "Item", "SyncRoot", "IsReadOnly", "IsFixedSize"
         };
@@ -92,12 +95,16 @@ namespace RocketLib.Utils
             var differences = new List<Difference>();
 
             if (depth > MAX_DEPTH)
+            {
                 return differences;
+            }
 
             try
             {
                 if (ReferenceEquals(obj1, obj2))
+                {
                     return differences;
+                }
 
                 if (obj1 == null || obj2 == null)
                 {
@@ -130,10 +137,14 @@ namespace RocketLib.Utils
                 // Check for circular references
                 var pair = new ObjectPair { Obj1 = obj1, Obj2 = obj2 };
                 if (!type.IsValueType && visitedPairs.Contains(pair))
+                {
                     return differences;
+                }
 
                 if (!type.IsValueType)
+                {
                     visitedPairs.Add(pair);
+                }
 
                 // Handle arrays
                 if (type.IsArray)
@@ -175,8 +186,14 @@ namespace RocketLib.Utils
                     var list1 = new List<object>();
                     var list2 = new List<object>();
 
-                    foreach (var item in enum1) list1.Add(item);
-                    foreach (var item in enum2) list2.Add(item);
+                    foreach (var item in enum1)
+                    {
+                        list1.Add(item);
+                    }
+                    foreach (var item in enum2)
+                    {
+                        list2.Add(item);
+                    }
 
                     if (list1.Count != list2.Count)
                     {
@@ -212,22 +229,30 @@ namespace RocketLib.Utils
                     {
                         // Skip properties we can't read
                         if (!prop.CanRead)
+                        {
                             continue;
+                        }
 
                         // Skip indexer properties
                         if (prop.GetIndexParameters().Length > 0)
+                        {
                             continue;
+                        }
 
                         // Skip blacklisted properties
                         if (SkipProperties.Contains(prop.Name))
+                        {
                             continue;
+                        }
 
                         var value1 = prop.GetValue(obj1, null);
                         var value2 = prop.GetValue(obj2, null);
                         var propertyPath = string.IsNullOrEmpty(path) ? prop.Name : $"{path}.{prop.Name}";
 
                         if (value1 == null && value2 == null)
+                        {
                             continue;
+                        }
 
                         if (value1 == null || value2 == null)
                         {
@@ -273,14 +298,18 @@ namespace RocketLib.Utils
                     try
                     {
                         if (SkipProperties.Contains(field.Name))
+                        {
                             continue;
+                        }
 
                         var value1 = field.GetValue(obj1);
                         var value2 = field.GetValue(obj2);
                         var fieldPath = string.IsNullOrEmpty(path) ? field.Name : $"{path}.{field.Name}";
 
                         if (value1 == null && value2 == null)
+                        {
                             continue;
+                        }
 
                         if (value1 == null || value2 == null)
                         {
@@ -331,7 +360,9 @@ namespace RocketLib.Utils
         private static List<Difference> CompareObjectsNonGeneric(object obj1, object obj2, string path, int depth, HashSet<ObjectPair> visitedPairs)
         {
             if (depth > MAX_DEPTH)
+            {
                 return new List<Difference>();
+            }
 
             if (obj1 == null || obj2 == null)
             {
@@ -362,16 +393,16 @@ namespace RocketLib.Utils
         private static bool IsSimpleType(Type type)
         {
             return type.IsPrimitive
-                || type == typeof(string)
-                || type == typeof(decimal)
-                || type == typeof(DateTime)
-                || type == typeof(DateTimeOffset)
-                || type == typeof(TimeSpan)
-                || type == typeof(Guid)
-                || type.IsEnum
-                || SimpleTypeNames.Contains(type.Name)
-                || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)
-                    && IsSimpleType(Nullable.GetUnderlyingType(type)));
+                   || type == typeof(string)
+                   || type == typeof(decimal)
+                   || type == typeof(DateTime)
+                   || type == typeof(DateTimeOffset)
+                   || type == typeof(TimeSpan)
+                   || type == typeof(Guid)
+                   || type.IsEnum
+                   || SimpleTypeNames.Contains(type.Name)
+                   || (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)
+                                          && IsSimpleType(Nullable.GetUnderlyingType(type)));
         }
 
         /// <summary>
@@ -500,15 +531,21 @@ namespace RocketLib.Utils
         {
             // Check for "Name (Type)" pattern
             if (System.Text.RegularExpressions.Regex.IsMatch(value, @".+\s*\(.+\)$"))
+            {
                 return true;
+            }
 
             // Check for array types like "System.Byte[]"
             if (value.EndsWith("[]") && value.Contains("."))
+            {
                 return true;
+            }
 
             // Check for null
             if (value == "null")
+            {
                 return true;
+            }
 
             return false;
         }

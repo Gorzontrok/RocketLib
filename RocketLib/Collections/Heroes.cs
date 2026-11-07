@@ -17,6 +17,7 @@ namespace RocketLib.Collections
                 return _all;
             }
         }
+
         private static HeroType[] _all;
 
         /// <summary>
@@ -38,6 +39,7 @@ namespace RocketLib.Collections
                 return _playables;
             }
         }
+
         private static HeroType[] _playables;
 
         /// <summary>
@@ -56,6 +58,7 @@ namespace RocketLib.Collections
                 return _campaignBro;
             }
         }
+
         private static HeroType[] _campaignBro;
 
         /// <summary>
@@ -98,7 +101,8 @@ namespace RocketLib.Collections
         {
             get
             {
-                return new Dictionary<int, HeroType>(){
+                return new Dictionary<int, HeroType>
+                {
                     { 0, HeroType.Rambro },
                     { 1, HeroType.Brommando },
                     { 3, HeroType.BaBroracus },

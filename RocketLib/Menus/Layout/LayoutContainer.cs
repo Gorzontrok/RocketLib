@@ -8,10 +8,10 @@ namespace RocketLib.Menus.Layout
 {
     public enum LayoutMode
     {
-        Vertical,    // Stack top to bottom
-        Horizontal,  // Stack left to right
-        Grid,        // Rows and columns
-        Absolute     // Manual positioning
+        Vertical, // Stack top to bottom
+        Horizontal, // Stack left to right
+        Grid, // Rows and columns
+        Absolute // Manual positioning
     }
 
     /// <summary>
@@ -21,8 +21,8 @@ namespace RocketLib.Menus.Layout
     public abstract class LayoutContainer : LayoutElement
     {
         public List<LayoutElement> Children { get; }
-        public float Padding { get; set; }     // World units
-        public float Spacing { get; set; }     // World units between children
+        public float Padding { get; set; } // World units
+        public float Spacing { get; set; } // World units between children
 
         protected LayoutContainer(string name) : base(name)
         {
@@ -139,8 +139,14 @@ namespace RocketLib.Menus.Layout
         {
             // Only run debug output if the active menu has debug enabled
             var activeMenu = Core.FlexMenu.activeMenu;
-            if (activeMenu == null || !activeMenu.EnableDebugOutput) return;
-            if (children.Count == 0) return;
+            if (activeMenu == null || !activeMenu.EnableDebugOutput)
+            {
+                return;
+            }
+            if (children.Count == 0)
+            {
+                return;
+            }
 
             // Get actual camera bounds dynamically
             float screenTop, screenBottom, screenLeft, screenRight;
@@ -230,10 +236,16 @@ namespace RocketLib.Menus.Layout
                     {
                         string childName = string.IsNullOrEmpty(child.Name) ? child.GetType().Name : child.Name;
                         string issue = "";
-                        if (childTop > screenTop) issue = $"top {childTop:F0} > screen {screenTop:F0}";
+                        if (childTop > screenTop)
+                        {
+                            issue = $"top {childTop:F0} > screen {screenTop:F0}";
+                        }
                         if (childBottom < screenBottom)
                         {
-                            if (!string.IsNullOrEmpty(issue)) issue += ", ";
+                            if (!string.IsNullOrEmpty(issue))
+                            {
+                                issue += ", ";
+                            }
                             issue += $"bottom {childBottom:F0} < screen {screenBottom:F0}";
                         }
                         offScreenElements.Add($"{child.GetType().Name} '{childName}' ({issue})");
@@ -248,10 +260,16 @@ namespace RocketLib.Menus.Layout
                     {
                         string childName = string.IsNullOrEmpty(child.Name) ? child.GetType().Name : child.Name;
                         string issue = "";
-                        if (childLeft < screenLeft) issue = $"left {childLeft:F0} < screen {screenLeft:F0}";
+                        if (childLeft < screenLeft)
+                        {
+                            issue = $"left {childLeft:F0} < screen {screenLeft:F0}";
+                        }
                         if (childRight > screenRight)
                         {
-                            if (!string.IsNullOrEmpty(issue)) issue += ", ";
+                            if (!string.IsNullOrEmpty(issue))
+                            {
+                                issue += ", ";
+                            }
                             issue += $"right {childRight:F0} > screen {screenRight:F0}";
                         }
                         offScreenElements.Add($"{child.GetType().Name} '{childName}' ({issue})");
@@ -288,7 +306,7 @@ namespace RocketLib.Menus.Layout
             }
             foreach (var child in Children)
             {
-                child.IsVisible = this.IsVisible;
+                child.IsVisible = IsVisible;
             }
         }
 
@@ -300,7 +318,7 @@ namespace RocketLib.Menus.Layout
             }
             foreach (var child in Children)
             {
-                child.IsVisible = this.IsVisible;
+                child.IsVisible = IsVisible;
             }
         }
 
@@ -312,13 +330,19 @@ namespace RocketLib.Menus.Layout
 
         public override LayoutElement GetElementAt(Vector2 position)
         {
-            if (!IsVisible || !IsEnabled) return null;
+            if (!IsVisible || !IsEnabled)
+            {
+                return null;
+            }
 
             // Check children first (reverse order for top-most)
             for (int i = Children.Count - 1; i >= 0; i--)
             {
                 var found = Children[i].GetElementAt(position);
-                if (found != null) return found;
+                if (found != null)
+                {
+                    return found;
+                }
             }
 
             // Containers themselves are not selectable
@@ -331,7 +355,10 @@ namespace RocketLib.Menus.Layout
 
             // Note: We check IsEnabled but NOT IsVisible
             // This allows containers with invisible children (e.g., ScrollContainer) to return focusable elements
-            if (!IsEnabled) return elements;
+            if (!IsEnabled)
+            {
+                return elements;
+            }
 
             foreach (var child in Children)
             {

@@ -10,6 +10,7 @@ public static class EnumeratorExtensions
         }
         return (T[])Enum.GetValues(typeof(T));
     }
+
     public static string[] GetValuesAsStrings<T>(this T enumerator) where T : Enum
     {
         T[] values = enumerator.GetValues();
@@ -20,6 +21,7 @@ public static class EnumeratorExtensions
         }
         return array;
     }
+
     public static string[] AsStrings<T>(this T[] enumerators) where T : Enum
     {
         string[] array = new string[enumerators.Length];

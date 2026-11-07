@@ -12,7 +12,7 @@ namespace RocketLib.Extensions
         {
             Grenade defaultGrenade = new GameObject("TemporaryGrenade", typeof(Transform), typeof(MeshFilter), typeof(MeshRenderer), typeof(SpriteSM), typeof(Grenade)).GetComponent<Grenade>();
             defaultGrenade.PrintDifferences(grenade);
-            UnityEngine.Object.Destroy(defaultGrenade);
+            Object.Destroy(defaultGrenade);
         }
     }
 }

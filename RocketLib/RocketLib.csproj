@@ -202,6 +202,7 @@
     <Compile Include="CustomTriggers\CustomTriggerStateManager.cs" />
     <Compile Include="CustomTriggers\LevelStartTriggerActionInfo.cs" />
     <Compile Include="CustomTriggers\LevelStartTriggerAction.cs" />
+    <Compile Include="UI\Notification.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UMM\Main.cs" />

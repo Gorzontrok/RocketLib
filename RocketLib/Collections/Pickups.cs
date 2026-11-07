@@ -15,13 +15,15 @@ namespace RocketLib.Collections
                 return _all;
             }
         }
+
         private static PickupType[] _all;
 
         public static PickupType[] SpecialAmmo
         {
             get
             {
-                return new PickupType[]  {
+                return new PickupType[]
+                {
                     PickupType.Ammo,
                     PickupType.Airstrike,
                     PickupType.TimeSlow,
@@ -32,6 +34,7 @@ namespace RocketLib.Collections
                 };
             }
         }
+
         public static PickupType[] Rogueforce
         {
             get

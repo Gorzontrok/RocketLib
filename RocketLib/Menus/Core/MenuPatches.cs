@@ -4,11 +4,10 @@ using Localisation;
 
 namespace RocketLib.Menus.Core
 {
-
     [HarmonyPatch(typeof(MainMenu), "Awake")]
-    static class MainMenu_Awake_Patch
+    internal static class MainMenu_Awake_Patch
     {
-        static void Postfix(MainMenu __instance)
+        private static void Postfix(MainMenu __instance)
         {
             try
             {
@@ -19,13 +18,12 @@ namespace RocketLib.Menus.Core
                 RocketMain.Logger.Error($"Error in MainMenu_Awake_Postfix: {ex}");
             }
         }
-
     }
 
     [HarmonyPatch(typeof(MainMenu), "SetupItems")]
-    static class MainMenu_SetupItems_Patch
+    internal static class MainMenu_SetupItems_Patch
     {
-        static void Postfix(MainMenu __instance)
+        private static void Postfix(MainMenu __instance)
         {
             try
             {
@@ -39,9 +37,9 @@ namespace RocketLib.Menus.Core
     }
 
     [HarmonyPatch(typeof(PauseMenu), "InstantiateItems")]
-    static class PauseMenu_InstantiateItems_Patch
+    internal static class PauseMenu_InstantiateItems_Patch
     {
-        static void Postfix(PauseMenu __instance)
+        private static void Postfix(PauseMenu __instance)
         {
             try
             {
@@ -55,9 +53,9 @@ namespace RocketLib.Menus.Core
     }
 
     [HarmonyPatch(typeof(OptionsMenu), "InstantiateItems")]
-    static class OptionsMenu_SetupItems_Patch
+    internal static class OptionsMenu_SetupItems_Patch
     {
-        static void Prefix(OptionsMenu __instance)
+        private static void Prefix(OptionsMenu __instance)
         {
             try
             {
@@ -71,9 +69,9 @@ namespace RocketLib.Menus.Core
     }
 
     [HarmonyPatch(typeof(InGameOptionsMenu), "InstantiateItems")]
-    static class InGameOptionsMenu_InstantiateItems_Patch
+    internal static class InGameOptionsMenu_InstantiateItems_Patch
     {
-        static void Prefix(InGameOptionsMenu __instance)
+        private static void Prefix(InGameOptionsMenu __instance)
         {
             try
             {
@@ -87,17 +85,21 @@ namespace RocketLib.Menus.Core
     }
 
     [HarmonyPatch(typeof(Menu), "InstantiateItems")]
-    static class Menu_InstantiateItems_Patch
+    internal static class Menu_InstantiateItems_Patch
     {
-        static void Postfix(Menu __instance, ref MenuBarItem[] ___masterItems, ref MenuBarItemUI[] ___items)
+        private static void Postfix(Menu __instance, ref MenuBarItem[] ___masterItems, ref MenuBarItemUI[] ___items)
         {
             try
             {
                 if (!(__instance is MainMenu))
+                {
                     return;
+                }
 
                 if (___masterItems == null || ___items == null)
+                {
                     return;
+                }
 
                 for (int i = 0; i < ___masterItems.Length && i < ___items.Length; i++)
                 {
@@ -118,27 +120,34 @@ namespace RocketLib.Menus.Core
                 RocketMain.Logger.Error($"Error in Menu_InstantiateItems_Postfix: {ex}");
             }
         }
-
     }
 
     [HarmonyPatch(typeof(Menu), "RunInput")]
-    static class Menu_RunInput_Patch
+    internal static class Menu_RunInput_Patch
     {
-        static bool Prefix(Menu __instance, ref bool ___accept, ref bool ___activatedThisFrame, ref MenuBarItem[] ___masterItems, ref int ___highlightIndex)
+        private static bool Prefix(Menu __instance, ref bool ___accept, ref bool ___activatedThisFrame, ref MenuBarItem[] ___masterItems, ref int ___highlightIndex)
         {
             try
             {
-                if (!___accept) return true;
+                if (!___accept)
+                {
+                    return true;
+                }
 
                 bool acceptPrev = (bool)AccessTools.Field(typeof(Menu), "acceptPrev").GetValue(null);
 
-                if (___activatedThisFrame || acceptPrev) return true;
+                if (___activatedThisFrame || acceptPrev)
+                {
+                    return true;
+                }
 
                 var masterItems = ___masterItems;
                 var highlightIndex = ___highlightIndex;
 
                 if (masterItems == null || highlightIndex < 0 || highlightIndex >= masterItems.Length)
+                {
                     return true;
+                }
 
                 var currentItem = masterItems[highlightIndex];
 
@@ -163,13 +172,12 @@ namespace RocketLib.Menus.Core
 
             return true;
         }
-
     }
 
     [HarmonyPatch(typeof(MainMenu), "Start")]
-    static class MainMenu_Start_Patch
+    internal static class MainMenu_Start_Patch
     {
-        static bool Prefix(MainMenu __instance)
+        private static bool Prefix(MainMenu __instance)
         {
             try
             {

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using RocketLib.Menus.Elements;
 using UnityEngine;
 
@@ -13,7 +12,6 @@ namespace RocketLib.Menus.Core
         private LayoutElement rootElement;
         private LayoutElement focusedElement;
         private List<LayoutElement> focusableElements;
-        private bool wrapNavigation;
 
         public LayoutElement FocusedElement
         {
@@ -21,23 +19,22 @@ namespace RocketLib.Menus.Core
             set { SetFocus(value); }
         }
 
-        public bool WrapNavigation
-        {
-            get { return wrapNavigation; }
-            set { wrapNavigation = value; }
-        }
+        public bool WrapNavigation { get; set; }
 
         public NavigationManager(LayoutElement root)
         {
             rootElement = root;
-            wrapNavigation = true;
+            WrapNavigation = true;
             RefreshFocusableElements();
             LoadSounds();
         }
 
         private static void LoadSounds()
         {
-            if (soundsLoaded) return;
+            if (soundsLoaded)
+            {
+                return;
+            }
 
             drumSounds = new AudioClip[2];
             string directoryPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -59,7 +56,10 @@ namespace RocketLib.Menus.Core
             focusableElements.Sort((a, b) =>
             {
                 int yCompare = b.ActualPosition.y.CompareTo(a.ActualPosition.y);
-                if (yCompare != 0) return yCompare;
+                if (yCompare != 0)
+                {
+                    return yCompare;
+                }
                 return a.ActualPosition.x.CompareTo(b.ActualPosition.x);
             });
 
@@ -108,7 +108,10 @@ namespace RocketLib.Menus.Core
 
         private void SetFocus(LayoutElement element)
         {
-            if (focusedElement == element) return;
+            if (focusedElement == element)
+            {
+                return;
+            }
 
             if (focusedElement != null)
             {
@@ -192,10 +195,22 @@ namespace RocketLib.Menus.Core
 
             // Check explicit navigation overrides first
             LayoutElement explicitTarget = null;
-            if (direction == Vector2.up) explicitTarget = focusedElement.NavigateUp;
-            else if (direction == Vector2.down) explicitTarget = focusedElement.NavigateDown;
-            else if (direction == Vector2.left) explicitTarget = focusedElement.NavigateLeft;
-            else if (direction == Vector2.right) explicitTarget = focusedElement.NavigateRight;
+            if (direction == Vector2.up)
+            {
+                explicitTarget = focusedElement.NavigateUp;
+            }
+            else if (direction == Vector2.down)
+            {
+                explicitTarget = focusedElement.NavigateDown;
+            }
+            else if (direction == Vector2.left)
+            {
+                explicitTarget = focusedElement.NavigateLeft;
+            }
+            else if (direction == Vector2.right)
+            {
+                explicitTarget = focusedElement.NavigateRight;
+            }
 
             if (explicitTarget != null && focusableElements.Contains(explicitTarget))
             {
@@ -209,13 +224,19 @@ namespace RocketLib.Menus.Core
 
             foreach (var element in focusableElements)
             {
-                if (element == focusedElement) continue;
+                if (element == focusedElement)
+                {
+                    continue;
+                }
 
                 var elementPos = element.ActualPosition;
                 var toElement = elementPos - currentPos;
 
                 float dot = Vector2.Dot(toElement.normalized, direction);
-                if (dot <= 0.2f) continue;
+                if (dot <= 0.2f)
+                {
+                    continue;
+                }
 
                 float distance = toElement.magnitude;
                 float angle = Mathf.Acos(dot);
@@ -228,7 +249,7 @@ namespace RocketLib.Menus.Core
                 }
             }
 
-            if (bestCandidate == null && wrapNavigation)
+            if (bestCandidate == null && WrapNavigation)
             {
                 bestCandidate = FindWrapCandidate(direction);
             }
@@ -244,7 +265,10 @@ namespace RocketLib.Menus.Core
 
         private LayoutElement FindWrapCandidate(Vector2 direction)
         {
-            if (focusableElements == null || focusableElements.Count == 0) return null;
+            if (focusableElements == null || focusableElements.Count == 0)
+            {
+                return null;
+            }
 
             // Score candidates in the opposite direction, preferring elements
             // that are far away and well-aligned — the "other end" of navigation
@@ -255,11 +279,17 @@ namespace RocketLib.Menus.Core
 
             foreach (var element in focusableElements)
             {
-                if (element == focusedElement) continue;
+                if (element == focusedElement)
+                {
+                    continue;
+                }
 
                 var toElement = element.ActualPosition - currentPos;
                 float dot = Vector2.Dot(toElement.normalized, oppositeDirection);
-                if (dot <= 0.2f) continue;
+                if (dot <= 0.2f)
+                {
+                    continue;
+                }
 
                 float distance = toElement.magnitude;
                 float angle = Mathf.Acos(dot);
@@ -310,7 +340,10 @@ namespace RocketLib.Menus.Core
 
         private static void PlayNavigationSound()
         {
-            if (drumSounds == null || drumSounds[0] == null) return;
+            if (drumSounds == null || drumSounds[0] == null)
+            {
+                return;
+            }
 
             Sound soundInstance = Sound.GetInstance();
             if (soundInstance != null)
@@ -321,12 +354,15 @@ namespace RocketLib.Menus.Core
 
         public static void PlayActionSound()
         {
-            if (drumSounds == null || drumSounds[1] == null) return;
+            if (drumSounds == null || drumSounds[1] == null)
+            {
+                return;
+            }
 
             Sound soundInstance = Sound.GetInstance();
             if (soundInstance != null)
             {
-                soundInstance.PlaySoundEffect(drumSounds[1], 0.25f, UnityEngine.Random.Range(0.95f, 1.1f));
+                soundInstance.PlaySoundEffect(drumSounds[1], 0.25f, Random.Range(0.95f, 1.1f));
             }
         }
     }

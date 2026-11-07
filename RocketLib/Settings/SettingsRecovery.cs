@@ -14,7 +14,7 @@ namespace RocketLib.Settings
     /// this class attempts to recover as much data as possible from the invalid XML.
     /// </summary>
     /// <example>
-    /// <code>
+    ///     <code>
     /// // Settings.cs
     /// public int SettingsVersion = 0;
     /// 
@@ -54,7 +54,9 @@ namespace RocketLib.Settings
         public static T TryRecoverSettings<T>(string xmlPath, T defaultSettings = null) where T : UnityModManager.ModSettings, new()
         {
             if (!File.Exists(xmlPath))
+            {
                 return defaultSettings ?? new T();
+            }
 
             var result = defaultSettings ?? new T();
 
@@ -65,14 +67,18 @@ namespace RocketLib.Settings
 
                 var root = doc.DocumentElement;
                 if (root == null)
+                {
                     return result;
+                }
 
                 var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
                 foreach (var prop in properties)
                 {
                     if (!prop.CanWrite)
+                    {
                         continue;
+                    }
 
                     RecoverProperty(root, prop, result);
                 }
@@ -100,15 +106,21 @@ namespace RocketLib.Settings
                 string elementName = prop.Name;
                 var xmlArrayAttr = prop.GetCustomAttributes(typeof(XmlArrayAttribute), false).FirstOrDefault() as XmlArrayAttribute;
                 if (xmlArrayAttr != null && !string.IsNullOrEmpty(xmlArrayAttr.ElementName))
+                {
                     elementName = xmlArrayAttr.ElementName;
+                }
 
                 var xmlElementAttr = prop.GetCustomAttributes(typeof(XmlElementAttribute), false).FirstOrDefault() as XmlElementAttribute;
                 if (xmlElementAttr != null && !string.IsNullOrEmpty(xmlElementAttr.ElementName))
+                {
                     elementName = xmlElementAttr.ElementName;
+                }
 
                 var element = root[elementName];
                 if (element == null)
+                {
                     return;
+                }
 
                 // Try to deserialize the property - complex types will be handled by XmlSerializer
                 var value = DeserializeValue(element, prop.PropertyType);
@@ -131,15 +143,21 @@ namespace RocketLib.Settings
                 string elementName = field.Name;
                 var xmlArrayAttr = field.GetCustomAttributes(typeof(XmlArrayAttribute), false).FirstOrDefault() as XmlArrayAttribute;
                 if (xmlArrayAttr != null && !string.IsNullOrEmpty(xmlArrayAttr.ElementName))
+                {
                     elementName = xmlArrayAttr.ElementName;
+                }
 
                 var xmlElementAttr = field.GetCustomAttributes(typeof(XmlElementAttribute), false).FirstOrDefault() as XmlElementAttribute;
                 if (xmlElementAttr != null && !string.IsNullOrEmpty(xmlElementAttr.ElementName))
+                {
                     elementName = xmlElementAttr.ElementName;
+                }
 
                 var element = root[elementName];
                 if (element == null)
+                {
                     return;
+                }
 
                 // Try to deserialize the field - complex types will be handled by XmlSerializer
                 var value = DeserializeValue(element, field.FieldType);
@@ -160,31 +178,49 @@ namespace RocketLib.Settings
             {
                 // Handle primitive types and strings
                 if (targetType == typeof(string))
+                {
                     return element.InnerText;
+                }
 
                 if (targetType == typeof(bool))
+                {
                     return bool.Parse(element.InnerText);
+                }
 
                 if (targetType == typeof(int))
+                {
                     return int.Parse(element.InnerText);
+                }
 
                 if (targetType == typeof(float))
+                {
                     return float.Parse(element.InnerText);
+                }
 
                 if (targetType == typeof(double))
+                {
                     return double.Parse(element.InnerText);
+                }
 
                 if (targetType == typeof(long))
+                {
                     return long.Parse(element.InnerText);
+                }
 
                 if (targetType == typeof(short))
+                {
                     return short.Parse(element.InnerText);
+                }
 
                 if (targetType == typeof(byte))
+                {
                     return byte.Parse(element.InnerText);
+                }
 
                 if (targetType == typeof(char))
+                {
                     return char.Parse(element.InnerText);
+                }
 
                 // Handle enums
                 if (targetType.IsEnum)
@@ -208,7 +244,9 @@ namespace RocketLib.Settings
                                 var childElement = child as XmlElement;
                                 var item = DeserializeValue(childElement, elementType);
                                 if (item != null)
+                                {
                                     items.Add(item);
+                                }
                             }
                         }
 
@@ -232,7 +270,9 @@ namespace RocketLib.Settings
                                 var childElement = child as XmlElement;
                                 var item = DeserializeValue(childElement, elementType);
                                 if (item != null)
+                                {
                                     addMethod.Invoke(list, new object[] { item });
+                                }
                             }
                         }
 

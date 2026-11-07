@@ -8,17 +8,21 @@ namespace RocketLib.CustomTriggers
     /// Provides a simple key-value store that survives across trigger activations and level restarts.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// This manager uses a staging pattern to ensure proper initialization order during level start:
-    /// </para>
-    /// <list type="bullet">
-    /// <item><description>SetForLevelStart: Stages values to be applied later in the current level start sequence (after all triggers execute)</description></item>
-    /// <item><description>SetDuringLevel: Applies values immediately to the current level session</description></item>
-    /// </list>
-    /// <para>
-    /// Use SetForLevelStart in level-start triggers (when isLevelStart=true) and SetDuringLevel
-    /// when the trigger is activated mid-level (when isLevelStart=false).
-    /// </para>
+    ///     <para>
+    ///     This manager uses a staging pattern to ensure proper initialization order during level start:
+    ///     </para>
+    ///     <list type="bullet">
+    ///         <item>
+    ///             <description>SetForLevelStart: Stages values to be applied later in the current level start sequence (after all triggers execute)</description>
+    ///         </item>
+    ///         <item>
+    ///             <description>SetDuringLevel: Applies values immediately to the current level session</description>
+    ///         </item>
+    ///     </list>
+    ///     <para>
+    ///     Use SetForLevelStart in level-start triggers (when isLevelStart=true) and SetDuringLevel
+    ///     when the trigger is activated mid-level (when isLevelStart=false).
+    ///     </para>
     /// </remarks>
     public static class CustomTriggerStateManager
     {
@@ -38,7 +42,9 @@ namespace RocketLib.CustomTriggers
         public static T Get<T>(string key, T defaultValue = default(T))
         {
             if (currentState.ContainsKey(key))
+            {
                 return (T)currentState[key];
+            }
             return defaultValue;
         }
 
@@ -50,14 +56,14 @@ namespace RocketLib.CustomTriggers
         /// <param name="key">The unique key for this value.</param>
         /// <param name="value">The value to store.</param>
         /// <remarks>
-        /// <para>
-        /// The value is staged and will be applied to current state after all level-start triggers have executed.
-        /// This ensures your trigger's state is available to systems that initialize after trigger execution.
-        /// </para>
-        /// <para>
-        /// On level restarts, level-start triggers run again, re-staging their values, which ensures
-        /// state persists across restarts as long as the trigger continues to execute.
-        /// </para>
+        ///     <para>
+        ///     The value is staged and will be applied to current state after all level-start triggers have executed.
+        ///     This ensures your trigger's state is available to systems that initialize after trigger execution.
+        ///     </para>
+        ///     <para>
+        ///     On level restarts, level-start triggers run again, re-staging their values, which ensures
+        ///     state persists across restarts as long as the trigger continues to execute.
+        ///     </para>
         /// </remarks>
         public static void SetForLevelStart<T>(string key, T value)
         {
@@ -91,7 +97,9 @@ namespace RocketLib.CustomTriggers
         public static void RegisterLevelStartAction(Action callback)
         {
             if (callback != null)
+            {
                 onLevelStartCallbacks.Add(callback);
+            }
         }
 
         /// <summary>
@@ -106,7 +114,9 @@ namespace RocketLib.CustomTriggers
         public static void RegisterLevelEndAction(Action callback)
         {
             if (callback != null)
+            {
                 onLevelEndCallbacks.Add(callback);
+            }
         }
 
         /// <summary>
@@ -130,7 +140,9 @@ namespace RocketLib.CustomTriggers
 
             currentState.Clear();
             foreach (var kvp in stagingState)
+            {
                 currentState[kvp.Key] = kvp.Value;
+            }
             stagingState.Clear();
 
             foreach (var callback in onLevelStartCallbacks)

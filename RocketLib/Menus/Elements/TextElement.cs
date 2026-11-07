@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace RocketLib.Menus.Elements
 {
-
     public class TextElement : LayoutElement
     {
         private string _text = "Text";
+
         public string Text
         {
             get { return _text; }
@@ -15,13 +15,14 @@ namespace RocketLib.Menus.Elements
                 if (_text != value)
                 {
                     _text = value;
-                    boundsAvailable = false;  // Force width recalculation
+                    boundsAvailable = false; // Force width recalculation
                     visualNeedsUpdate = true;
                 }
             }
         }
 
         private Color _textColor = Color.white;
+
         public Color TextColor
         {
             get { return _textColor; }
@@ -36,6 +37,7 @@ namespace RocketLib.Menus.Elements
         }
 
         private float _fontSize = 20f;
+
         public float FontSize
         {
             get { return _fontSize; }
@@ -44,13 +46,14 @@ namespace RocketLib.Menus.Elements
                 if (_fontSize != value)
                 {
                     _fontSize = value;
-                    boundsAvailable = false;  // Force width recalculation
+                    boundsAvailable = false; // Force width recalculation
                     visualNeedsUpdate = true;
                 }
             }
         }
 
         private BroforceFont _font = BroforceFont.Hudson;
+
         public BroforceFont Font
         {
             get { return _font; }
@@ -59,7 +62,7 @@ namespace RocketLib.Menus.Elements
                 if (_font != value)
                 {
                     _font = value;
-                    boundsAvailable = false;  // Force width recalculation
+                    boundsAvailable = false; // Force width recalculation
                     visualNeedsUpdate = true;
                 }
             }
@@ -153,14 +156,15 @@ namespace RocketLib.Menus.Elements
         private void MeasureAutoWidth()
         {
             if (boundsAvailable)
+            {
                 return;
+            }
 
             // Use FontManager for measurement
             cachedAutoWidth = FontManager.CalculateTextWidth(Font, Text, FontSize);
 
             boundsAvailable = true;
         }
-
 
 
         public override float GetPreferredWidth()
@@ -195,9 +199,7 @@ namespace RocketLib.Menus.Elements
         public override void Cleanup()
         {
             textMesh = null;
-            base.Cleanup();  // Base class handles GameObject destruction
+            base.Cleanup(); // Base class handles GameObject destruction
         }
-
-
     }
 }

@@ -15,13 +15,15 @@ namespace RocketLib.Collections
                 return _all;
             }
         }
+
         private static PockettedSpecialAmmoType[] _all;
 
         public static PockettedSpecialAmmoType[] SpecialAmmo
         {
             get
             {
-                return new PockettedSpecialAmmoType[]  {
+                return new PockettedSpecialAmmoType[]
+                {
                     PockettedSpecialAmmoType.Standard,
                     PockettedSpecialAmmoType.Airstrike,
                     PockettedSpecialAmmoType.Timeslow,
@@ -32,12 +34,14 @@ namespace RocketLib.Collections
                 };
             }
         }
+
         public static PockettedSpecialAmmoType[] Rogueforce
         {
             get
             {
 
-                return new PockettedSpecialAmmoType[] {
+                return new PockettedSpecialAmmoType[]
+                {
                     PockettedSpecialAmmoType.Perk,
                     PockettedSpecialAmmoType.Dollars,
                     PockettedSpecialAmmoType.Revive,
@@ -45,6 +49,5 @@ namespace RocketLib.Collections
                 };
             }
         }
-
     }
 }

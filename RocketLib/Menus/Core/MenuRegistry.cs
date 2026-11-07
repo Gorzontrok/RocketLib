@@ -116,10 +116,16 @@ namespace RocketLib.Menus.Core
         /// </summary>
         public static void InjectMenuItems(Menu menu)
         {
-            if (menu == null) return;
+            if (menu == null)
+            {
+                return;
+            }
 
             TargetMenu? targetType = GetTargetMenuType(menu);
-            if (!targetType.HasValue) return;
+            if (!targetType.HasValue)
+            {
+                return;
+            }
 
             var menuTraverse = Traverse.Create(menu);
             var masterItems = menuTraverse.Field<MenuBarItem[]>("masterItems").Value ?? new MenuBarItem[0];
@@ -133,7 +139,10 @@ namespace RocketLib.Menus.Core
                 .ThenBy(r => r.Position == PositionMode.End ? int.MaxValue : 0)
                 .ToList();
 
-            if (itemsToInject.Count == 0) return;
+            if (itemsToInject.Count == 0)
+            {
+                return;
+            }
 
             var newItems = new List<MenuBarItem>(masterItems);
 
@@ -229,10 +238,22 @@ namespace RocketLib.Menus.Core
         /// </summary>
         private static TargetMenu? GetTargetMenuType(Menu menu)
         {
-            if (menu is MainMenu) return TargetMenu.MainMenu;
-            if (menu is PauseMenu) return TargetMenu.PauseMenu;
-            if (menu is OptionsMenu) return TargetMenu.OptionsMenu;
-            if (menu is InGameOptionsMenu) return TargetMenu.InGameOptionsMenu;
+            if (menu is MainMenu)
+            {
+                return TargetMenu.MainMenu;
+            }
+            if (menu is PauseMenu)
+            {
+                return TargetMenu.PauseMenu;
+            }
+            if (menu is OptionsMenu)
+            {
+                return TargetMenu.OptionsMenu;
+            }
+            if (menu is InGameOptionsMenu)
+            {
+                return TargetMenu.InGameOptionsMenu;
+            }
             // ModOptions is handled separately
             return null;
         }

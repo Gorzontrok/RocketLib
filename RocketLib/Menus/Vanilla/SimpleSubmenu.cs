@@ -34,9 +34,13 @@ namespace RocketLib.Menus.Vanilla
         public static SimpleSubmenu Create(string name, Dictionary<string, Action> items)
         {
             if (string.IsNullOrEmpty(name))
+            {
                 throw new ArgumentNullException("name");
+            }
             if (items == null)
+            {
                 throw new ArgumentNullException("items");
+            }
 
             GameObject menuObject = new GameObject($"SimpleSubmenu_{name}");
 
@@ -58,8 +62,8 @@ namespace RocketLib.Menus.Vanilla
         {
             if (pendingMenuName != null && pendingItemActionMap != null)
             {
-                this.menuName = pendingMenuName;
-                this.itemActionMap = pendingItemActionMap;
+                menuName = pendingMenuName;
+                itemActionMap = pendingItemActionMap;
             }
 
             base.Awake();
@@ -117,7 +121,7 @@ namespace RocketLib.Menus.Vanilla
             }
 
             menuItems = itemList.ToArray();
-            this.masterItems = menuItems;
+            masterItems = menuItems;
         }
 
         /// <summary>
@@ -148,72 +152,76 @@ namespace RocketLib.Menus.Vanilla
         /// </summary>
         protected override void RunInput()
         {
-            if (this.up || this.down || this.left || this.right)
+            if (up || down || left || right)
             {
-                if (Time.time - Menu.lastInputTime < this.upDownDelay)
+                if (Time.time - lastInputTime < upDownDelay)
                 {
-                    Menu.acceptPrev = true;
+                    acceptPrev = true;
                     return;
                 }
-                Menu.lastInputTime = Time.time;
+                lastInputTime = Time.time;
             }
-            if (this.accept || this.decline)
+            if (accept || decline)
             {
-                if (Time.time - Menu.lastInputTime < 0.05f)
+                if (Time.time - lastInputTime < 0.05f)
                 {
-                    Menu.acceptPrev = true;
+                    acceptPrev = true;
                     return;
                 }
-                Menu.lastInputTime = Time.time;
+                lastInputTime = Time.time;
             }
-            if (this.accept && Menu.acceptPrev)
+            if (accept && acceptPrev)
             {
                 return;
             }
-            if (this.up)
+            if (up)
             {
                 do
                 {
-                    this.highlightIndex = (this.highlightIndex - 1 + this.items.Length) % this.items.Length;
-                }
-                while (!this.itemEnabled[this.highlightIndex]);
+                    highlightIndex = (highlightIndex - 1 + items.Length) % items.Length;
+                } while (!itemEnabled[highlightIndex]);
                 Sound instance = Sound.GetInstance();
                 if (instance != null)
                 {
-                    instance.PlaySoundEffect(this.drumSounds.attackSounds[0], 0.25f);
+                    instance.PlaySoundEffect(drumSounds.attackSounds[0], 0.25f);
                 }
-                if (this.items != null && this.items[this.highlightIndex] != null)
+                if (items != null && items[highlightIndex] != null)
                 {
-                    Animation anim = this.items[this.highlightIndex].GetComponent<Animation>();
-                    if (anim != null) anim.Play();
+                    Animation anim = items[highlightIndex].GetComponent<Animation>();
+                    if (anim != null)
+                    {
+                        anim.Play();
+                    }
                 }
             }
-            if (this.down)
+            if (down)
             {
                 do
                 {
-                    this.highlightIndex = (this.highlightIndex + 1) % this.items.Length;
-                }
-                while (!this.itemEnabled[this.highlightIndex]);
+                    highlightIndex = (highlightIndex + 1) % items.Length;
+                } while (!itemEnabled[highlightIndex]);
                 Sound instance2 = Sound.GetInstance();
                 if (instance2 != null)
                 {
-                    instance2.PlaySoundEffect(this.drumSounds.attackSounds[0], 0.25f);
+                    instance2.PlaySoundEffect(drumSounds.attackSounds[0], 0.25f);
                 }
-                if (this.items != null && this.items[this.highlightIndex] != null)
+                if (items != null && items[highlightIndex] != null)
                 {
-                    Animation anim = this.items[this.highlightIndex].GetComponent<Animation>();
-                    if (anim != null) anim.Play();
+                    Animation anim = items[highlightIndex].GetComponent<Animation>();
+                    if (anim != null)
+                    {
+                        anim.Play();
+                    }
                 }
             }
-            if (!this.activatedThisFrame && this.accept && !Menu.acceptPrev && this.masterItems[this.highlightIndex].invokeMethod != string.Empty)
+            if (!activatedThisFrame && accept && !acceptPrev && masterItems[highlightIndex].invokeMethod != string.Empty)
             {
-                string methodName = this.masterItems[this.highlightIndex].invokeMethod;
+                string methodName = masterItems[highlightIndex].invokeMethod;
 
                 if (methodName == "GoBack" || methodName == "OnMenuClosed")
                 {
-                    this.OnMenuClosed();
-                    this.PlayDrumSound(1);
+                    OnMenuClosed();
+                    PlayDrumSound(1);
                 }
                 else if (methodName.StartsWith("Action_"))
                 {
@@ -231,7 +239,7 @@ namespace RocketLib.Menus.Vanilla
                                     try
                                     {
                                         kvp.Value.Invoke();
-                                        this.PlayDrumSound(1);
+                                        PlayDrumSound(1);
                                     }
                                     catch (Exception ex)
                                     {
@@ -241,8 +249,8 @@ namespace RocketLib.Menus.Vanilla
                                 else if (kvp.Key.Equals("Back", StringComparison.OrdinalIgnoreCase) ||
                                          kvp.Key.Equals("Return", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    this.OnMenuClosed();
-                                    this.PlayDrumSound(1);
+                                    OnMenuClosed();
+                                    PlayDrumSound(1);
                                 }
                                 break;
                             }
@@ -251,30 +259,28 @@ namespace RocketLib.Menus.Vanilla
                     }
                 }
             }
-            if (!this.activatedThisFrame && (this.left || this.right) && this.masterItems[this.highlightIndex].invokeMethod != string.Empty && this.masterItems[this.highlightIndex].invokeMethod.Contains("Toggle"))
+            if (!activatedThisFrame && (left || right) && masterItems[highlightIndex].invokeMethod != string.Empty && masterItems[highlightIndex].invokeMethod.Contains("Toggle"))
             {
                 var traverse = Traverse.Create(this);
                 float toggleTimer = traverse.Field<float>("toggleTimer").Value;
 
-                if (Time.time - toggleTimer > this.toggleDelay)
+                if (Time.time - toggleTimer > toggleDelay)
                 {
-                    string methodName = this.masterItems[this.highlightIndex].invokeMethod;
-                    this.PlayDrumSound(1);
+                    string methodName = masterItems[highlightIndex].invokeMethod;
+                    PlayDrumSound(1);
                     traverse.SetFieldValue("toggleTimer", Time.time);
                 }
             }
-            if (this.MenuActive && !this.activatedThisFrame)
+            if (MenuActive && !activatedThisFrame)
             {
                 int controllerPressingCancel = InputReader.GetControllerPressingCancel();
-                bool flag = controllerPressingCancel > -1 && (this.controlledByControllerID == -1 || controllerPressingCancel == this.controlledByControllerID);
+                bool flag = controllerPressingCancel > -1 && (controlledByControllerID == -1 || controllerPressingCancel == controlledByControllerID);
                 if (Input.GetKeyDown(KeyCode.Escape) || flag)
                 {
-                    this.PlayDrumSound(1);
-                    this.OnMenuClosed();
+                    PlayDrumSound(1);
+                    OnMenuClosed();
                 }
             }
         }
-
-
     }
 }

@@ -18,10 +18,16 @@ namespace RocketLib.Menus.Layout
 
         protected override void ArrangeChildren()
         {
-            if (Children.Count == 0) return;
+            if (Children.Count == 0)
+            {
+                return;
+            }
 
-            var childrenToPosition = this.GetChildrenToPosition();
-            if (childrenToPosition.Count == 0) return;
+            var childrenToPosition = GetChildrenToPosition();
+            if (childrenToPosition.Count == 0)
+            {
+                return;
+            }
 
             float availableHeight = ActualSize.y - (Padding * 2);
             float availableWidth = ActualSize.x - (Padding * 2);
@@ -45,7 +51,7 @@ namespace RocketLib.Menus.Layout
                         break;
 
                     case SizeMode.Percentage:
-                        height = (child.Height / 100f) * availableHeight;
+                        height = child.Height / 100f * availableHeight;
                         totalFixedHeight += height;
                         break;
 
@@ -94,15 +100,27 @@ namespace RocketLib.Menus.Layout
                 float height = childHeights[i];
 
                 // Apply min/max constraints
-                if (child.MinSize.y > 0) height = Mathf.Max(height, child.MinSize.y);
-                if (child.MaxSize.y > 0) height = Mathf.Min(height, child.MaxSize.y);
+                if (child.MinSize.y > 0)
+                {
+                    height = Mathf.Max(height, child.MinSize.y);
+                }
+                if (child.MaxSize.y > 0)
+                {
+                    height = Mathf.Min(height, child.MaxSize.y);
+                }
 
                 // Calculate width
                 float width = CalculateChildWidth(child, availableWidth);
 
                 // Apply width constraints
-                if (child.MinSize.x > 0) width = Mathf.Max(width, child.MinSize.x);
-                if (child.MaxSize.x > 0) width = Mathf.Min(width, child.MaxSize.x);
+                if (child.MinSize.x > 0)
+                {
+                    width = Mathf.Max(width, child.MinSize.x);
+                }
+                if (child.MaxSize.x > 0)
+                {
+                    width = Mathf.Min(width, child.MaxSize.x);
+                }
 
                 // Calculate X position based on alignment
                 HorizontalAlignment alignment = child.HorizontalAlignmentOverride ?? ChildHorizontalAlignment;
@@ -126,7 +144,7 @@ namespace RocketLib.Menus.Layout
                 child.ActualSize = new Vector2(width, height);
 
                 // Move to next position
-                currentY -= (height + Spacing);
+                currentY -= height + Spacing;
             }
 
             // Detect overflow
@@ -154,7 +172,7 @@ namespace RocketLib.Menus.Layout
                     return child.Width;
 
                 case SizeMode.Percentage:
-                    return (child.Width / 100f) * availableWidth;
+                    return child.Width / 100f * availableWidth;
 
                 case SizeMode.Fill:
                     return availableWidth;

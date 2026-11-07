@@ -11,6 +11,7 @@ namespace RocketLib.Menus.Elements
         private SpriteRenderer spriteRenderer;
 
         private Sprite _sprite;
+
         public Sprite Sprite
         {
             get => _sprite;
@@ -94,12 +95,18 @@ namespace RocketLib.Menus.Elements
 
         private void ApplyScaling()
         {
-            if (spriteGO == null || _sprite == null) return;
+            if (spriteGO == null || _sprite == null)
+            {
+                return;
+            }
 
             float spriteWidth = _sprite.bounds.size.x;
             float spriteHeight = _sprite.bounds.size.y;
 
-            if (spriteWidth <= 0 || spriteHeight <= 0) return;
+            if (spriteWidth <= 0 || spriteHeight <= 0)
+            {
+                return;
+            }
 
             float targetWidth = ActualSize.x;
             float targetHeight = ActualSize.y;
@@ -148,26 +155,24 @@ namespace RocketLib.Menus.Elements
         }
 
 
-
         public override void Cleanup()
         {
             if (spriteGO != null)
             {
-                UnityEngine.Object.Destroy(spriteGO);
+                Object.Destroy(spriteGO);
                 spriteGO = null;
                 spriteRenderer = null;
             }
 
             base.Cleanup();
         }
-
     }
 
     public enum ShapeScaleMode
     {
-        None,     // Original size
-        Stretch,  // Stretch to fill (distorts)
-        Fit,      // Scale uniformly to fit within bounds
-        Fill      // Scale uniformly to fill bounds (may crop)
+        None, // Original size
+        Stretch, // Stretch to fill (distorts)
+        Fit, // Scale uniformly to fit within bounds
+        Fill // Scale uniformly to fill bounds (may crop)
     }
 }

@@ -124,7 +124,7 @@ namespace RocketLib
         /// <param name="Number"></param>
         /// <param name="Space"></param>
         /// <param name="TabWidth"></param>
-        /// <param name="scaleWithWindow">If true, <paramref name="TabWidth"/> scales with the UMM window via <see cref="UMM.WindowScaling.ScaledWidth(float)"/>. Defaults to false (raw pixel width).</param>
+        /// <param name="scaleWithWindow">If true, <paramref name="TabWidth" /> scales with the UMM window via <see cref="UMM.WindowScaling.ScaledWidth(float)" />. Defaults to false (raw pixel width).</param>
         /// <returns></returns>
         public static int Tab(string[] Strings, int Number, int Space, int TabWidth, bool scaleWithWindow = false)
         {
@@ -135,7 +135,10 @@ namespace RocketLib
             for (int i = 0; i < Strings.Length; i++)
             {
                 var widthOption = scaleWithWindow ? UMM.WindowScaling.ScaledWidth(TabWidth) : GUILayout.Width(TabWidth);
-                if (GUILayout.Button(Strings[i], (i == Number ? ActiveTabStyle : TabStyle), widthOption)) return i;
+                if (GUILayout.Button(Strings[i], i == Number ? ActiveTabStyle : TabStyle, widthOption))
+                {
+                    return i;
+                }
                 GUILayout.Space(Space);
             }
             GUILayout.EndHorizontal();
@@ -177,6 +180,7 @@ namespace RocketLib
             GUILayout.EndHorizontal();
             return value;
         }
+
         public static float HorizontalSlider(string text, string tooltip, float value, float minValue, float maxValue, float sliderWidth = 500f)
         {
             GUILayout.BeginHorizontal(new GUIContent(string.Empty, tooltip), GUIStyle.none, new GUILayoutOption[] { });
@@ -196,6 +200,7 @@ namespace RocketLib
             GUILayout.EndHorizontal();
             return value;
         }
+
         public static int HorizontalSliderInt(string text, string tooltip, int value, int minValue, int maxValue, float sliderWidth = 500f)
         {
             GUILayout.BeginHorizontal(new GUIContent(string.Empty, tooltip), GUIStyle.none, new GUILayoutOption[] { });

@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using TFBGames.Systems;
 using UnityEngine;
+
 // ReSharper disable ShaderLabShaderReferenceNotResolved
 
 namespace RocketLib.Utils
@@ -41,7 +42,8 @@ namespace RocketLib.Utils
         /// Loads Material from cache if created previously.
         /// </summary>
         /// <param name="path">Path to an image or asset</param>
-        /// /// <param name="fileName">Name of an image or asset file</param>
+        /// ///
+        /// <param name="fileName">Name of an image or asset file</param>
         /// <returns></returns>
         public static Material GetMaterial(string path, string fileName)
         {
@@ -144,7 +146,8 @@ namespace RocketLib.Utils
         /// Loads Texture2D from cache if created previously.
         /// </summary>
         /// <param name="path">Path to an image or asset</param>
-        /// /// <param name="fileName">Name of an image or asset file</param>
+        /// ///
+        /// <param name="fileName">Name of an image or asset file</param>
         /// <returns></returns>
         public static Texture2D GetTexture(string path, string fileName)
         {
@@ -161,7 +164,9 @@ namespace RocketLib.Utils
         {
             _textures.TryGetValue(filePath, out Texture2D tex);
             if (tex)
+            {
                 return tex;
+            }
 
             if (File.Exists(filePath))
             {
@@ -179,10 +184,14 @@ namespace RocketLib.Utils
                 }
             }
             else
+            {
                 tex = CreateTexture(filePath);
+            }
 
             if (tex)
+            {
                 _textures.Add(filePath, tex);
+            }
             return tex;
         }
 
@@ -195,7 +204,9 @@ namespace RocketLib.Utils
         public static Texture2D CreateTexture(string filePath)
         {
             if (!File.Exists(filePath))
+            {
                 throw new FileNotFoundException("File not found", filePath);
+            }
 
             return CreateTexture(File.ReadAllBytes(filePath));
         }
@@ -209,7 +220,9 @@ namespace RocketLib.Utils
         public static Texture2D CreateTexture(byte[] imageBytes)
         {
             if (imageBytes.IsNullOrEmpty())
+            {
                 throw new ArgumentException("Is null or empty", nameof(imageBytes));
+            }
 
             Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
             tex.LoadImage(imageBytes);
@@ -320,7 +333,9 @@ namespace RocketLib.Utils
         public static AudioClip CreateAudioClip(string filePath)
         {
             if (!File.Exists(filePath))
+            {
                 throw new FileNotFoundException("File not found", filePath);
+            }
             WWW getClip = new WWW("file:////" + filePath);
 
             while (!getClip.isDone)
@@ -328,13 +343,19 @@ namespace RocketLib.Utils
             }
 
             if (getClip.error != null)
+            {
                 RocketMain.Logger.Error(getClip.error);
+            }
 
             AudioClip result = getClip.GetAudioClip(false, false);
             if (result != null)
+            {
                 result.name = Path.GetFileNameWithoutExtension(filePath);
+            }
             else
+            {
                 RocketMain.Logger.Error("Failed to load AudioClip from: " + filePath);
+            }
 
             return result;
         }
@@ -349,13 +370,19 @@ namespace RocketLib.Utils
             Assembly a = Assembly.GetExecutingAssembly();
             using (Stream resFilestream = a.GetManifestResourceStream(filename))
             {
-                if (resFilestream == null) return null;
+                if (resFilestream == null)
+                {
+                    return null;
+                }
                 byte[] ba = new byte[resFilestream.Length];
                 int offset = 0;
                 while (offset < ba.Length)
                 {
                     int read = resFilestream.Read(ba, offset, ba.Length - offset);
-                    if (read == 0) break;
+                    if (read == 0)
+                    {
+                        break;
+                    }
                     offset += read;
                 }
                 return ba;
@@ -374,5 +401,3 @@ namespace RocketLib.Utils
         }
     }
 }
-
-

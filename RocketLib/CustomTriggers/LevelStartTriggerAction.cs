@@ -53,7 +53,7 @@ namespace RocketLib.CustomTriggers
             {
                 ExecuteAction(isLevelStart: false);
             }
-            this.state = TriggerActionState.Done;
+            state = TriggerActionState.Done;
         }
 
         /// <summary>

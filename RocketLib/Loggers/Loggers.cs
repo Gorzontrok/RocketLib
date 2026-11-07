@@ -41,6 +41,7 @@ namespace RocketLib.Loggers
         {
             Exception(null, exception);
         }
+
         public void Exception(string message, Exception exception)
         {
             UnityModManager.Logger.LogException(message, exception, "[RocketLib] [Exception] ");
@@ -49,7 +50,9 @@ namespace RocketLib.Loggers
         public void Debug(string message)
         {
             if (Main.settings.ShowDebugLogs)
+            {
                 UnityModManager.Logger.Log(message, "[RocketLib] [Debug]");
+            }
         }
     }
 }

@@ -7,15 +7,14 @@ namespace RocketLib.Menus.Elements
 {
     public abstract class LayoutElement
     {
-        private readonly string id;
-        public string Id { get { return id; } }
+        public string Id { get; }
         public string Name { get; set; }
 
         public LayoutContainer Parent { get; set; }
 
         // Size specification using new SizeMode API
-        public Layout.SizeMode WidthMode { get; set; }
-        public Layout.SizeMode HeightMode { get; set; }
+        public SizeMode WidthMode { get; set; }
+        public SizeMode HeightMode { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
 
@@ -40,10 +39,12 @@ namespace RocketLib.Menus.Elements
             set
             {
                 _isVisible = value;
-                this.OnVisibilityChanged();
+                OnVisibilityChanged();
             }
         }
+
         private bool _isVisible;
+
         /// <summary>
         /// This determines whether the element and its children should take up space and be positioned by Layout Containers
         /// </summary>
@@ -53,10 +54,12 @@ namespace RocketLib.Menus.Elements
             set
             {
                 _isPositioned = value;
-                this.OnIsPositionedChanged();
+                OnIsPositionedChanged();
             }
         }
+
         private bool _isPositioned;
+
         public bool IsVisibleAndPositioned
         {
             get => IsVisible && IsPositioned;
@@ -78,17 +81,18 @@ namespace RocketLib.Menus.Elements
 
         // Set by child if it creates one
         protected GameObject gameObject;
+
         // Reference to parent menu
         protected Transform menuTransform;
 
         protected LayoutElement(string name)
         {
-            id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid().ToString();
             Name = name;
 
             // Default to fill parent
-            WidthMode = Layout.SizeMode.Fill;
-            HeightMode = Layout.SizeMode.Fill;
+            WidthMode = SizeMode.Fill;
+            HeightMode = SizeMode.Fill;
             Width = 1f;
             Height = 1f;
 
@@ -112,13 +116,13 @@ namespace RocketLib.Menus.Elements
         {
             switch (WidthMode)
             {
-                case Layout.SizeMode.Fixed:
+                case SizeMode.Fixed:
                     return Width;
-                case Layout.SizeMode.Percentage:
-                    return Parent != null ? (Width / 100f) * Parent.ActualSize.x : Width;
-                case Layout.SizeMode.Auto:
+                case SizeMode.Percentage:
+                    return Parent != null ? Width / 100f * Parent.ActualSize.x : Width;
+                case SizeMode.Auto:
                     return Width; // Default for elements that don't implement Auto
-                case Layout.SizeMode.Fill:
+                case SizeMode.Fill:
                 default:
                     return 0; // Fill takes remaining space
             }
@@ -128,13 +132,13 @@ namespace RocketLib.Menus.Elements
         {
             switch (HeightMode)
             {
-                case Layout.SizeMode.Fixed:
+                case SizeMode.Fixed:
                     return Height;
-                case Layout.SizeMode.Percentage:
-                    return Parent != null ? (Height / 100f) * Parent.ActualSize.y : Height;
-                case Layout.SizeMode.Auto:
+                case SizeMode.Percentage:
+                    return Parent != null ? Height / 100f * Parent.ActualSize.y : Height;
+                case SizeMode.Auto:
                     return Height; // Default for elements that don't implement Auto
-                case Layout.SizeMode.Fill:
+                case SizeMode.Fill:
                 default:
                     return 0; // Fill takes remaining space
             }
@@ -174,7 +178,10 @@ namespace RocketLib.Menus.Elements
 
         public virtual LayoutElement GetElementAt(Vector2 position)
         {
-            if (!IsVisible || !IsEnabled) return null;
+            if (!IsVisible || !IsEnabled)
+            {
+                return null;
+            }
 
             if (IsFocusable && ContainsPoint(position))
             {
@@ -188,7 +195,10 @@ namespace RocketLib.Menus.Elements
         {
             var elements = new List<LayoutElement>();
 
-            if (!IsEnabled) return elements;
+            if (!IsEnabled)
+            {
+                return elements;
+            }
 
             if (IsFocusable)
             {
@@ -233,7 +243,10 @@ namespace RocketLib.Menus.Elements
 
         public LayoutElement FindById(string id)
         {
-            if (Id == id) return this;
+            if (Id == id)
+            {
+                return this;
+            }
 
             var container = this as LayoutContainer;
             if (container != null)
@@ -241,7 +254,10 @@ namespace RocketLib.Menus.Elements
                 foreach (var child in container.Children)
                 {
                     var found = child.FindById(id);
-                    if (found != null) return found;
+                    if (found != null)
+                    {
+                        return found;
+                    }
                 }
             }
 
@@ -250,7 +266,10 @@ namespace RocketLib.Menus.Elements
 
         public LayoutElement FindByName(string name)
         {
-            if (Name == name) return this;
+            if (Name == name)
+            {
+                return this;
+            }
 
             var container = this as LayoutContainer;
             if (container != null)
@@ -258,7 +277,10 @@ namespace RocketLib.Menus.Elements
                 foreach (var child in container.Children)
                 {
                     var found = child.FindByName(name);
-                    if (found != null) return found;
+                    if (found != null)
+                    {
+                        return found;
+                    }
                 }
             }
 
@@ -267,7 +289,10 @@ namespace RocketLib.Menus.Elements
 
         public T FindByType<T>() where T : LayoutElement
         {
-            if (this is T) return (T)this;
+            if (this is T)
+            {
+                return (T)this;
+            }
 
             var container = this as LayoutContainer;
             if (container != null)
@@ -275,7 +300,10 @@ namespace RocketLib.Menus.Elements
                 foreach (var child in container.Children)
                 {
                     var found = child.FindByType<T>();
-                    if (found != null) return found;
+                    if (found != null)
+                    {
+                        return found;
+                    }
                 }
             }
 
@@ -286,7 +314,10 @@ namespace RocketLib.Menus.Elements
         {
             var results = new List<T>();
 
-            if (this is T) results.Add((T)this);
+            if (this is T)
+            {
+                results.Add((T)this);
+            }
 
             var container = this as LayoutContainer;
             if (container != null)
@@ -299,6 +330,5 @@ namespace RocketLib.Menus.Elements
 
             return results;
         }
-
     }
 }
