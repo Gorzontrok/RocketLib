@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Xml;
+using System.Xml.Serialization;
 using HarmonyLib;
 using UnityEngine;
 using World.LevelEdit.Triggers;
@@ -9,138 +14,6 @@ namespace RocketLib.CustomTriggers
 {
     public class CustomTriggerPatches
     {
-        [HarmonyPatch(typeof(LevelEditorGUI), "SaveLevel")]
-        private static class LevelEditorGUI_SaveLevel_Patch
-        {
-            private static void Prefix()
-            {
-                if (Map.MapData == null || Map.MapData.TriggerList == null)
-                {
-                    return;
-                }
-
-                foreach (TriggerInfo trigger in Map.MapData.TriggerList)
-                {
-                    if (trigger.actions == null)
-                    {
-                        continue;
-                    }
-
-                    for (int i = 0; i < trigger.actions.Count; i++)
-                    {
-                        if (trigger.actions[i] is CustomTriggerActionInfo customAction)
-                        {
-                            WeatherActionInfo weatherInfo = CustomTriggerManager.ConvertToWeatherInfo(customAction);
-                            trigger.actions[i] = weatherInfo;
-                        }
-                    }
-                }
-            }
-
-            private static void Postfix()
-            {
-                if (Map.MapData == null || Map.MapData.TriggerList == null)
-                {
-                    return;
-                }
-
-                foreach (TriggerInfo trigger in Map.MapData.TriggerList)
-                {
-                    if (trigger.actions == null)
-                    {
-                        continue;
-                    }
-
-                    for (int i = 0; i < trigger.actions.Count; i++)
-                    {
-                        TriggerActionInfo action = trigger.actions[i];
-                        if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
-                        {
-                            CustomTriggerActionInfo customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
-                            if (customInfo != null)
-                            {
-                                trigger.actions[i] = customInfo;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(LevelEditorGUI), "SaveCampaign")]
-        private static class LevelEditorGUI_SaveCampaign_Patch
-        {
-            private static void Prefix()
-            {
-                if (LevelEditorGUI.campaign == null || LevelEditorGUI.campaign.levels == null)
-                {
-                    return;
-                }
-
-                foreach (MapData mapData in LevelEditorGUI.campaign.levels)
-                {
-                    if (mapData == null || mapData.TriggerList == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (TriggerInfo trigger in mapData.TriggerList)
-                    {
-                        if (trigger.actions == null)
-                        {
-                            continue;
-                        }
-
-                        for (int i = 0; i < trigger.actions.Count; i++)
-                        {
-                            if (trigger.actions[i] is CustomTriggerActionInfo customAction)
-                            {
-                                WeatherActionInfo weatherInfo = CustomTriggerManager.ConvertToWeatherInfo(customAction);
-                                trigger.actions[i] = weatherInfo;
-                            }
-                        }
-                    }
-                }
-            }
-
-            private static void Postfix()
-            {
-                if (LevelEditorGUI.campaign == null || LevelEditorGUI.campaign.levels == null)
-                {
-                    return;
-                }
-
-                foreach (MapData mapData in LevelEditorGUI.campaign.levels)
-                {
-                    if (mapData == null || mapData.TriggerList == null)
-                    {
-                        continue;
-                    }
-
-                    foreach (TriggerInfo trigger in mapData.TriggerList)
-                    {
-                        if (trigger.actions == null)
-                        {
-                            continue;
-                        }
-
-                        for (int i = 0; i < trigger.actions.Count; i++)
-                        {
-                            TriggerActionInfo action = trigger.actions[i];
-                            if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
-                            {
-                                CustomTriggerActionInfo customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
-                                if (customInfo != null)
-                                {
-                                    trigger.actions[i] = customInfo;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         [HarmonyPatch(typeof(TriggerFactory), "CreateAction", typeof(TriggerActionInfo))]
         private static class TriggerFactory_CreateAction_Patch
         {
@@ -182,61 +55,70 @@ namespace RocketLib.CustomTriggers
             }
         }
 
-        [HarmonyPatch(typeof(FileIO), "SaveToBFL", typeof(MapData), typeof(string), typeof(bool), typeof(bool))]
-        private static class FileIO_SaveToBFL_Patch
+        [HarmonyPatch]
+        private static class FileIO_Save_Patch
         {
-            private static void Prefix(MapData mapData)
+            private static IEnumerable<MethodBase> TargetMethods()
             {
-                if (mapData == null || mapData.TriggerList == null)
+                yield return AccessTools.Method(typeof(FileIO), "SaveToBFL", new Type[] { typeof(MapData), typeof(string), typeof(bool), typeof(bool) });
+                yield return AccessTools.Method(typeof(FileIO), "SaveCampaign", new Type[] { typeof(Campaign), typeof(string), typeof(bool), typeof(bool) });
+                yield return AccessTools.Method(typeof(FileIO), "SaveBFGCampaign", new Type[] { typeof(Campaign), typeof(string), typeof(bool), typeof(bool) });
+            }
+
+            private static void Prefix(object __0, out List<CustomTriggerManager.EncodedAction> __state)
+            {
+                __state = CustomTriggerManager.EncodeCustomActions(__0 is Campaign ? ((Campaign)__0).levels : new MapData[] { __0 as MapData });
+            }
+
+            private static void Finalizer(List<CustomTriggerManager.EncodedAction> __state)
+            {
+                CustomTriggerManager.RestoreCustomActions(__state);
+            }
+        }
+
+        // Duplicate Current serializes Map.MapData with its own XmlSerializer, bypassing the FileIO save patches
+        [HarmonyPatch(typeof(LevelEditorGUI), "ShowCampaignMenu")]
+        private static class LevelEditorGUI_ShowCampaignMenu_Patch
+        {
+            private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+            {
+                MethodInfo serialize = AccessTools.Method(typeof(XmlSerializer), "Serialize", new Type[] { typeof(TextWriter), typeof(object) });
+                MethodInfo deserialize = AccessTools.Method(typeof(XmlSerializer), "Deserialize", new Type[] { typeof(XmlReader) });
+
+                List<CodeInstruction> codes = new List<CodeInstruction>(instructions);
+                List<CodeInstruction> serializeCalls = codes.Where(c => c.Calls(serialize)).ToList();
+                List<CodeInstruction> deserializeCalls = codes.Where(c => c.Calls(deserialize)).ToList();
+                if (serializeCalls.Count != 1 || deserializeCalls.Count != 1)
                 {
-                    return;
+                    RocketMain.Logger.Warning("LevelEditorGUI_ShowCampaignMenu_Patch: Could not find the Duplicate Current serializer calls");
+                    return codes;
                 }
 
-                foreach (TriggerInfo trigger in mapData.TriggerList)
-                {
-                    if (trigger.actions == null)
-                    {
-                        continue;
-                    }
+                serializeCalls[0].opcode = OpCodes.Call;
+                serializeCalls[0].operand = AccessTools.Method(typeof(LevelEditorGUI_ShowCampaignMenu_Patch), nameof(SerializeMapData));
+                deserializeCalls[0].opcode = OpCodes.Call;
+                deserializeCalls[0].operand = AccessTools.Method(typeof(LevelEditorGUI_ShowCampaignMenu_Patch), nameof(DeserializeMapData));
+                return codes;
+            }
 
-                    for (int i = 0; i < trigger.actions.Count; i++)
-                    {
-                        if (trigger.actions[i] is CustomTriggerActionInfo customAction)
-                        {
-                            WeatherActionInfo weatherInfo = CustomTriggerManager.ConvertToWeatherInfo(customAction);
-                            trigger.actions[i] = weatherInfo;
-                        }
-                    }
+            private static void SerializeMapData(XmlSerializer serializer, TextWriter writer, object mapData)
+            {
+                List<CustomTriggerManager.EncodedAction> encoded = CustomTriggerManager.EncodeCustomActions(new MapData[] { mapData as MapData });
+                try
+                {
+                    serializer.Serialize(writer, mapData);
+                }
+                finally
+                {
+                    CustomTriggerManager.RestoreCustomActions(encoded);
                 }
             }
 
-            private static void Postfix(MapData mapData)
+            private static object DeserializeMapData(XmlSerializer serializer, XmlReader reader)
             {
-                if (mapData == null || mapData.TriggerList == null)
-                {
-                    return;
-                }
-
-                foreach (TriggerInfo trigger in mapData.TriggerList)
-                {
-                    if (trigger.actions == null)
-                    {
-                        continue;
-                    }
-
-                    for (int i = 0; i < trigger.actions.Count; i++)
-                    {
-                        TriggerActionInfo action = trigger.actions[i];
-                        if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
-                        {
-                            CustomTriggerActionInfo customInfo = CustomTriggerManager.ConvertToCustomInfo(weatherAction);
-                            if (customInfo != null)
-                            {
-                                trigger.actions[i] = customInfo;
-                            }
-                        }
-                    }
-                }
+                object mapData = serializer.Deserialize(reader);
+                CustomTriggerManager.ConvertAllCustomTriggersInMapData(mapData as MapData);
+                return mapData;
             }
         }
 
@@ -245,14 +127,15 @@ namespace RocketLib.CustomTriggers
         {
             private static void Postfix(Campaign __result)
             {
-                if (__result == null || __result.levels == null || CustomTriggerManager.CustomTriggers.Count == 0)
+                if (__result == null || __result.levels == null)
                 {
                     return;
                 }
 
+                HashSet<string> reportedProblems = new HashSet<string>();
                 foreach (MapData mapData in __result.levels)
                 {
-                    CustomTriggerManager.ConvertAllCustomTriggersInMapData(mapData);
+                    CustomTriggerManager.ConvertAllCustomTriggersInMapData(mapData, reportedProblems);
                 }
             }
         }
@@ -263,11 +146,6 @@ namespace RocketLib.CustomTriggers
         {
             private static void Postfix(MapData __result)
             {
-                if (__result == null || CustomTriggerManager.CustomTriggers.Count == 0)
-                {
-                    return;
-                }
-
                 CustomTriggerManager.ConvertAllCustomTriggersInMapData(__result);
             }
         }

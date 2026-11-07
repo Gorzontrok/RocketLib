@@ -4,6 +4,7 @@
 - Added a warning at startup naming mods that won't work with your versions of RocketLib and BroMaker.
 - Fixed several bugs with mod settings.
 - Fixed several menu bugs.
+- Fixed custom campaigns with mod triggers failing to load or save.
 
 ## v2.4.3:
 - Better handling for levels with custom triggers that aren't installed.

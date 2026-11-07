@@ -114,8 +114,11 @@ namespace RocketLib.CustomTriggers
             return string.Empty;
         }
 
-        public static CustomTriggerActionInfo ConvertToCustomInfo(WeatherActionInfo weatherInfo)
+        private static CustomTriggerActionInfo ConvertToCustomInfo(WeatherActionInfo weatherInfo, out CustomTrigger customTrigger, out string problem)
         {
+            customTrigger = null;
+            problem = null;
+            string triggerType = null;
             try
             {
                 string[] parts = weatherInfo.name.Split('|');
@@ -130,17 +133,18 @@ namespace RocketLib.CustomTriggers
                 string json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedJson));
 
                 JObject wrapper = JObject.Parse(json);
-                string triggerType = wrapper["TriggerType"]?.ToString();
+                triggerType = wrapper["TriggerType"]?.ToString();
 
                 if (string.IsNullOrEmpty(triggerType))
                 {
                     throw new Exception("TriggerType not found in JSON");
                 }
 
-                CustomTrigger customTrigger = CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
+                customTrigger = CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
                 if (customTrigger == null)
                 {
-                    throw new Exception($"Unknown custom trigger type: {triggerType}");
+                    problem = $"Level uses custom trigger '{triggerType}', which no installed mod provides. Its actions will do nothing.";
+                    return null;
                 }
 
                 CustomTriggerActionInfo customInfo = Activator.CreateInstance(customTrigger.CustomTriggerActionInfoType) as CustomTriggerActionInfo;
@@ -160,8 +164,11 @@ namespace RocketLib.CustomTriggers
             }
             catch (Exception ex)
             {
-                RocketMain.Logger.Log($"Failed to convert WeatherActionInfo to CustomTriggerActionInfo: {ex}");
-                throw;
+                customTrigger = null;
+                problem = string.IsNullOrEmpty(triggerType)
+                    ? $"Couldn't read a custom trigger action, so it will do nothing: {ex.Message}"
+                    : $"Couldn't read the settings of custom trigger '{triggerType}', so its actions will do nothing: {ex.Message}";
+                return null;
             }
         }
 
@@ -210,40 +217,20 @@ namespace RocketLib.CustomTriggers
         {
             try
             {
-                string[] parts = info.name.Split('|');
-                if (parts.Length < 3)
-                {
-                    throw new Exception("Invalid custom trigger encoding format");
-                }
+                CustomTriggerActionInfo customInfo = ConvertToCustomInfo(info as WeatherActionInfo, out CustomTrigger customTrigger, out string _);
 
-                string encodedJson = parts[1];
-                string actualName = parts[2];
-
-                string json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedJson));
-
-                JObject wrapper = JObject.Parse(json);
-                string triggerType = wrapper["TriggerType"]?.ToString();
-
-                if (string.IsNullOrEmpty(triggerType))
-                {
-                    throw new Exception("TriggerType not found in JSON");
-                }
-
-                CustomTrigger customTrigger = CustomTriggers.FirstOrDefault(t => t.ActionName == triggerType);
-                if (customTrigger == null)
-                {
-                    throw new Exception($"Unknown custom trigger type: {triggerType}");
-                }
-
-                CustomTriggerActionInfo customInfo = ConvertToCustomInfo(info as WeatherActionInfo);
+                TriggerAction action;
                 if (customInfo == null)
                 {
-                    throw new Exception("Failed to convert to CustomTriggerActionInfo");
+                    action = new UnknownCustomTriggerAction();
+                    action.Info = info;
                 }
-
-                TriggerAction action = Activator.CreateInstance(customTrigger.CustomTriggerActionType) as TriggerAction;
-                action.Info = customInfo;
-                action.timeOffsetLeft = customInfo.timeOffset;
+                else
+                {
+                    action = Activator.CreateInstance(customTrigger.CustomTriggerActionType) as TriggerAction;
+                    action.Info = customInfo;
+                }
+                action.timeOffsetLeft = action.Info.timeOffset;
                 action.AssignDeterministicIDs();
 
                 return action;
@@ -255,32 +242,136 @@ namespace RocketLib.CustomTriggers
             }
         }
 
-        public static void ConvertAllCustomTriggersInMapData(MapData mapData)
+        public static void ConvertAllCustomTriggersInMapData(MapData mapData, HashSet<string> reportedProblems = null)
         {
-            if (mapData == null || mapData.TriggerList == null || CustomTriggers.Count == 0)
+            if (reportedProblems == null)
+            {
+                reportedProblems = new HashSet<string>();
+            }
+
+            foreach (List<TriggerActionInfo> actions in GetActionLists(mapData))
+            {
+                for (int i = 0; i < actions.Count; i++)
+                {
+                    if (actions[i] is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
+                    {
+                        CustomTriggerActionInfo customInfo = ConvertToCustomInfo(weatherAction, out CustomTrigger _, out string problem);
+                        if (customInfo != null)
+                        {
+                            actions[i] = customInfo;
+                        }
+                        else if (reportedProblems.Add(problem))
+                        {
+                            RocketMain.Logger.Warning(problem);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal class EncodedAction
+        {
+            public List<TriggerActionInfo> Actions;
+            public int Index;
+            public CustomTriggerActionInfo Original;
+        }
+
+        internal static List<EncodedAction> EncodeCustomActions(IEnumerable<MapData> maps)
+        {
+            List<EncodedAction> encoded = new List<EncodedAction>();
+            if (maps == null)
+            {
+                return encoded;
+            }
+
+            try
+            {
+                foreach (MapData mapData in maps)
+                {
+                    foreach (List<TriggerActionInfo> actions in GetActionLists(mapData))
+                    {
+                        for (int i = 0; i < actions.Count; i++)
+                        {
+                            if (actions[i] is CustomTriggerActionInfo customAction)
+                            {
+                                WeatherActionInfo weatherInfo = ConvertToWeatherInfo(customAction);
+                                encoded.Add(new EncodedAction { Actions = actions, Index = i, Original = customAction });
+                                actions[i] = weatherInfo;
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                RestoreCustomActions(encoded);
+                throw;
+            }
+
+            return encoded;
+        }
+
+        internal static void RestoreCustomActions(List<EncodedAction> encoded)
+        {
+            if (encoded == null)
             {
                 return;
             }
 
-            foreach (TriggerInfo trigger in mapData.TriggerList)
+            for (int i = encoded.Count - 1; i >= 0; i--)
             {
-                if (trigger.actions == null)
-                {
-                    continue;
-                }
+                encoded[i].Actions[encoded[i].Index] = encoded[i].Original;
+            }
+        }
 
-                for (int i = 0; i < trigger.actions.Count; i++)
+        private static IEnumerable<List<TriggerActionInfo>> GetActionLists(MapData mapData)
+        {
+            if (mapData == null)
+            {
+                yield break;
+            }
+
+            if (mapData.TriggerList != null)
+            {
+                foreach (TriggerInfo trigger in mapData.TriggerList)
                 {
-                    TriggerActionInfo action = trigger.actions[i];
-                    if (action is WeatherActionInfo weatherAction && weatherAction.name != null && weatherAction.name.StartsWith("CUSTOMTRIGGER|"))
+                    if (trigger != null && trigger.actions != null)
                     {
-                        CustomTriggerActionInfo customInfo = ConvertToCustomInfo(weatherAction);
-                        if (customInfo != null)
-                        {
-                            trigger.actions[i] = customInfo;
-                        }
+                        yield return trigger.actions;
                     }
                 }
+            }
+
+            if (mapData.DoodadList != null)
+            {
+                foreach (DoodadInfo doodad in mapData.DoodadList)
+                {
+                    if (doodad != null && doodad.triggerInfo != null && doodad.triggerInfo.actions != null)
+                    {
+                        yield return doodad.triggerInfo.actions;
+                    }
+                }
+            }
+        }
+
+        // A vanilla WeatherAction on this info would switch the weather and rain to None.
+        private class UnknownCustomTriggerAction : TriggerAction
+        {
+            private TriggerActionInfo info;
+
+            public override TriggerActionInfo Info
+            {
+                get { return info; }
+                set { info = value; }
+            }
+
+            public override void Start()
+            {
+                state = TriggerActionState.Done;
+            }
+
+            public override void Update()
+            {
             }
         }
     }
