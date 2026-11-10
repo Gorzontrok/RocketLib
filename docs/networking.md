@@ -28,6 +28,7 @@
 | `ModNegotiation.RegisterMod(modId, version)` | 注册自己的模组与版本 |
 | `SetExtensionData(modId, key, byte[])` / `GetExtensionData(peer, modId, key)` | 发布和读取自定义能力或状态协议的说明 |
 | `GetModVersion(peer, modId)` / `GetAllPlayers()` | 检查当前参与端版本与清单 |
+| `HasReceivedManifest(peer)` | 区分清单尚未收到和清单已收到但未安装某模组；本端清单视为已知 |
 | `NetworkPrefabs.RegisterFactory(id, factory, onInstantiated)` | 为一个稳定 ID 提供可缓存的 prefab 工厂 |
 | `RegisterInstance(id, prefab, onInstantiated)` | 将本地发起生成使用的 prefab 对象映射到 ID |
 | `RegisterResolver(prefix, resolver, onInstantiated)` | 按 ID 前缀及 publisher 查找或构建接收端 prefab |

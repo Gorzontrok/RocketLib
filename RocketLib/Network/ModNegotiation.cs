@@ -230,6 +230,13 @@ namespace RocketLib.Network
         }
 
         public static bool HasMod(PID player, string modId) { return Find(player, modId) != null; }
+
+        /// <summary>Whether the peer's manifest list is known, independently of which mods it contains.</summary>
+        public static bool HasReceivedManifest(PID player)
+        {
+            return player != null && (player == PID.MyID || playerManifests.ContainsKey(player));
+        }
+
         public static string GetModVersion(PID player, string modId)
         {
             ModManifest manifest = Find(player, modId);
